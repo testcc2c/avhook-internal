@@ -6,9 +6,28 @@ EndScene oEndScene = NULL;
 WNDPROC oWndProc;
 static HWND window = NULL;
 ImVec4* theme;
+DWORD baseAddr;
+BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
+{
+	DWORD wndProcId;
+	GetWindowThreadProcessId(handle, &wndProcId);
+
+	if (GetCurrentProcessId() != wndProcId)
+		return TRUE; // skip to next window
+
+	window = handle;
+	return FALSE; // window found abort search
+}
+
+HWND GetProcessWindow()
+{
+	window = NULL;
+	EnumWindows(EnumWindowsCallback, NULL);
+	return window;
+}
+
 void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
-	PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\activated.wav", NULL, SND_SYNC);
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -37,21 +56,31 @@ void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	theme[ImGuiCol_PopupBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
 	theme[ImGuiCol_ScrollbarBg] = ImVec4(1.f, 0.372f, 0.372f, 0.f);
 	theme[ImGuiCol_ScrollbarGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-
+	theme[ImGuiCol_SliderGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+	theme[ImGuiCol_SliderGrabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 }
 
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
+
 	if (!init)
 	{
 		InitImGui(pDevice);
 		init = true;
+		baseAddr = (DWORD)GetModuleHandle(NULL);
 
 	}
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 	{
+		
 		settings::isOpen = !settings::isOpen;
+		if (settings::isOpen)
+			PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\activated.wav", NULL, SND_ASYNC);
+		else
+		{
+			PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\deactivated.wav", NULL, SND_ASYNC);
+		}
 	}
 	if (settings::isOpen)
 	{
@@ -87,12 +116,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		{
 			settings::menu = 4;
 		}
-
 		if (settings::menu == 1) // aimbot sector
 		{
-			ImGui::Text("Aimbot configuration menu");
-			ImGui::Checkbox("AimBot - on/off aimbot", &settings::aimbot);
-			//ImGui::ListBox("Aim position", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes), 2);
+			
 		}
 		else if (settings::menu == 2) // esp sector
 		{
@@ -101,10 +127,11 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		}
 		else if (settings::menu == 3) //misc sector
 		{
-			ImGui::Text("Misc configuration!");
+			ImGui::Text("Misc configuration");
+			DWORD phealth = memory::GetPointer(baseAddr + 0xA29500, { 0xB4, 0x20, 0x30, 0x488 });
 
-			ImGui::Checkbox("Bunny hop", &settings::bhop);
-			ImGui::Checkbox("Thirdperson", &settings::thirdperson);
+			if (phealth != NULL)
+				ImGui::SliderInt("Health", (int*)phealth, 1, 999);
 
 		}
 		else if (settings::menu == 4) // menu settings
@@ -134,7 +161,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 	}
-
 	return oEndScene(pDevice);
 }
 
@@ -146,41 +172,23 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
-BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
-{
-	DWORD wndProcId;
-	GetWindowThreadProcessId(handle, &wndProcId);
 
-	if (GetCurrentProcessId() != wndProcId)
-		return TRUE; // skip to next window
-
-	window = handle;
-	return FALSE; // window found abort search
-}
-
-HWND GetProcessWindow()
-{
-	window = NULL;
-	EnumWindows(EnumWindowsCallback, NULL);
-	return window;
-}
-
-DWORD WINAPI MainThread(HMODULE hModule)
+DWORD WINAPI MainThread(LPVOID lpReserved)
 {
 	bool attached = false;
 	do
 	{
 		if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success)
 		{
-			kiero::bind(42, (void**)& oEndScene, hkEndScene);
-
-			oWndProc = (WNDPROC)SetWindowLongPtr(GetProcessWindow(), GWL_WNDPROC, (LONG_PTR)WndProc);
+			kiero::bind(42, (void**)&oEndScene, hkEndScene);
+			do
+				window = GetProcessWindow();
+			while (window == NULL);
+			oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 			attached = true;
 		}
 	} while (!GetAsyncKeyState(VK_END));
-	kiero::shutdown();
-	FreeLibraryAndExitThread(hModule, 0);
-	return 0;
+	return TRUE;
 }
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
@@ -188,8 +196,12 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		CloseHandle(CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hMod, 0, nullptr));
+		DisableThreadLibraryCalls(hMod);
+		CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
+		break;
 	case DLL_PROCESS_DETACH:
+		kiero::shutdown();
+
 		break;
 	}
 	return TRUE;

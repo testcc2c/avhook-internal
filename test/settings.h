@@ -1,4 +1,5 @@
 #pragma once
+
 namespace settings
 {
 	short int menu = 0;

@@ -19,6 +19,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{9de47536-533c-4ade-8e83-5ebc8e246666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{e5811d9c-1eb9-4b95-9b60-993c12575bb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -78,6 +81,9 @@
     <ClInclude Include="settings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="memory.h">
+      <Filter>memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -121,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\trampoline.c">
       <Filter>kiero</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.cpp">
+      <Filter>memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,8 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "settings.h"
+#include "memory.h"
+
 #define WINDOW_NAME "AVhook"
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
