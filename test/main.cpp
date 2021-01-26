@@ -7,6 +7,7 @@ WNDPROC oWndProc;
 static HWND window = NULL;
 ImVec4* theme;
 DWORD baseAddr;
+
 BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
 {
 	DWORD wndProcId;
@@ -19,14 +20,14 @@ BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
 	return FALSE; // window found abort search
 }
 
-HWND GetProcessWindow()
+inline HWND GetProcessWindow()
 {
 	window = NULL;
 	EnumWindows(EnumWindowsCallback, NULL);
 	return window;
 }
 
-void InitImGui(LPDIRECT3DDEVICE9 pDevice)
+inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
 
 	ImGui::CreateContext();
@@ -82,8 +83,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\deactivated.wav", NULL, SND_ASYNC);
 		}
 	}
+	
 	if (settings::isOpen)
 	{
+
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -128,11 +131,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		else if (settings::menu == 3) //misc sector
 		{
 			ImGui::Text("Misc configuration");
-			DWORD phealth = memory::GetPointer(baseAddr + 0xA29500, { 0xB4, 0x20, 0x30, 0x488 });
+			DWORD phealth = memory::GetPointer(baseAddr + 0x9D5858, { 0xE0, 0x48, 0x488 });
 
 			if (phealth != NULL)
-				ImGui::SliderInt("Health", (int*)phealth, 1, 999);
-
+			{
+				//ImGui::SliderInt("Health", (int*)phealth, 1, 999);
+				ImGui::InputInt("Health", (int*)phealth);
+			}
+			else 
+			{
+				ImGui::Text("Start game for edit heatlh.");
+			}
 		}
 		else if (settings::menu == 4) // menu settings
 		{
@@ -187,7 +196,7 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
 			oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 			attached = true;
 		}
-	} while (!GetAsyncKeyState(VK_END));
+	} while (!attached);
 	return TRUE;
 }
 

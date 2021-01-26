@@ -3,17 +3,18 @@
 DWORD memory::GetPointer(DWORD base, std::vector<DWORD> offsets)
 {
 	DWORD addr = base;
-	HANDLE proc = GetCurrentProcess();
-	DWORD temp = NULL;
+	MEMORY_BASIC_INFORMATION mbi;
+
 	for (short int i = 0; i < offsets.size(); i++)
 	{
-		ReadProcessMemory(proc, (void*)addr, &addr, sizeof(addr), 0);
+		VirtualQuery((LPCVOID)(addr), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+
+		if (mbi.Protect & (PAGE_GUARD | PAGE_NOCACHE | PAGE_NOACCESS))
+			return NULL;
+
+		addr = *(DWORD*)addr;
 		addr += offsets[i];
 
 	}
-	ReadProcessMemory(proc, (void*)addr, &temp, sizeof(temp), 0);
-	if (temp == NULL)
-		return NULL;
 	return addr;
-	
 }
