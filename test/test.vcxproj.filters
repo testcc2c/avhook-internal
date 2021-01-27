@@ -48,9 +48,6 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="includes.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="kiero\kiero.h">
       <Filter>kiero</Filter>
     </ClInclude>
@@ -83,6 +80,12 @@
     </ClInclude>
     <ClInclude Include="memory.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="pointers.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="includes.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

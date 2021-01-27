@@ -59,6 +59,8 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	theme[ImGuiCol_ScrollbarGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	theme[ImGuiCol_SliderGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	theme[ImGuiCol_SliderGrabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+	theme[ImGuiCol_TabHovered] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
+	theme[ImGuiCol_TabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 }
 
 bool init = false;
@@ -96,6 +98,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 		ImGui::SameLine();
 		ImGui::Text("AVhook");
+
 		if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
 		{
 			settings::menu = 1;
@@ -119,28 +122,40 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		{
 			settings::menu = 4;
 		}
+
 		if (settings::menu == 1) // aimbot sector
 		{
-			
+			ImGui::Checkbox("Aimbot", &settings::aimbot);
+			ImGui::SameLine();
+			ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
+			ImGui::Checkbox("Silent", &settings::silent);
+
 		}
 		else if (settings::menu == 2) // esp sector
 		{
-			
-			
+			ImGui::Text("Coming soon....");
 		}
 		else if (settings::menu == 3) //misc sector
 		{
 			ImGui::Text("Misc configuration");
-			DWORD phealth = memory::GetPointer(baseAddr + 0x9D5858, { 0xE0, 0x48, 0x488 });
 
-			if (phealth != NULL)
-			{
-				//ImGui::SliderInt("Health", (int*)phealth, 1, 999);
-				ImGui::InputInt("Health", (int*)phealth);
-			}
+			pointers::pHealth = (int*)memory::GetPointer(baseAddr + 0x9D5858, { 0xE0, 0x48, 0x488 });
+			pointers::pPoints = NULL;
+
+			//health block
+			if (pointers::pHealth)
+				ImGui::InputInt("Health", pointers::pHealth);
 			else 
 			{
-				ImGui::Text("Start game for edit heatlh.");
+				ImGui::Text("Start game to edit heatlh.");
+			}
+
+			// Points block
+			if (pointers::pPoints)
+				ImGui::InputInt("Points", pointers::pPoints);
+			else
+			{
+				ImGui::Text("Start game to edit points.");
 			}
 		}
 		else if (settings::menu == 4) // menu settings
@@ -160,11 +175,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		}
 		else
 		{
-			ImGui::Text("Welcome back AV!\nAlpha build: v0.0.1");
-
+			ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
 		}
-		ImGui::End();
 
+		ImGui::End();
 		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
