@@ -1,11 +1,13 @@
 #include "includes.h"
 
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene = NULL;
 WNDPROC oWndProc;
 static HWND window = NULL;
 ImVec4* theme;
+
 DWORD baseAddr;
 
 BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
@@ -79,11 +81,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		
 		settings::isOpen = !settings::isOpen;
 		if (settings::isOpen)
-			PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\activated.wav", NULL, SND_ASYNC);
+			PlaySound(L"sounds\\activated.wav", NULL, SND_ASYNC);
 		else
-		{
-			PlaySound(L"C:\\Program Files (x86)\\AssaultCube\\packages\\audio\\hev\\deactivated.wav", NULL, SND_ASYNC);
-		}
+			PlaySound(L"sounds\\deactivated.wav", NULL, SND_ASYNC);
 	}
 	
 	if (settings::isOpen)
@@ -102,7 +102,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
 		{
 			settings::menu = 1;
-
 		}
 
 		ImGui::SameLine();
@@ -139,17 +138,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		{
 			ImGui::Text("Misc configuration");
 
-			pointers::pHealth = (int*)memory::GetPointer(baseAddr + 0x9D5858, { 0xE0, 0x48, 0x488 });
 			pointers::pPoints = NULL;
 
-			//health block
-			if (pointers::pHealth)
-				ImGui::InputInt("Health", pointers::pHealth);
-			else 
-			{
-				ImGui::Text("Start game to edit heatlh.");
-			}
-
+			ImGui::Checkbox("Air jump", &settings::airjump);
+			
 			// Points block
 			if (pointers::pPoints)
 				ImGui::InputInt("Points", pointers::pPoints);
@@ -214,6 +206,24 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
 	return TRUE;
 }
 
+DWORD WINAPI FreezeThread(LPVOID lpReserved)
+{
+	DWORD baseAddr = (DWORD)GetModuleHandle(NULL);
+	while (true)
+	{
+		if (settings::airjump and GetAsyncKeyState(VK_SPACE))
+		{
+			pointers::pAirJump = (float*)(memory::GetPointer(baseAddr + 0x9D56A8, { 0x888, 0x48, 0x418 }));
+			if (pointers::pAirJump)
+				*pointers::pAirJump = -1.f;
+
+		}
+		Sleep(100);
+
+	}
+	return 0;
+}
+
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
@@ -221,6 +231,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 		DisableThreadLibraryCalls(hMod);
 		CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
+		CreateThread(nullptr, 0, FreezeThread, hMod, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		kiero::shutdown();

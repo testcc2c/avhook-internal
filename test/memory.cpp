@@ -9,7 +9,7 @@ DWORD memory::GetPointer(DWORD base, std::vector<DWORD> offsets)
 	{
 		VirtualQuery((LPCVOID)(addr), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
 
-		if (mbi.Protect & (PAGE_GUARD | PAGE_NOCACHE | PAGE_NOACCESS))
+		if (mbi.Protect & (PAGE_GUARD | PAGE_NOCACHE | PAGE_NOACCESS | MEM_PRIVATE) || !(mbi.State & MEM_COMMIT))
 			return NULL;
 
 		addr = *(DWORD*)addr;

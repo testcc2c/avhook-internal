@@ -3,17 +3,18 @@
 namespace settings
 {
 	// menu
-	short int menu = 0;
-	bool isOpen = false;
+	short int menu;
+	bool isOpen;
+	bool init;
 
 	// aimbot sector
 	bool aimbot;
 	bool silent;
-	static const char* hitboxes[]{ "Head", "Chest", "Legs" };
+	static const char* hitboxes[] = {"Head", "Body", "Legs"};
 	static int selectedhitbox;
 
 	// misc sector
-	bool bhop;
-	bool thirdperson;
-
+	static bool bhop;
+	static bool thirdperson;
+	static bool airjump;
 }

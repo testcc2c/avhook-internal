@@ -1,10 +1,8 @@
-#pragma 
-#include <Windows.h>
-#include "memory.h"
+#pragma once
 
 namespace pointers
 {
-	int *pHealth;
-	int *pPoints;
-
+	static int *pHealth;
+	static int *pPoints;
+	static float* pAirJump;
 }
