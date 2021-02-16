@@ -11,6 +11,5 @@
 #include "memory.h"
 #include "pointers.h"
 
-#define WINDOW_NAME "AVhook"
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);

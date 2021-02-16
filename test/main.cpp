@@ -5,29 +5,11 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 EndScene oEndScene = NULL;
 WNDPROC oWndProc;
-static HWND window = NULL;
 ImVec4* theme;
 
 DWORD baseAddr;
 
-BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
-{
-	DWORD wndProcId;
-	GetWindowThreadProcessId(handle, &wndProcId);
-
-	if (GetCurrentProcessId() != wndProcId)
-		return TRUE; // skip to next window
-
-	window = handle;
-	return FALSE; // window found abort search
-}
-
-inline HWND GetProcessWindow()
-{
-	window = NULL;
-	EnumWindows(EnumWindowsCallback, NULL);
-	return window;
-}
+#define WINDOW_NAME "Ёкарный бобай"
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -38,7 +20,7 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 15.0f, 0);
 
-	ImGui_ImplWin32_Init(window);
+	ImGui_ImplWin32_Init(FindWindowA(NULL, WINDOW_NAME));
 	ImGui_ImplDX9_Init(pDevice);
 
 	theme = ImGui::GetStyle().Colors;
@@ -107,6 +89,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		ImGui::SameLine();
 		if (ImGui::Button("ESP", ImVec2(100, 30)))
 		{
+
 			settings::menu = 2;
 		}
 
@@ -190,20 +173,14 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 DWORD WINAPI MainThread(LPVOID lpReserved)
 {
-	bool attached = false;
-	do
+	HWND window = FindWindowA(NULL, WINDOW_NAME);
+	if ( (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success) and window)
 	{
-		if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success)
-		{
-			kiero::bind(42, (void**)&oEndScene, hkEndScene);
-			do
-				window = GetProcessWindow();
-			while (window == NULL);
-			oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
-			attached = true;
-		}
-	} while (!attached);
-	return TRUE;
+		// если окно найдено и kiero инициализирован
+		kiero::bind(42, (void**)&oEndScene, hkEndScene);
+		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+	}
+	return 1;
 }
 
 DWORD WINAPI FreezeThread(LPVOID lpReserved)
@@ -213,6 +190,7 @@ DWORD WINAPI FreezeThread(LPVOID lpReserved)
 	{
 		if (settings::airjump and GetAsyncKeyState(VK_SPACE))
 		{
+			break;
 			pointers::pAirJump = (float*)(memory::GetPointer(baseAddr + 0x9D56A8, { 0x888, 0x48, 0x418 }));
 			if (pointers::pAirJump)
 				*pointers::pAirJump = -1.f;
@@ -229,13 +207,11 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		DisableThreadLibraryCalls(hMod);
 		CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
 		CreateThread(nullptr, 0, FreezeThread, hMod, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		kiero::shutdown();
-
 		break;
 	}
 	return TRUE;
