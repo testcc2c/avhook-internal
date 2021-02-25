@@ -9,7 +9,18 @@ ImVec4* theme;
 
 DWORD baseAddr;
 
-#define WINDOW_NAME "Ёкарный бобай"
+#define WINDOW_NAME "Team Fortress 2"
+
+static const D3DRENDERSTATETYPE back_up[] =
+{
+        D3DRS_COLORWRITEENABLE,
+        D3DRS_SRGBWRITEENABLE,
+        D3DRS_ALPHABLENDENABLE,
+        D3DRS_SRCBLEND,
+        D3DRS_DESTBLEND,
+        D3DRS_BLENDOP,
+        D3DRS_FOGENABLE
+};
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -24,142 +35,191 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	ImGui_ImplDX9_Init(pDevice);
 
 	theme = ImGui::GetStyle().Colors;
-
-	theme[ImGuiCol_WindowBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
-	theme[ImGuiCol_Button] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_Tab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_SeparatorActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_Border] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_Text] = ImVec4(1.f, 1.f, 1.f, 1.f);
-	theme[ImGuiCol_ButtonActive] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
-	theme[ImGuiCol_ButtonHovered] = ImVec4(1.f, 0.4f, 0.4f, 1.f);
-	theme[ImGuiCol_CheckMark] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_TextSelectedBg] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_FrameBg] = ImVec4(0.31f, 0.31f, 0.31f, 1.f);
-	theme[ImGuiCol_FrameBgActive] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
-	theme[ImGuiCol_FrameBgHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.f);
-	theme[ImGuiCol_PopupBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
-	theme[ImGuiCol_ScrollbarBg] = ImVec4(1.f, 0.372f, 0.372f, 0.f);
-	theme[ImGuiCol_ScrollbarGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_SliderGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_SliderGrabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	theme[ImGuiCol_TabHovered] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
-	theme[ImGuiCol_TabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_WindowBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
+    theme[ImGuiCol_Button] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_Tab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_SeparatorActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_Border] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_Text] = ImVec4(1.f, 1.f, 1.f, 1.f);
+    theme[ImGuiCol_ButtonActive] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
+    theme[ImGuiCol_ButtonHovered] = ImVec4(1.f, 0.4f, 0.4f, 1.f);
+    theme[ImGuiCol_CheckMark] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_TextSelectedBg] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_FrameBg] = ImVec4(0.31f, 0.31f, 0.31f, 1.f);
+    theme[ImGuiCol_FrameBgActive] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
+    theme[ImGuiCol_FrameBgHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.f);
+    theme[ImGuiCol_PopupBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
+    theme[ImGuiCol_ScrollbarBg] = ImVec4(1.f, 0.372f, 0.372f, 0.f);
+    theme[ImGuiCol_ScrollbarGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_SliderGrab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_SliderGrabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
+    theme[ImGuiCol_TabHovered] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
+    theme[ImGuiCol_TabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 }
 
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 
-	if (!init)
-	{
-		InitImGui(pDevice);
-		init = true;
-		baseAddr = (DWORD)GetModuleHandle(NULL);
+    if (!init)
+    {
+        InitImGui(pDevice);
+        init = true;
+        baseAddr = (DWORD)GetModuleHandle(NULL);
 
-	}
-	if (GetAsyncKeyState(VK_INSERT) & 1)
-	{
-		
-		settings::isOpen = !settings::isOpen;
-		if (settings::isOpen)
-			PlaySound(L"sounds\\activated.wav", NULL, SND_ASYNC);
-		else
-			PlaySound(L"sounds\\deactivated.wav", NULL, SND_ASYNC);
-	}
-	
-	if (settings::isOpen)
-	{
+    }
+    if (GetAsyncKeyState(VK_INSERT) & 1)
+    {
 
-		ImGui_ImplDX9_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+        settings::isOpen = !settings::isOpen;
+    }
 
-		ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
-		ImGui::SetWindowSize(ImVec2(440, 250));
+    if (settings::isOpen)
+    {
 
-		ImGui::SameLine();
-		ImGui::Text("AVhook");
+        static const int size = sizeof back_up / sizeof DWORD;
 
-		if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
-		{
-			settings::menu = 1;
-		}
+        IDirect3DStateBlock9* state_block = nullptr;
 
-		ImGui::SameLine();
-		if (ImGui::Button("ESP", ImVec2(100, 30)))
-		{
+        DWORD old_block[size];
 
-			settings::menu = 2;
-		}
+        pDevice->CreateStateBlock(D3DSBT_ALL, &state_block);
 
-		ImGui::SameLine();
-		if (ImGui::Button("MISC", ImVec2(100, 30)))
-		{
-			settings::menu = 3;
-		}
+        for (int i = 0; i < size; i++)
+        {
+            pDevice->GetRenderState(back_up[i], &old_block[i]);
 
-		ImGui::SameLine();
-		if (ImGui::Button("MENU", ImVec2(100, 30)))
-		{
-			settings::menu = 4;
-		}
+        }
+        state_block->Capture();
 
-		if (settings::menu == 1) // aimbot sector
-		{
-			ImGui::Checkbox("Aimbot", &settings::aimbot);
-			ImGui::SameLine();
-			ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
-			ImGui::Checkbox("Silent", &settings::silent);
+        ImGui_ImplDX9_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
 
-		}
-		else if (settings::menu == 2) // esp sector
-		{
-			ImGui::Text("Coming soon....");
-		}
-		else if (settings::menu == 3) //misc sector
-		{
-			ImGui::Text("Misc configuration");
+        ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
+        ImGui::SetWindowSize(ImVec2(440, 250));
 
-			pointers::pPoints = NULL;
+        ImGui::SameLine();
+        ImGui::Text("AVhook");
 
-			ImGui::Checkbox("Air jump", &settings::airjump);
-			
-			// Points block
-			if (pointers::pPoints)
-				ImGui::InputInt("Points", pointers::pPoints);
-			else
-			{
-				ImGui::Text("Start game to edit points.");
-			}
-		}
-		else if (settings::menu == 4) // menu settings
-		{
-			ImGui::SetWindowSize(ImVec2(440, 350));
+        if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
+        {
+            settings::menu = 1;
+        }
 
-			ImGui::Text("Menu configuration");
-			ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-		}
-		else
-		{
-			ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
-		}
+        ImGui::SameLine();
+        if (ImGui::Button("ESP", ImVec2(100, 30)))
+        {
 
-		ImGui::End();
-		ImGui::EndFrame();
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+            settings::menu = 2;
+        }
 
-	}
-	return oEndScene(pDevice);
+        ImGui::SameLine();
+        if (ImGui::Button("MISC", ImVec2(100, 30)))
+        {
+            settings::menu = 3;
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("MENU", ImVec2(100, 30)))
+        {
+            settings::menu = 4;
+        }
+
+        if (settings::menu == 1) // aimbot sector
+        {
+            ImGui::Checkbox("Aimbot", &settings::aimbot);
+            ImGui::SameLine();
+            ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
+            ImGui::Checkbox("Silent", &settings::silent);
+
+        }
+        else if (settings::menu == 2) // esp sector
+        {
+            ImGui::Text("Coming soon....");
+        }
+        else if (settings::menu == 3) //misc sector
+        {
+            ImGui::Text("Misc configuration");
+
+            pointers::pPoints = NULL;
+
+            ImGui::Checkbox("Air jump", &settings::airjump);
+
+            // Points block
+            if (pointers::pPoints)
+                ImGui::InputInt("Points", pointers::pPoints);
+            else
+            {
+                ImGui::Text("Start game to edit points.");
+            }
+        }
+        else if (settings::menu == 4) // menu settings
+        {
+            ImGui::SetWindowSize(ImVec2(440, 350));
+
+            ImGui::Text("Menu configuration");
+            ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+        }
+        else
+        {
+            ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
+        }
+
+        ImGui::End();
+        ImGui::EndFrame();
+
+        D3DVIEWPORT9 view_port; pDevice->GetViewport(&view_port);
+
+        pDevice->SetVertexShader(nullptr);
+        pDevice->SetPixelShader(nullptr);
+
+        pDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+
+        pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+        pDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+        pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+        pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+        pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+        pDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+        pDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
+        pDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        pDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        pDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA);
+        pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        pDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
+        pDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
+        pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
+
+        pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
+
+        ImGui::Render();
+        ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
+        state_block->Apply();
+        state_block->Release();
+
+        for (int i = 0; i < size; i++)
+        {
+            pDevice->SetRenderState(back_up[i], old_block[i]);
+
+        }
+
+    }
+    return oEndScene(pDevice);
 }
 
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -171,7 +231,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 
-DWORD WINAPI MainThread(LPVOID lpReserved)
+DWORD WINAPI MainThread(HMODULE hModule)
 {
 	HWND window = FindWindowA(NULL, WINDOW_NAME);
 	if ( (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success) and window)
@@ -179,6 +239,10 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
 		// если окно найдено и kiero инициализирован
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+	}
+	else
+	{
+		FreeLibraryAndExitThread(hModule, 1);
 	}
 	return 1;
 }
@@ -202,16 +266,18 @@ DWORD WINAPI FreezeThread(LPVOID lpReserved)
 	return 0;
 }
 
-BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
-		CreateThread(nullptr, 0, FreezeThread, hMod, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
+		CreateThread(nullptr, 0, FreezeThread, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
+		kiero::unbind(42);
 		kiero::shutdown();
+
 		break;
 	}
 	return TRUE;
