@@ -1,5 +1,5 @@
 #include "includes.h"
-
+#include "memory.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -11,7 +11,7 @@ DWORD baseAddr;
 
 #define WINDOW_NAME "Team Fortress 2"
 
-static const D3DRENDERSTATETYPE back_up[] =
+const D3DRENDERSTATETYPE back_up[] =
 {
         D3DRS_COLORWRITEENABLE,
         D3DRS_SRGBWRITEENABLE,
@@ -60,12 +60,13 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
+    DX9ColorFix colorfix(pDevice);
 
     if (!init)
     {
         InitImGui(pDevice);
         init = true;
-        baseAddr = (DWORD)GetModuleHandle(NULL);
+        baseAddr = (DWORD)GetModuleHandle(L"client.dll");
 
     }
     if (GetAsyncKeyState(VK_INSERT) & 1)
@@ -77,26 +78,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     if (settings::isOpen)
     {
 
-        static const int size = sizeof back_up / sizeof DWORD;
-
-        IDirect3DStateBlock9* state_block = nullptr;
-
-        DWORD old_block[size];
-
-        pDevice->CreateStateBlock(D3DSBT_ALL, &state_block);
-
-        for (int i = 0; i < size; i++)
-        {
-            pDevice->GetRenderState(back_up[i], &old_block[i]);
-
-        }
-        state_block->Capture();
+        colorfix.RemoveColorFilter();
 
         ImGui_ImplDX9_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
+        ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowSize(ImVec2(440, 250));
 
         ImGui::SameLine();
@@ -108,7 +96,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
 
         ImGui::SameLine();
-        if (ImGui::Button("ESP", ImVec2(100, 30)))
+        if (ImGui::Button("VISUALS", ImVec2(100, 30)))
         {
 
             settings::menu = 2;
@@ -136,23 +124,21 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
-            ImGui::Text("Coming soon....");
+            __try
+            {
+                ImGui::SliderFloat("AFOV", (float*)(baseAddr + 0xC726E4), 0.f, 180.f);
+                
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+
+            }
+
         }
         else if (settings::menu == 3) //misc sector
         {
             ImGui::Text("Misc configuration");
 
-            pointers::pPoints = NULL;
-
-            ImGui::Checkbox("Air jump", &settings::airjump);
-
-            // Points block
-            if (pointers::pPoints)
-                ImGui::InputInt("Points", pointers::pPoints);
-            else
-            {
-                ImGui::Text("Start game to edit points.");
-            }
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -173,50 +159,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
         }
-
         ImGui::End();
         ImGui::EndFrame();
-
-        D3DVIEWPORT9 view_port; pDevice->GetViewport(&view_port);
-
-        pDevice->SetVertexShader(nullptr);
-        pDevice->SetPixelShader(nullptr);
-
-        pDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
-
-        pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-        pDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
-        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-        pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-        pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-        pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
-        pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-        pDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-        pDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
-        pDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, TRUE);
-        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-        pDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
-        pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        pDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA);
-        pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-        pDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
-        pDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
-        pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
-
-        pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
-
+        colorfix.RestoreRenderState();
         ImGui::Render();
         ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-        state_block->Apply();
-        state_block->Release();
-
-        for (int i = 0; i < size; i++)
-        {
-            pDevice->SetRenderState(back_up[i], old_block[i]);
-
-        }
+        colorfix.RestoreColorFilter();
 
     }
     return oEndScene(pDevice);
@@ -239,32 +188,27 @@ DWORD WINAPI MainThread(HMODULE hModule)
 		// если окно найдено и kiero инициализирован
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+
+        while ( !GetAsyncKeyState(VK_END))
+        {
+            Sleep(1);
+        }
+        settings::isOpen = false;
+
+        ImGui_ImplWin32_Shutdown();
+        ImGui_ImplDX9_Shutdown();
+        ImGui::DestroyContext();
+
+        SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+
+        kiero::unbind(41);
+        kiero::shutdown();
+
+        FreeLibraryAndExitThread(hModule, NULL);
 	}
-	else
-	{
-		FreeLibraryAndExitThread(hModule, 1);
-	}
-	return 1;
+	return NULL;
 }
 
-DWORD WINAPI FreezeThread(LPVOID lpReserved)
-{
-	DWORD baseAddr = (DWORD)GetModuleHandle(NULL);
-	while (true)
-	{
-		if (settings::airjump and GetAsyncKeyState(VK_SPACE))
-		{
-			break;
-			pointers::pAirJump = (float*)(memory::GetPointer(baseAddr + 0x9D56A8, { 0x888, 0x48, 0x418 }));
-			if (pointers::pAirJump)
-				*pointers::pAirJump = -1.f;
-
-		}
-		Sleep(100);
-
-	}
-	return 0;
-}
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -272,13 +216,9 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
-		CreateThread(nullptr, 0, FreezeThread, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
-		kiero::unbind(42);
-		kiero::shutdown();
-
-		break;
+        break;
 	}
 	return TRUE;
 }

@@ -10,11 +10,12 @@ namespace settings
 	// aimbot sector
 	bool aimbot;
 	bool silent;
-	static const char* hitboxes[] = {"Head", "Body", "Legs"};
-	static int selectedhitbox;
-
+	const char* hitboxes[] = {"Head", "Body", "Legs"};
+	int selectedhitbox;
+	
 	// misc sector
-	static bool bhop;
-	static bool thirdperson;
-	static bool airjump;
+	bool bhop;
+	bool thirdperson;
+	bool airjump;
+	
 }

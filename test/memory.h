@@ -1,8 +1,19 @@
 #pragma once
 #include <Windows.h>
-#include <vector>
 
-namespace memory
+namespace mem
 {
-	DWORD GetPointer(DWORD base, std::vector<DWORD> offsets);
+	template <typename T>
+	T* ReadVirtualMemory(DWORD addr)
+	{
+		__try
+		{
+			return (T*)(addr);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return nullptr;
+		}
+	}
+
 }

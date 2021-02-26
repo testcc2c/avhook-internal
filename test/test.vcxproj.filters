@@ -34,6 +34,9 @@
     <Filter Include="Меню\настройки">
       <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Меню\dx цветокор">
+      <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -99,6 +102,9 @@
     <ClInclude Include="settings.h">
       <Filter>Меню\настройки</Filter>
     </ClInclude>
+    <ClInclude Include="DX9ColorFix.h">
+      <Filter>Меню\dx цветокор</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -140,11 +146,11 @@
     <ClCompile Include="kiero\minhook\src\trampoline.c">
       <Filter>Меню\kiero</Filter>
     </ClCompile>
-    <ClCompile Include="memory.cpp">
-      <Filter>Работа с памятью\memory</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="DX9ColorFix.cpp">
+      <Filter>Меню\dx цветокор</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
