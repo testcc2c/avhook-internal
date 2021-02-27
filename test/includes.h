@@ -11,5 +11,7 @@
 #include "memory.h"
 #include "pointers.h"
 #include "DX9ColorFix.h"
+#include "bhop.h"
+
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);

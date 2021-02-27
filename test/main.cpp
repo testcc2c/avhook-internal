@@ -9,7 +9,7 @@ ImVec4* theme;
 
 DWORD baseAddr;
 
-#define WINDOW_NAME "Team Fortress 2"
+#define WINDOW_NAME "Counter-Strike: Global Offensive"
 
 const D3DRENDERSTATETYPE back_up[] =
 {
@@ -91,28 +91,19 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::Text("AVhook");
 
         if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
-        {
             settings::menu = 1;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("VISUALS", ImVec2(100, 30)))
-        {
-
             settings::menu = 2;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("MISC", ImVec2(100, 30)))
-        {
             settings::menu = 3;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("MENU", ImVec2(100, 30)))
-        {
             settings::menu = 4;
-        }
 
         if (settings::menu == 1) // aimbot sector
         {
@@ -138,6 +129,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         else if (settings::menu == 3) //misc sector
         {
             ImGui::Text("Misc configuration");
+            ImGui::Checkbox("Bunny hop", &settings::bhop);
 
         }
         else if (settings::menu == 4) // menu settings
@@ -157,7 +149,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else
         {
-            ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
+            HW_PROFILE_INFO hwProfileInfo;
+            GetCurrentHwProfile(&hwProfileInfo);
+
+            ImGui::Text("Welcome back!\nHWID: %s\nAlpha build: v0.0.5", hwProfileInfo.szHwProfileGuid);
         }
         ImGui::End();
         ImGui::EndFrame();
@@ -171,6 +166,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     return oEndScene(pDevice);
 }
 
+
+
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	if (true && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
@@ -183,11 +180,15 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 DWORD WINAPI MainThread(HMODULE hModule)
 {
 	HWND window = FindWindowA(NULL, WINDOW_NAME);
-	if ( (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success) and window)
+	if (window)
 	{
+
+        kiero::init(kiero::RenderType::D3D9);
 		// если окно найдено и kiero инициализирован
+
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+        settings::attach = true;
 
         while ( !GetAsyncKeyState(VK_END))
         {
@@ -203,12 +204,23 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         kiero::unbind(41);
         kiero::shutdown();
-
-        FreeLibraryAndExitThread(hModule, NULL);
+        settings::attach = false;
+        Sleep(1000);
+        
 	}
-	return NULL;
+    FreeLibraryAndExitThread(hModule, NULL);
 }
 
+DWORD WINAPI Bhop(HMODULE hModule)
+{
+    while (settings::attach)
+    {
+        if (settings::bhop)
+            HandleBhop(baseAddr);
+    }
+    ExitThread(NULL);
+
+}
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -216,6 +228,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;

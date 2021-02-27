@@ -37,6 +37,12 @@
     <Filter Include="Меню\dx цветокор">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Взлом">
+      <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Взлом\Bunny Hop">
+      <UniqueIdentifier>{13a40bf1-e8cd-4b76-865d-091271903df6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -105,6 +111,12 @@
     <ClInclude Include="DX9ColorFix.h">
       <Filter>Меню\dx цветокор</Filter>
     </ClInclude>
+    <ClInclude Include="offsets.h">
+      <Filter>Взлом</Filter>
+    </ClInclude>
+    <ClInclude Include="bhop.h">
+      <Filter>Взлом\Bunny Hop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -151,6 +163,9 @@
     </ClCompile>
     <ClCompile Include="DX9ColorFix.cpp">
       <Filter>Меню\dx цветокор</Filter>
+    </ClCompile>
+    <ClCompile Include="bhop.cpp">
+      <Filter>Взлом\Bunny Hop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
