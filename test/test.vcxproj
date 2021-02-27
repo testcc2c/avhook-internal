@@ -169,7 +169,6 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="offsets.h" />
-    <ClInclude Include="pointers.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>
   <ItemGroup>
