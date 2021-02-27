@@ -2,8 +2,9 @@
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-EndScene oEndScene = NULL;
+EndScene oEndScene;
 WNDPROC oWndProc;
+
 ImVec4* theme;
 
 DWORD baseAddr;
@@ -55,6 +56,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
         InitImGui(pDevice);
         init = true;
+
         baseAddr = (DWORD)GetModuleHandle(L"client.dll");
 
     }
@@ -104,16 +106,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
-            __try
-            {
-                ImGui::SliderFloat("AFOV", (float*)(baseAddr + 0xC726E4), 0.f, 180.f);
-                
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER)
-            {
-
-            }
-
+            ImGui::Checkbox("Glow Wh", &settings::GlowWh);
+            ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -173,9 +167,8 @@ DWORD WINAPI MainThread(HMODULE hModule)
 	{
 
         kiero::init(kiero::RenderType::D3D9);
-		// если окно найдено и kiero инициализирован
-
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
+
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
 
@@ -183,14 +176,17 @@ DWORD WINAPI MainThread(HMODULE hModule)
         {
             Sleep(1);
         }
-        settings::isOpen = false;
 
+        //remove imgui
+        settings::isOpen = false;
         ImGui_ImplWin32_Shutdown();
         ImGui_ImplDX9_Shutdown();
         ImGui::DestroyContext();
 
+        //unhook wndproc
         SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
+        //unhook kiero
         kiero::unbind(41);
         kiero::shutdown();
 
@@ -214,6 +210,20 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 }
 
+DWORD WINAPI InGameGlowWH(HMODULE hModule)
+{
+    while (settings::attach)
+    {
+
+        if (settings::GlowWh)
+            HandleGlow(baseAddr, settings::EnemyGlowColor);
+            
+    }
+    ExitThread(TRUE);
+
+}
+
+
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
@@ -221,7 +231,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
-
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;

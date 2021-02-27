@@ -14,8 +14,9 @@
 #include "settings.h"
 #include "memory.h"
 #include "DX9ColorFix.h"
-#include "bhop.h"
 
+#include "bhop.h"
+#include "GlowWhInGame.h"
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);

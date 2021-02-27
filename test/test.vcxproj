@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="bhop.h" />
     <ClInclude Include="DX9ColorFix.h" />
+    <ClInclude Include="GlowWhInGame.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="bhop.cpp" />
     <ClCompile Include="DX9ColorFix.cpp" />
+    <ClCompile Include="GlowWhInGame.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
