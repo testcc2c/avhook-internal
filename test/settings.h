@@ -6,7 +6,7 @@ namespace settings
 	short int menu;
 	bool isOpen;
 	bool init;
-
+	bool attach = true;
 	// aimbot sector
 	bool aimbot;
 	bool silent;
