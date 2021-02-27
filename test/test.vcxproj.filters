@@ -40,6 +40,9 @@
     <Filter Include="Взлом\Bunny Hop">
       <UniqueIdentifier>{13a40bf1-e8cd-4b76-865d-091271903df6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Взлом\Glow WH in Game">
+      <UniqueIdentifier>{437f29c6-11fb-447f-bc62-3186abb1c611}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="bhop.h">
       <Filter>Взлом\Bunny Hop</Filter>
     </ClInclude>
+    <ClInclude Include="GlowWhInGame.h">
+      <Filter>Взлом\Glow WH in Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="bhop.cpp">
       <Filter>Взлом\Bunny Hop</Filter>
+    </ClCompile>
+    <ClCompile Include="GlowWhInGame.cpp">
+      <Filter>Взлом\Glow WH in Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

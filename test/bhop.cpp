@@ -12,20 +12,12 @@ public:
 
 void HandleBhop(DWORD baseAddr)
 {
-    __try
-    {
-        DWORD LocalPlayer = *mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwLocalPlayer);
+        DWORD LocalPlayer = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwLocalPlayer);
 
-        if (*mem::ReadVirtualMemory<DWORD>(LocalPlayer + netvars::m_fFlags) > 256 and GetAsyncKeyState(VK_SPACE))
+        if (mem::ReadVirtualMemory<DWORD>(LocalPlayer + netvars::m_fFlags) > 256 and GetAsyncKeyState(VK_SPACE))
         {
             mem::WriteVirtualMemory<int>(baseAddr + signatures::dwForceJump, 5);
             Sleep(10);
             mem::WriteVirtualMemory<int>(baseAddr + signatures::dwForceJump, 4);
         }
-
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-
-    }
 }
