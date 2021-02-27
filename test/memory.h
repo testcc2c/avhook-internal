@@ -16,4 +16,17 @@ namespace mem
 		}
 	}
 
+	template <typename T>
+	void WriteVirtualMemory(DWORD addr, T value)
+	{
+		__try
+		{
+			*(T*)(addr) = value;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			
+		}
+	}
+
 }

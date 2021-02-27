@@ -1,5 +1,4 @@
 #include "includes.h"
-#include "memory.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -11,16 +10,6 @@ DWORD baseAddr;
 
 #define WINDOW_NAME "Counter-Strike: Global Offensive"
 
-const D3DRENDERSTATETYPE back_up[] =
-{
-        D3DRS_COLORWRITEENABLE,
-        D3DRS_SRGBWRITEENABLE,
-        D3DRS_ALPHABLENDENABLE,
-        D3DRS_SRCBLEND,
-        D3DRS_DESTBLEND,
-        D3DRS_BLENDOP,
-        D3DRS_FOGENABLE
-};
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -204,6 +193,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         kiero::unbind(41);
         kiero::shutdown();
+
         settings::attach = false;
         Sleep(1000);
         
@@ -215,10 +205,12 @@ DWORD WINAPI Bhop(HMODULE hModule)
 {
     while (settings::attach)
     {
+        
         if (settings::bhop)
             HandleBhop(baseAddr);
+
     }
-    ExitThread(NULL);
+    ExitThread(TRUE);
 
 }
 
@@ -229,6 +221,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
+
 		break;
 	case DLL_PROCESS_DETACH:
         break;

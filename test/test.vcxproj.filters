@@ -19,9 +19,6 @@
     <Filter Include="Работа с памятью\memory">
       <UniqueIdentifier>{e5811d9c-1eb9-4b95-9b60-993c12575bb8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Работа с памятью\указатели">
-      <UniqueIdentifier>{a36a1ba4-292f-4e97-9fb0-f1399f0b9f11}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Меню">
       <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
     </Filter>
@@ -101,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="pointers.h">
-      <Filter>Работа с памятью\указатели</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
       <Filter>Меню\настройки</Filter>
