@@ -229,7 +229,6 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
             
     }
     return 0;
-
 }
 
 
