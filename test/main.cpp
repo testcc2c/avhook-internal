@@ -136,10 +136,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else
         {
-            HW_PROFILE_INFO hwProfileInfo;
-            GetCurrentHwProfile(&hwProfileInfo);
 
-            ImGui::Text("Welcome back!\nHWID: %s\nAlpha build: v0.0.5", hwProfileInfo.szHwProfileGuid);
+            ImGui::Text("Welcome back!\nAlpha build: v0.0.6");
         }
         ImGui::End();
         ImGui::EndFrame();
