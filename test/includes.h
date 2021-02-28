@@ -12,7 +12,6 @@
 #include "imgui/imgui_impl_dx9.h"
 
 #include "settings.h"
-#include "memory.h"
 #include "DX9ColorFix.h"
 
 #include "bhop.h"
