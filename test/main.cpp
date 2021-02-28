@@ -182,32 +182,14 @@ DWORD WINAPI MainThread(HMODULE hModule)
         {
             Sleep(1);
         }
-
-        //remove imgui
-        settings::isOpen = false;
-        ImGui_ImplWin32_Shutdown();
-        ImGui_ImplDX9_Shutdown();
-        ImGui::DestroyContext();
-
-        //unhook wndproc
-        SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
-
-        //unhook kiero
-        kiero::unbind(41);
-        kiero::shutdown();
-
-        settings::attach = false;
-        Sleep(1000);
         
 	}
-    FreeLibraryAndExitThread(hModule, NULL);
-
     return NULL;
 }
 
 DWORD WINAPI Bhop(HMODULE hModule)
 {
-    while (settings::attach)
+    while (true)
     {
         
         if (settings::bhop)
@@ -219,7 +201,7 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
-    while (settings::attach)
+    while (true)
     {
 
         if (settings::GlowWh)
