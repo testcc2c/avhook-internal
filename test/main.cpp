@@ -108,9 +108,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Text("Team %d", localPlayer->m_iDefaultFOV);
+            if (localPlayer != nullptr)
+                ImGui::Text("Team %d", localPlayer->m_iDefaultFOV);
 
-            ImGui::Checkbox("Glow Wh", &settings::GlowWh);
+            ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
             ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
@@ -118,7 +119,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Misc configuration");
             ImGui::Checkbox("Bunny hop", &settings::bhop);
 
-            ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 0, 120);
+            if (localPlayer != nullptr)
+                ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 0, 150);
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -202,6 +204,8 @@ DWORD WINAPI MainThread(HMODULE hModule)
         
 	}
     FreeLibraryAndExitThread(hModule, NULL);
+
+    return NULL;
 }
 
 DWORD WINAPI Bhop(HMODULE hModule)
@@ -213,8 +217,7 @@ DWORD WINAPI Bhop(HMODULE hModule)
             HandleBhop(baseAddr);
 
     }
-    ExitThread(TRUE);
-
+    return 0;
 }
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
@@ -226,7 +229,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
             HandleGlow(baseAddr, settings::EnemyGlowColor);
             
     }
-    ExitThread(TRUE);
+    return 0;
 
 }
 
@@ -235,6 +238,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
+
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);

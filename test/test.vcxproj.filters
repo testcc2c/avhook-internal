@@ -16,9 +16,6 @@
     <Filter Include="Работа с памятью">
       <UniqueIdentifier>{83f8c3ef-1e11-4d14-a5a7-26b2bae1952e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Работа с памятью\memory">
-      <UniqueIdentifier>{e5811d9c-1eb9-4b95-9b60-993c12575bb8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Меню">
       <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
     </Filter>
@@ -99,9 +96,6 @@
     <ClInclude Include="kiero\minhook\include\MinHook.h">
       <Filter>Меню\kiero</Filter>
     </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Работа с памятью\memory</Filter>
-    </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -121,6 +115,9 @@
       <Filter>Взлом\Glow WH in Game</Filter>
     </ClInclude>
     <ClInclude Include="CBaseEntity.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientBase.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>

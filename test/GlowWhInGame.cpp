@@ -2,29 +2,37 @@
 
 void HandleGlow(DWORD baseAddr, ImVec4 color)
 {
-	
-	DWORD glowObject = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwGlowObjectManager);
-	DWORD pLocalPlayer = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwLocalPlayer);
-
-	for (short int i = 0; i < 64; i++)
+	__try
 	{
-		DWORD pEntity = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwEntityList + i * 0x10);
+		DWORD glowObject = *(DWORD*)(baseAddr + signatures::dwGlowObjectManager);
 
-		if (pEntity and pLocalPlayer)
+		CBaseEntity* LocalPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
+		for (short int i = 0; i < 64; i++)
 		{
-			CBaseEntity* LocalPlayer = (CBaseEntity*)pLocalPlayer;
-			CBaseEntity* Entity = (CBaseEntity*)pEntity;
-			int glowindex = mem::ReadVirtualMemory<int>(pEntity + netvars::m_iGlowIndex);
-
-			if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
+			CBaseEntity* Entity = *(CBaseEntity**)(baseAddr + signatures::dwEntityList + i * 0x10);
+			__try
 			{
-				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38)  + 0x4), color.x);
-				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8), color.y);
-				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC), color.z);
-				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10), color.w);
+				if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
+				{
+					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = color.x;
+					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = color.y;
+					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = color.z;
+					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = color.w;
+
+				}
+
+				*(bool*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x24)) = true;
+				*(bool*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x25)) = false;
+
 			}
-			mem::WriteVirtualMemory<bool>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x24), true);
-			mem::WriteVirtualMemory<bool>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x25), false);
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+
+			}
 		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+
 	}
 }
