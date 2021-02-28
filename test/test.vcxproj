@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +149,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bhop.h" />
+    <ClInclude Include="CBaseEntity.h" />
+    <ClInclude Include="ClientBase.h" />
     <ClInclude Include="DX9ColorFix.h" />
+    <ClInclude Include="GlowWhInGame.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -166,12 +172,13 @@
     <ClInclude Include="kiero\minhook\src\hde\table32.h" />
     <ClInclude Include="kiero\minhook\src\hde\table64.h" />
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
-    <ClInclude Include="memory.h" />
-    <ClInclude Include="pointers.h" />
+    <ClInclude Include="offsets.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bhop.cpp" />
     <ClCompile Include="DX9ColorFix.cpp" />
+    <ClCompile Include="GlowWhInGame.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />

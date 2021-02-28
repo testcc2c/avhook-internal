@@ -16,12 +16,6 @@
     <Filter Include="Работа с памятью">
       <UniqueIdentifier>{83f8c3ef-1e11-4d14-a5a7-26b2bae1952e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Работа с памятью\memory">
-      <UniqueIdentifier>{e5811d9c-1eb9-4b95-9b60-993c12575bb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Работа с памятью\указатели">
-      <UniqueIdentifier>{a36a1ba4-292f-4e97-9fb0-f1399f0b9f11}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Меню">
       <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
     </Filter>
@@ -36,6 +30,18 @@
     </Filter>
     <Filter Include="Меню\dx цветокор">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Взлом">
+      <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Взлом\Bunny Hop">
+      <UniqueIdentifier>{13a40bf1-e8cd-4b76-865d-091271903df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Взлом\Glow WH in Game">
+      <UniqueIdentifier>{437f29c6-11fb-447f-bc62-3186abb1c611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Работа с памятью\SDK">
+      <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,20 +96,29 @@
     <ClInclude Include="kiero\minhook\include\MinHook.h">
       <Filter>Меню\kiero</Filter>
     </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Работа с памятью\memory</Filter>
-    </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="pointers.h">
-      <Filter>Работа с памятью\указатели</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
       <Filter>Меню\настройки</Filter>
     </ClInclude>
     <ClInclude Include="DX9ColorFix.h">
       <Filter>Меню\dx цветокор</Filter>
+    </ClInclude>
+    <ClInclude Include="offsets.h">
+      <Filter>Взлом</Filter>
+    </ClInclude>
+    <ClInclude Include="bhop.h">
+      <Filter>Взлом\Bunny Hop</Filter>
+    </ClInclude>
+    <ClInclude Include="GlowWhInGame.h">
+      <Filter>Взлом\Glow WH in Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseEntity.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientBase.h">
+      <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="DX9ColorFix.cpp">
       <Filter>Меню\dx цветокор</Filter>
+    </ClCompile>
+    <ClCompile Include="bhop.cpp">
+      <Filter>Взлом\Bunny Hop</Filter>
+    </ClCompile>
+    <ClCompile Include="GlowWhInGame.cpp">
+      <Filter>Взлом\Glow WH in Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,26 +1,16 @@
 #include "includes.h"
-#include "memory.h"
-
+#include "CBaseEntity.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-EndScene oEndScene = NULL;
+EndScene oEndScene;
 WNDPROC oWndProc;
+
 ImVec4* theme;
 
 DWORD baseAddr;
 
-#define WINDOW_NAME "Team Fortress 2"
+#define WINDOW_NAME "Counter-Strike: Global Offensive"
 
-const D3DRENDERSTATETYPE back_up[] =
-{
-        D3DRS_COLORWRITEENABLE,
-        D3DRS_SRGBWRITEENABLE,
-        D3DRS_ALPHABLENDENABLE,
-        D3DRS_SRCBLEND,
-        D3DRS_DESTBLEND,
-        D3DRS_BLENDOP,
-        D3DRS_FOGENABLE
-};
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -66,8 +56,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
         InitImGui(pDevice);
         init = true;
-        baseAddr = (DWORD)GetModuleHandle(L"client.dll");
-
     }
     if (GetAsyncKeyState(VK_INSERT) & 1)
     {
@@ -77,6 +65,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
+        CBaseEntity* localPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
 
         colorfix.RemoveColorFilter();
 
@@ -90,33 +79,26 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::SameLine();
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
-        {
+        if (ImGui::Button("ATAS", ImVec2(100, 30)))
             settings::menu = 1;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("VISUALS", ImVec2(100, 30)))
-        {
-
             settings::menu = 2;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("MISC", ImVec2(100, 30)))
-        {
             settings::menu = 3;
-        }
 
         ImGui::SameLine();
         if (ImGui::Button("MENU", ImVec2(100, 30)))
-        {
             settings::menu = 4;
-        }
 
         if (settings::menu == 1) // aimbot sector
         {
-            ImGui::Checkbox("Aimbot", &settings::aimbot);
+            ImGui::Text("Automatic Target Acquisition System");
+
+            ImGui::Checkbox("Status", &settings::aimbot);
             ImGui::SameLine();
             ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
             ImGui::Checkbox("Silent", &settings::silent);
@@ -124,21 +106,18 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
-            __try
-            {
-                ImGui::SliderFloat("AFOV", (float*)(baseAddr + 0xC726E4), 0.f, 180.f);
-                
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER)
-            {
+            ImGui::Text("Extra Sensory Perception");
 
-            }
-
+            ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
+            ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
             ImGui::Text("Misc configuration");
+            ImGui::Checkbox("Bunny hop", &settings::bhop);
 
+            if (localPlayer != nullptr)
+                ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 0, 150);
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -157,11 +136,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else
         {
-            ImGui::Text("Welcome back AV!\nAlpha build: v0.0.5");
+
+            ImGui::Text("Welcome back!\nAlpha build: v0.0.6");
         }
         ImGui::End();
         ImGui::EndFrame();
+
         colorfix.RestoreRenderState();
+
         ImGui::Render();
         ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
@@ -170,6 +152,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     }
     return oEndScene(pDevice);
 }
+
+
 
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
@@ -183,30 +167,66 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 DWORD WINAPI MainThread(HMODULE hModule)
 {
 	HWND window = FindWindowA(NULL, WINDOW_NAME);
-	if ( (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success) and window)
+	if (window)
 	{
-		// если окно найдено и kiero инициализирован
+
+        kiero::init(kiero::RenderType::D3D9);
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
+
+        baseAddr = (DWORD)GetModuleHandle(L"client.dll");
+
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+        settings::attach = true;
 
         while ( !GetAsyncKeyState(VK_END))
         {
             Sleep(1);
         }
-        settings::isOpen = false;
 
+        //remove imgui
+        settings::isOpen = false;
         ImGui_ImplWin32_Shutdown();
         ImGui_ImplDX9_Shutdown();
         ImGui::DestroyContext();
 
+        //unhook wndproc
         SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
+        //unhook kiero
         kiero::unbind(41);
         kiero::shutdown();
 
-        FreeLibraryAndExitThread(hModule, NULL);
+        settings::attach = false;
+        Sleep(1000);
+        
 	}
-	return NULL;
+    FreeLibraryAndExitThread(hModule, NULL);
+
+    return NULL;
+}
+
+DWORD WINAPI Bhop(HMODULE hModule)
+{
+    while (settings::attach)
+    {
+        
+        if (settings::bhop)
+            HandleBhop(baseAddr);
+
+    }
+    return 0;
+}
+
+DWORD WINAPI InGameGlowWH(HMODULE hModule)
+{
+    while (settings::attach)
+    {
+
+        if (settings::GlowWh)
+            HandleGlow(baseAddr, settings::EnemyGlowColor);
+            
+    }
+    return 0;
 }
 
 
@@ -214,8 +234,11 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
+
 	case DLL_PROCESS_ATTACH:
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;
