@@ -143,7 +143,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         ImGui::End();
         ImGui::EndFrame();
+
         colorfix.RestoreRenderState();
+
         ImGui::Render();
         ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
