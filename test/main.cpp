@@ -108,9 +108,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            if (localPlayer != nullptr)
-                ImGui::Text("Team %d", localPlayer->m_iDefaultFOV);
-
             ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
             ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
