@@ -43,6 +43,9 @@
     <Filter Include="Взлом\Glow WH in Game">
       <UniqueIdentifier>{437f29c6-11fb-447f-bc62-3186abb1c611}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\SDK">
+      <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -116,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="GlowWhInGame.h">
       <Filter>Взлом\Glow WH in Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseEntity.h">
+      <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 #include "includes.h"
-
+#include "CBaseEntity.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -56,9 +56,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
         InitImGui(pDevice);
         init = true;
-
-        baseAddr = (DWORD)GetModuleHandle(L"client.dll");
-
     }
     if (GetAsyncKeyState(VK_INSERT) & 1)
     {
@@ -68,6 +65,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
+        CBaseEntity* localPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
 
         colorfix.RemoveColorFilter();
 
@@ -81,7 +79,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::SameLine();
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("AIMBOT", ImVec2(100, 30)))
+        if (ImGui::Button("ATAS", ImVec2(100, 30)))
             settings::menu = 1;
 
         ImGui::SameLine();
@@ -98,7 +96,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
         if (settings::menu == 1) // aimbot sector
         {
-            ImGui::Checkbox("Aimbot", &settings::aimbot);
+            ImGui::Text("Automatic Target Acquisition System");
+
+            ImGui::Checkbox("Status", &settings::aimbot);
             ImGui::SameLine();
             ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
             ImGui::Checkbox("Silent", &settings::silent);
@@ -106,6 +106,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
+            ImGui::Text("Extra Sensory Perception");
+
+            ImGui::Text("Team %d", localPlayer->m_iDefaultFOV);
+
             ImGui::Checkbox("Glow Wh", &settings::GlowWh);
             ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
@@ -114,6 +118,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Misc configuration");
             ImGui::Checkbox("Bunny hop", &settings::bhop);
 
+            ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 0, 120);
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -168,6 +173,8 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         kiero::init(kiero::RenderType::D3D9);
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
+
+        baseAddr = (DWORD)GetModuleHandle(L"client.dll");
 
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
