@@ -1,32 +1,30 @@
 #include "GlowWhInGame.h"
 
-
 void HandleGlow(DWORD baseAddr, ImVec4 color)
 {
 	
 	DWORD glowObject = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwGlowObjectManager);
-	DWORD LocalPlayer = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwLocalPlayer);
+	DWORD pLocalPlayer = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwLocalPlayer);
 
 	for (short int i = 0; i < 64; i++)
 	{
-		DWORD entity = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwEntityList + i * 0x10);
+		DWORD pEntity = mem::ReadVirtualMemory<DWORD>(baseAddr + signatures::dwEntityList + i * 0x10);
 
-		if (entity)
+		if (pEntity and pLocalPlayer)
 		{
-			int glowindex = mem::ReadVirtualMemory<int>(entity + netvars::m_iGlowIndex);
-			int enemyteam = mem::ReadVirtualMemory<int>(entity + netvars::m_iTeamNum);
+			CBaseEntity* LocalPlayer = (CBaseEntity*)pLocalPlayer;
+			CBaseEntity* Entity = (CBaseEntity*)pEntity;
+			int glowindex = mem::ReadVirtualMemory<int>(pEntity + netvars::m_iGlowIndex);
 
-			int localPlayerTeam = mem::ReadVirtualMemory<int>(LocalPlayer + netvars::m_iTeamNum);
-
-			if (enemyteam != localPlayerTeam)
+			if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
 			{
-				mem::WriteVirtualMemory<float>(glowObject + ((glowindex * 0x38)  + 0x4), color.x);
-				mem::WriteVirtualMemory<float>(glowObject + ((glowindex * 0x38) + 0x8), color.y);
-				mem::WriteVirtualMemory<float>(glowObject + ((glowindex * 0x38) + 0xC), color.z);
-				mem::WriteVirtualMemory<float>(glowObject + ((glowindex * 0x38) + 0x10), color.w);
+				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38)  + 0x4), color.x);
+				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8), color.y);
+				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC), color.z);
+				mem::WriteVirtualMemory<float>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10), color.w);
 			}
-			mem::WriteVirtualMemory<bool>(glowObject + ((glowindex * 0x38) + 0x24), true);
-			mem::WriteVirtualMemory<bool>(glowObject + ((glowindex * 0x38) + 0x25), false);
+			mem::WriteVirtualMemory<bool>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x24), true);
+			mem::WriteVirtualMemory<bool>(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x25), false);
 		}
 	}
 }
