@@ -78,7 +78,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::SameLine();
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("ATAS", ImVec2(100, 30)))
+        if (ImGui::Button("AIM", ImVec2(100, 30)))
             settings::menu = 1;
 
         ImGui::SameLine();
@@ -139,6 +139,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
             ImGui::Text("Welcome back!\nAlpha build: v0.0.6");
         }
+
         ImGui::End();
         ImGui::EndFrame();
 
@@ -180,8 +181,25 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         while ( !GetAsyncKeyState(VK_END))
         {
-            Sleep(1);
+            Sleep(100);
         }
+
+        //remove imgui
+        settings::isOpen = false;
+
+        ImGui_ImplWin32_Shutdown();
+        ImGui_ImplDX9_Shutdown();
+        ImGui::DestroyContext();
+
+        //unhook wndproc
+        SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+
+        //unhook kiero
+        kiero::unbind(41);
+        kiero::shutdown();
+
+        settings::attach = false;
+        Sleep(1000);
         
 	}
     return NULL;
@@ -189,11 +207,16 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
 DWORD WINAPI Bhop(HMODULE hModule)
 {
-    while (true)
+    BunnyHop bhop = BunnyHop();
+    while (settings::attach)
     {
         
         if (settings::bhop)
-            HandleBhop(baseAddr);
+            bhop.HandleBhop();
+        
+        else
+            Sleep(500);
+        
 
     }
     return 0;
@@ -201,11 +224,16 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
-    while (true)
+    while (settings::attach)
     {
 
         if (settings::GlowWh)
-            HandleGlow(baseAddr, settings::EnemyGlowColor, settings::FriedndlyGlowColor);
+        {
+            esp.HandleGlow(settings::EnemyGlowColor, settings::FriedndlyGlowColor);
+            Sleep(1);
+        }
+        else
+            Sleep(500);
             
     }
     return 0;
