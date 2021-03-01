@@ -43,6 +43,9 @@
     <Filter Include="Работа с памятью\SDK">
       <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\SDK\Vec3">
+      <UniqueIdentifier>{f8f6d68d-3ef0-48d8-9e78-5a09295669fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -120,6 +123,12 @@
     <ClInclude Include="ClientBase.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="EngineBase.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ve3.h">
+      <Filter>Работа с памятью\SDK\Vec3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -172,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="GlowWhInGame.cpp">
       <Filter>Взлом\Glow WH in Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Ve3.cpp">
+      <Filter>Работа с памятью\SDK\Vec3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

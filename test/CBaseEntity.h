@@ -1,6 +1,6 @@
 #pragma once
 #include "offsets.h"
-
+#include "Ve3.h"
 class CBaseEntity
 {
 public:
@@ -12,5 +12,7 @@ public:
 		DEFINE_MEMBER_N(int, m_iDefaultFOV, netvars::m_iDefaultFOV);
 		DEFINE_MEMBER_N(int, m_ArmorValue, netvars::m_ArmorValue);
 		DEFINE_MEMBER_N(int, m_iGlowIndex, netvars::m_iGlowIndex);
+		DEFINE_MEMBER_N(Ve3, m_vecViewOffset, netvars::m_vecViewOffset);
+
 	};
 };

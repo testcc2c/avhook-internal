@@ -1,5 +1,5 @@
 #include "includes.h"
-#include "CBaseEntity.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -50,8 +50,6 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
-    DX9ColorFix colorfix(pDevice);
-
     if (!init)
     {
         InitImGui(pDevice);
@@ -65,6 +63,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
+        DX9ColorFix colorfix(pDevice);
         CBaseEntity* localPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
 
         colorfix.RemoveColorFilter();
@@ -109,7 +108,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Extra Sensory Perception");
 
             ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
-            ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -205,7 +205,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
     {
 
         if (settings::GlowWh)
-            HandleGlow(baseAddr, settings::EnemyGlowColor);
+            HandleGlow(baseAddr, settings::EnemyGlowColor, settings::FriedndlyGlowColor);
             
     }
     return 0;
