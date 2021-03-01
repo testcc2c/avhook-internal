@@ -17,5 +17,7 @@
 #include "bhop.h"
 #include "GlowWhInGame.h"
 
+#include "CBaseEntity.h"
+
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
