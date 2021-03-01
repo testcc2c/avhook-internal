@@ -46,6 +46,9 @@
     <Filter Include="Работа с памятью\SDK\Vec3">
       <UniqueIdentifier>{f8f6d68d-3ef0-48d8-9e78-5a09295669fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Взлом\Abstract class">
+      <UniqueIdentifier>{b1dc7488-a061-4d86-bee2-0aae40abc5ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -129,6 +132,9 @@
     <ClInclude Include="Ve3.h">
       <Filter>Работа с памятью\SDK\Vec3</Filter>
     </ClInclude>
+    <ClInclude Include="hack.h">
+      <Filter>Взлом\Abstract class</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="Ve3.cpp">
       <Filter>Работа с памятью\SDK\Vec3</Filter>
+    </ClCompile>
+    <ClCompile Include="hack.cpp">
+      <Filter>Взлом\Abstract class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,12 @@
 #pragma once
-#include <Windows.h>
+#include "hack.h"
 #include "offsets.h"
 #include "imgui/imgui.h"
 #include "CBaseEntity.h"
 
-void HandleGlow(DWORD baseAddr, ImVec4 enemyColor, ImVec4 friendlyColor);
+class InGameGlowEsp : public Hack
+{
+public:
+	void HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor);
+
+};
