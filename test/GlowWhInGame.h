@@ -4,4 +4,4 @@
 #include "imgui/imgui.h"
 #include "CBaseEntity.h"
 
-void HandleGlow(DWORD baseAddr, ImVec4 color);
+void HandleGlow(DWORD baseAddr, ImVec4 enemyColor, ImVec4 friendlyColor);
