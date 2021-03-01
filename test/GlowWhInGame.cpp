@@ -1,15 +1,16 @@
 #include "GlowWhInGame.h"
 
-void HandleGlow(DWORD baseAddr, ImVec4 enemyColor, ImVec4 friendlyColor)
+
+void InGameGlowEsp::HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor)
 {
 	__try
 	{
-		DWORD glowObject = *(DWORD*)(baseAddr + signatures::dwGlowObjectManager);
+		DWORD glowObject = *(DWORD*)(this->clientbase + signatures::dwGlowObjectManager);
 
-		CBaseEntity* LocalPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
+		CBaseEntity* LocalPlayer = *(CBaseEntity**)(this->clientbase + signatures::dwLocalPlayer);
 		for (short int i = 0; i < 64; i++)
 		{
-			CBaseEntity* Entity = *(CBaseEntity**)(baseAddr + signatures::dwEntityList + i * 0x10);
+			CBaseEntity* Entity = *(CBaseEntity**)(this->clientbase + signatures::dwEntityList + i * 0x10);
 			__try
 			{
 				if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)

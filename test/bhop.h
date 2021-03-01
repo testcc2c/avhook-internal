@@ -1,7 +1,13 @@
 #pragma once
-#include <Windows.h>
+#include "hack.h"
 #include "offsets.h"
 #include "CBaseEntity.h"
 #include "ClientBase.h"
 
-void HandleBhop(DWORD baseAddr);
+class BunnyHop : public Hack
+{
+public:
+	void HandleBhop();
+private:
+
+};

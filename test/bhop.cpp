@@ -1,11 +1,11 @@
 #include "bhop.h"
 
-void HandleBhop(DWORD baseAddr)
+void BunnyHop::HandleBhop()
 {
     __try
     {
-        CBaseEntity* LocalPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
-        ClientBase* client = (ClientBase*)(baseAddr);
+        CBaseEntity* LocalPlayer = *(CBaseEntity**)(this->clientbase + signatures::dwLocalPlayer);
+        ClientBase* client = (ClientBase*)(this->clientbase);
 
         if (LocalPlayer->m_fFlags > 256 and GetAsyncKeyState(VK_SPACE))
         {
