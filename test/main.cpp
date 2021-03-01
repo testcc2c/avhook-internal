@@ -181,7 +181,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         while ( !GetAsyncKeyState(VK_END))
         {
-            Sleep(100);
+            Sleep(500);
         }
 
         //remove imgui
