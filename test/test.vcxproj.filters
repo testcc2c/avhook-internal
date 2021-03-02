@@ -129,11 +129,11 @@
     <ClInclude Include="EngineBase.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Ve3.h">
-      <Filter>Работа с памятью\SDK\Vec3</Filter>
-    </ClInclude>
     <ClInclude Include="hack.h">
       <Filter>Взлом\Abstract class</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Работа с памятью\SDK\Vec3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,11 +188,11 @@
     <ClCompile Include="GlowWhInGame.cpp">
       <Filter>Взлом\Glow WH in Game</Filter>
     </ClCompile>
-    <ClCompile Include="Ve3.cpp">
-      <Filter>Работа с памятью\SDK\Vec3</Filter>
-    </ClCompile>
     <ClCompile Include="hack.cpp">
       <Filter>Взлом\Abstract class</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec3.cpp">
+      <Filter>Работа с памятью\SDK\Vec3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
