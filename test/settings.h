@@ -20,6 +20,13 @@ namespace settings
 	ImVec4 EnemyGlowColor = ImVec4(1.f, 0.f, 0.f, 1.f);
 	ImVec4 FriedndlyGlowColor = ImVec4(0.f, 1.f, 0.f, 1.f);
 
+	// trigger bot
+	namespace trigger_bot
+	{
+		bool on;
+		bool scope_only;
+	}
+
 	// misc sector
 	bool bhop;
 	bool thirdperson;

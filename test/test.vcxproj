@@ -176,6 +176,7 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +198,7 @@
     <ClCompile Include="kiero\minhook\src\hook.c" />
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TriggerBot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="kiero\minhook\dll_resources\MinHook.def" />
