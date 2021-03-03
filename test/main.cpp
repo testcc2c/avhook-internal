@@ -136,8 +136,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else
         {
+            __try
+            {
+                Vector3 pos = localPlayer->get_origin();
+                
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
 
-            ImGui::Text("Welcome back!\nAlpha build: v0.0.6");
+            }
         }
 
         ImGui::End();
