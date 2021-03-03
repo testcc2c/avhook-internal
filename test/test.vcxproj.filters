@@ -191,9 +191,6 @@
     <ClCompile Include="hack.cpp">
       <Filter>Взлом\Abstract class</Filter>
     </ClCompile>
-    <ClCompile Include="Vec3.cpp">
-      <Filter>Работа с памятью\SDK\Vec3</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kiero\minhook\dll_resources\MinHook.def">
