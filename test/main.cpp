@@ -73,13 +73,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::NewFrame();
 
         ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-        ImGui::SetWindowSize(ImVec2(440, 250));
+        ImGui::SetWindowSize(ImVec2(550, 250));
 
         ImGui::SameLine();
         ImGui::Text("AVhook");
 
         if (ImGui::Button("AIM", ImVec2(100, 30)))
             settings::menu = 1;
+
+        ImGui::SameLine();
+        if (ImGui::Button("TRIGGER", ImVec2(100, 30)))
+            settings::menu = 5;
 
         ImGui::SameLine();
         if (ImGui::Button("VISUALS", ImVec2(100, 30)))
@@ -134,17 +138,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
         }
+
+        else if (settings::menu == 5) // trigger
+        {
+            ImGui::Text("Trigger bot.");
+            ImGui::Checkbox("Handle", &settings::trigger_bot::on);
+            ImGui::Checkbox("Sniper scope only", &settings::trigger_bot::scope_only);
+        }
+
         else
         {
-            __try
-            {
-                Vector3 pos = localPlayer->get_origin();
-                
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER)
-            {
-
-            }
+            ImGui::Text("Welcome!");
         }
 
         ImGui::End();
@@ -246,6 +250,19 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
     return 0;
 }
 
+DWORD WINAPI Trigger(HMODULE hModule)
+{
+    TriggerBot triggerbot;
+
+    while (settings::attach)
+    {
+        if (settings::trigger_bot::on and GetAsyncKeyState(VK_XBUTTON1))
+            triggerbot.Handle();
+        else
+            Sleep(100);
+    }
+    return 0;
+}
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -256,6 +273,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;

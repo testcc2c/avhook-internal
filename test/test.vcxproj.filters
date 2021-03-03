@@ -49,6 +49,9 @@
     <Filter Include="Взлом\Abstract class">
       <UniqueIdentifier>{b1dc7488-a061-4d86-bee2-0aae40abc5ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Взлом\Trigger bot">
+      <UniqueIdentifier>{6fa0f419-b44c-4c3b-b9d3-c0f763c3c958}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -135,6 +138,9 @@
     <ClInclude Include="Vec3.h">
       <Filter>Работа с памятью\SDK\Vec3</Filter>
     </ClInclude>
+    <ClInclude Include="TriggerBot.h">
+      <Filter>Взлом\Trigger bot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -190,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="hack.cpp">
       <Filter>Взлом\Abstract class</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerBot.cpp">
+      <Filter>Взлом\Trigger bot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
