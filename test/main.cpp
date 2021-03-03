@@ -143,7 +143,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Trigger bot.");
             ImGui::Checkbox("Handle", &settings::trigger_bot::on);
-            ImGui::Checkbox("Sniper scope only", &settings::trigger_bot::scope_only);
         }
 
         else
