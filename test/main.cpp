@@ -111,9 +111,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
-            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
-            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::Checkbox("Glow whall hack", &settings::glowWh::on);
+            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::glowWh::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::glowWh::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -237,9 +237,9 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
     while (settings::attach)
     {
 
-        if (settings::GlowWh)
+        if (settings::glowWh::on)
         {
-            esp.HandleGlow(settings::EnemyGlowColor, settings::FriedndlyGlowColor);
+            esp.HandleGlow(settings::glowWh::EnemyGlowColor, settings::glowWh::FriedndlyGlowColor);
             Sleep(1);
         }
         else
