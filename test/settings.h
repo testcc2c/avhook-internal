@@ -28,6 +28,13 @@ namespace settings
 		bool scope_only;
 	}
 
+	// trigger bot
+	namespace trigger_bot
+	{
+		bool on;
+		bool scope_only;
+	}
+
 	// misc sector
 	bool bhop;
 	bool thirdperson;

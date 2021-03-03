@@ -111,9 +111,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Checkbox("Glow whall hack", &settings::glowWh::on);
-            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::glowWh::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
-            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::glowWh::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
+            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -143,14 +143,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Trigger bot.");
             ImGui::Checkbox("Handle", &settings::trigger_bot::on);
+            ImGui::Checkbox("Sniper scope only", &settings::trigger_bot::scope_only);
         }
 
         else
         {
             ImGui::Text("Welcome!");
-            Vec3 x;
-
-            x = localPlayer->m_vecOrigin;
         }
 
         ImGui::End();
@@ -215,6 +213,8 @@ DWORD WINAPI MainThread(HMODULE hModule)
         Sleep(1000);
         
 	}
+    FreeLibraryAndExitThread(hModule, NULL);
+
     return NULL;
 }
 
@@ -237,12 +237,14 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
+    InGameGlowEsp esp = InGameGlowEsp();
+
     while (settings::attach)
     {
 
-        if (settings::glowWh::on)
+        if (settings::GlowWh)
         {
-            esp.HandleGlow(settings::glowWh::EnemyGlowColor, settings::glowWh::FriedndlyGlowColor);
+            esp.HandleGlow(settings::EnemyGlowColor, settings::FriedndlyGlowColor);
             Sleep(1);
         }
         else
