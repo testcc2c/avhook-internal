@@ -237,6 +237,8 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
+    InGameGlowEsp esp = InGameGlowEsp();
+
     while (settings::attach)
     {
 
