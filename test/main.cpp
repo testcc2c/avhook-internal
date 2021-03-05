@@ -1,5 +1,5 @@
 #include "includes.h"
-#include "CBaseEntity.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -50,8 +50,6 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
-    DX9ColorFix colorfix(pDevice);
-
     if (!init)
     {
         InitImGui(pDevice);
@@ -65,6 +63,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
+        DX9ColorFix colorfix(pDevice);
         CBaseEntity* localPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
 
         colorfix.RemoveColorFilter();
@@ -74,13 +73,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::NewFrame();
 
         ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-        ImGui::SetWindowSize(ImVec2(440, 250));
+        ImGui::SetWindowSize(ImVec2(550, 250));
 
         ImGui::SameLine();
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("ATAS", ImVec2(100, 30)))
+        if (ImGui::Button("AIM", ImVec2(100, 30)))
             settings::menu = 1;
+
+        ImGui::SameLine();
+        if (ImGui::Button("TRIGGER", ImVec2(100, 30)))
+            settings::menu = 5;
 
         ImGui::SameLine();
         if (ImGui::Button("VISUALS", ImVec2(100, 30)))
@@ -108,8 +111,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Checkbox("Glow whall hack", &settings::GlowWh);
-            ImGui::ColorEdit4("Enemy color", (float*)&settings::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::Checkbox("Glow whall hack", &settings::glowWh::on);
+            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::glowWh::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::glowWh::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -134,11 +138,21 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
         }
+
+        else if (settings::menu == 5) // trigger
+        {
+            ImGui::Text("Trigger bot.");
+            ImGui::Checkbox("Handle", &settings::trigger_bot::on);
+        }
+
         else
         {
+            ImGui::Text("Welcome!");
+            Vec3 x;
 
-            ImGui::Text("Welcome back!\nAlpha build: v0.0.6");
+            x = localPlayer->m_vecOrigin;
         }
+
         ImGui::End();
         ImGui::EndFrame();
 
@@ -180,20 +194,44 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         while ( !GetAsyncKeyState(VK_END))
         {
-            Sleep(1);
+            Sleep(500);
         }
+
+        //remove imgui
+        settings::isOpen = false;
+
+        ImGui_ImplWin32_Shutdown();
+        ImGui_ImplDX9_Shutdown();
+        ImGui::DestroyContext();
+
+        //unhook wndproc
+        SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+
+        //unhook kiero
+        kiero::unbind(41);
+        kiero::shutdown();
+
+        settings::attach = false;
+        Sleep(1000);
         
 	}
+    FreeLibraryAndExitThread(hModule, NULL);
+
     return NULL;
 }
 
 DWORD WINAPI Bhop(HMODULE hModule)
 {
-    while (true)
+    BunnyHop bhop = BunnyHop();
+    while (settings::attach)
     {
         
         if (settings::bhop)
-            HandleBhop(baseAddr);
+            bhop.HandleBhop();
+        
+        else
+            Sleep(500);
+        
 
     }
     return 0;
@@ -201,16 +239,36 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
-    while (true)
+    InGameGlowEsp esp = InGameGlowEsp();
+
+    while (settings::attach)
     {
 
-        if (settings::GlowWh)
-            HandleGlow(baseAddr, settings::EnemyGlowColor);
+        if (settings::glowWh::on)
+        {
+            esp.HandleGlow(settings::glowWh::EnemyGlowColor, settings::glowWh::FriedndlyGlowColor);
+            Sleep(1);
+        }
+        else
+            Sleep(500);
             
     }
     return 0;
 }
 
+DWORD WINAPI Trigger(HMODULE hModule)
+{
+    TriggerBot triggerbot;
+
+    while (settings::attach)
+    {
+        if (settings::trigger_bot::on and GetAsyncKeyState(VK_XBUTTON1))
+            triggerbot.Handle();
+        else
+            Sleep(100);
+    }
+    return 0;
+}
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -221,6 +279,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;

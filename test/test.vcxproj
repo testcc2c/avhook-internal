@@ -153,7 +153,9 @@
     <ClInclude Include="CBaseEntity.h" />
     <ClInclude Include="ClientBase.h" />
     <ClInclude Include="DX9ColorFix.h" />
+    <ClInclude Include="EngineBase.h" />
     <ClInclude Include="GlowWhInGame.h" />
+    <ClInclude Include="hack.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -174,11 +176,14 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="TriggerBot.h" />
+    <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bhop.cpp" />
     <ClCompile Include="DX9ColorFix.cpp" />
     <ClCompile Include="GlowWhInGame.cpp" />
+    <ClCompile Include="hack.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -193,6 +198,7 @@
     <ClCompile Include="kiero\minhook\src\hook.c" />
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TriggerBot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="kiero\minhook\dll_resources\MinHook.def" />
