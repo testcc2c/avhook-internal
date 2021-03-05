@@ -148,6 +148,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         else
         {
             ImGui::Text("Welcome!");
+            Vec3 x;
+
+            x = localPlayer->m_vecOrigin;
         }
 
         ImGui::End();
