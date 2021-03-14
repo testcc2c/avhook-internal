@@ -3,10 +3,14 @@
 #include "offsets.h"
 #include "imgui/imgui.h"
 #include "CBaseEntity.h"
+#include "settings.h"
 
 class InGameGlowEsp : public Hack
 {
 public:
-	void HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor);
+	InGameGlowEsp(int* mode);
 
+	void HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor);
+private:
+	int* mode;
 };

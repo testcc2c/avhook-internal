@@ -43,9 +43,6 @@
     <Filter Include="Работа с памятью\SDK">
       <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Работа с памятью\SDK\Vec3">
-      <UniqueIdentifier>{f8f6d68d-3ef0-48d8-9e78-5a09295669fc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Взлом\Abstract class">
       <UniqueIdentifier>{b1dc7488-a061-4d86-bee2-0aae40abc5ed}</UniqueIdentifier>
     </Filter>
@@ -135,11 +132,14 @@
     <ClInclude Include="hack.h">
       <Filter>Взлом\Abstract class</Filter>
     </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Работа с памятью\SDK\Vec3</Filter>
-    </ClInclude>
     <ClInclude Include="TriggerBot.h">
       <Filter>Взлом\Trigger bot</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="viewmatrix.h">
+      <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

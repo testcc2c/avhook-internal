@@ -13,9 +13,8 @@ void TriggerBot::Handle()
 
 		ClientBase* client = (ClientBase*)clientbase;
 
-		client->dwForceAttack = 5;
-		Sleep(10);
-		client->dwForceAttack = 4;
+		client->dwForceAttack = 6;
+		Sleep(50);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{

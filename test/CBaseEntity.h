@@ -6,11 +6,6 @@ class CBaseEntity
 {
 public:
 
-	Vector3& get_origin()
-	{
-		return *reinterpret_cast<Vector3*>(reinterpret_cast<uintptr_t>(this) + 0x138);
-	}
-
 	union 
 	{
 		DEFINE_MEMBER_N(int, m_iTeamNum, netvars::m_iTeamNum);

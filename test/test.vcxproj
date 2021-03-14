@@ -178,6 +178,7 @@
     <ClInclude Include="settings.h" />
     <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="viewmatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bhop.cpp" />

@@ -1,6 +1,11 @@
 #include "GlowWhInGame.h"
 
 
+InGameGlowEsp::InGameGlowEsp(int* mode) : Hack()
+{
+	this->mode = mode;
+}
+
 void InGameGlowEsp::HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor)
 {
 	__try
@@ -8,25 +13,59 @@ void InGameGlowEsp::HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor)
 		DWORD glowObject = *(DWORD*)(this->clientbase + signatures::dwGlowObjectManager);
 
 		CBaseEntity* LocalPlayer = *(CBaseEntity**)(this->clientbase + signatures::dwLocalPlayer);
-		for (short int i = 0; i < 64; i++)
+		for (short int i = 0; i < 32; i++)
 		{
 			CBaseEntity* Entity = *(CBaseEntity**)(this->clientbase + signatures::dwEntityList + i * 0x10);
 			__try
 			{
-				if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
+				if (!*this->mode)
 				{
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = enemyColor.x;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = enemyColor.y;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = enemyColor.z;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = enemyColor.w;
+					if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
+					{
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = enemyColor.x;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = enemyColor.y;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = enemyColor.z;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = enemyColor.w;
 
+					}
+					else
+					{
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = friendlyColor.x;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = friendlyColor.y;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = friendlyColor.z;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = friendlyColor.w;
+					}
 				}
 				else
 				{
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = friendlyColor.x;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = friendlyColor.y;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = friendlyColor.z;
-					*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = friendlyColor.w;
+					if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
+					{
+						if (45 > Entity->m_iHealth)
+						{
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = 1.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = 0.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = 0.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = 1.f;
+
+						}
+						else if (60 > Entity->m_iHealth)
+						{
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = 1.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = 1.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = 0.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = 1.f;
+
+						}
+						else if (Entity->m_iHealth > 60)
+						{
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = 0.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = 1.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = 0.f;
+							*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = 1.f;
+
+						}
+
+					}
 				}
 
 				*(bool*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x24)) = true;

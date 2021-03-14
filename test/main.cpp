@@ -111,9 +111,11 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Checkbox("Glow whall hack", &settings::glowWh::on);
-            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::glowWh::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
-            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::glowWh::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::Checkbox("Endabled", &settings::inGameWallHack::on);
+            ImGui::SameLine();
+            ImGui::Combo("Draw mode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
+            ImGui::ColorEdit4("Enemy glow color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Friendly glow color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -146,11 +148,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
 
         else
-        {
+        {;
+            // Vec3* pos = (Vec3*)(baseAddr + 0x4D945A0);
             ImGui::Text("Welcome!");
-            Vec3 x;
 
-            x = localPlayer->m_vecOrigin;
         }
 
         ImGui::End();
@@ -239,19 +240,18 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
-    InGameGlowEsp esp = InGameGlowEsp();
+    InGameGlowEsp esp = InGameGlowEsp(&settings::inGameWallHack::selected_glow_mode);
 
     while (settings::attach)
     {
 
-        if (settings::glowWh::on)
+        if (settings::inGameWallHack::on)
         {
-            esp.HandleGlow(settings::glowWh::EnemyGlowColor, settings::glowWh::FriedndlyGlowColor);
+            esp.HandleGlow(settings::inGameWallHack::EnemyGlowColor, settings::inGameWallHack::FriedndlyGlowColor);
             Sleep(1);
+
+            continue;
         }
-        else
-            Sleep(500);
-            
     }
     return 0;
 }
