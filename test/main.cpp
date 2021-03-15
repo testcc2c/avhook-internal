@@ -64,8 +64,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
             GetWindowRect(window, &rect);
 
-            int width = rect.right - rect.left -6;
-            int height = rect.bottom - rect.top - 29;
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
 
             CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
             CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
@@ -148,13 +148,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
             ImGui::Text("Glow ESP");
-            ImGui::Checkbox("Handle", &settings::inGameWallHack::on);
+            ImGui::Checkbox("Handle glow", &settings::inGameWallHack::on);
             ImGui::SameLine();
             ImGui::Combo("Draw mode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
             ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
             ImGui::Text("Snap Lines");
-            ImGui::Checkbox("HandleP", &settings::SnapLinesESP::on);
+            ImGui::Checkbox("Handle lines", &settings::SnapLinesESP::on);
             ImGui::ColorEdit4("Snap lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
 
         }
