@@ -1,16 +1,31 @@
 #include "includes.h"
+#include "viewmatrix.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 EndScene oEndScene;
 WNDPROC oWndProc;
-
 ImVec4* theme;
-
 DWORD baseAddr;
-
 #define WINDOW_NAME "Counter-Strike: Global Offensive"
 
+Vec3 WorldToScreen(const Vec3 pos, viewmatrix matrix)
+{
+    float _x = matrix[0][0] * pos.x + matrix[0][1] * pos.y + matrix[0][2] * pos.z + matrix[0][3];
+    float _y = matrix[1][0] * pos.x + matrix[1][1] * pos.y + matrix[1][2] * pos.z + matrix[1][3];
+    float w = matrix[3][0] * pos.x + matrix[3][1] * pos.y + matrix[3][2] * pos.z + matrix[3][3];
+
+    float inv_w = 1.f / w;
+    _x *= inv_w;
+    _y *= inv_w;
+
+    float x = 640 * .5f;
+    float y = 480 * .5f;
+
+    x += 0.5f * _x * 640 + 0.5f;
+    y -= 0.5f * _y * 480 + 0.5f;
+
+    return Vec3(x, y, w);
+}
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -50,6 +65,26 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
+
+    for (short int i = 1; i < 32; i++)
+    {
+        __try
+        {
+            DirectX9Drawer draw = DirectX9Drawer(pDevice);
+            ClientBase* client = (ClientBase*)baseAddr;
+            CBaseEntity* Entity = *(CBaseEntity**)(baseAddr + signatures::dwEntityList + i * 0x10);
+            Vec3 pos = Entity->m_vecOrigin;
+            Vec3 screen = WorldToScreen(pos, client->dwViewmatrix);
+            if (screen.z > 0 and Entity->m_iHealth > 0)
+                draw.DrawLine(320, 480, screen.x, screen.y, 2, D3DCOLOR_RGBA(255, 0, 0, 255));
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+
+        }
+
+    }
+
     if (!init)
     {
         InitImGui(pDevice);
@@ -111,7 +146,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Extra Sensory Perception");
 
-            ImGui::Checkbox("Endabled", &settings::inGameWallHack::on);
+            ImGui::Checkbox("Glow", &settings::inGameWallHack::on);
             ImGui::SameLine();
             ImGui::Combo("Draw mode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
             ImGui::ColorEdit4("Enemy glow color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
@@ -193,10 +228,37 @@ DWORD WINAPI MainThread(HMODULE hModule)
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
 
+        AllocConsole();
+        FILE* f;
+        freopen_s(&f, "CONOUT$", "w", stdout);
+        CBaseEntity* localPlayer = *(CBaseEntity**)(baseAddr + signatures::dwLocalPlayer);
+        ClientBase* client = (ClientBase*)baseAddr;
         while ( !GetAsyncKeyState(VK_END))
         {
+            system("cls");
+            for (short int i = 1; i < 32; i++)
+            {
+                __try
+                {
+
+                    CBaseEntity* Entity = *(CBaseEntity**)(baseAddr + signatures::dwEntityList + i * 0x10);
+                    Vec3 pos = Entity->m_vecOrigin;
+                    pos.z += 64.062561024;
+                    Vec3 screen = WorldToScreen(pos, client->dwViewmatrix);
+                    std::cout << screen.x << " " << screen.y << " " << screen.z <<"\n";
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                {
+
+                }
+
+            }
+
             Sleep(500);
         }
+
+        fclose(f);
+        FreeConsole();
 
         //remove imgui
         settings::isOpen = false;

@@ -28,9 +28,6 @@
     <Filter Include="Меню\настройки">
       <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Меню\dx цветокор">
-      <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Взлом">
       <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="Взлом\Trigger bot">
       <UniqueIdentifier>{6fa0f419-b44c-4c3b-b9d3-c0f763c3c958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Меню\DirectX">
+      <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +109,7 @@
       <Filter>Меню\настройки</Filter>
     </ClInclude>
     <ClInclude Include="DX9ColorFix.h">
-      <Filter>Меню\dx цветокор</Filter>
+      <Filter>Меню\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="offsets.h">
       <Filter>Взлом</Filter>
@@ -140,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="viewmatrix.h">
       <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9Drawer.h">
+      <Filter>Меню\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -186,7 +189,7 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="DX9ColorFix.cpp">
-      <Filter>Меню\dx цветокор</Filter>
+      <Filter>Меню\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="bhop.cpp">
       <Filter>Взлом\Bunny Hop</Filter>
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="TriggerBot.cpp">
       <Filter>Взлом\Trigger bot</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX9Drawer.cpp">
+      <Filter>Меню\DirectX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
