@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui/imgui.h"
 
+
 namespace settings
 {
 	// menu
@@ -23,12 +24,16 @@ namespace settings
 		static const char* glowmode[] = {"Seted Color", "Health"};
 		static int selected_glow_mode;
 	}
+	namespace SnapLinesESP
+	{
+		static bool on;
+		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+	}
 
 	// trigger bot
 	namespace trigger_bot
 	{
 		static bool on;
-		static bool scope_only;
 	}
 
 

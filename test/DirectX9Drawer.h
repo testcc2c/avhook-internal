@@ -10,6 +10,7 @@ class DirectX9Drawer
 public:
 	DirectX9Drawer(LPDIRECT3DDEVICE9 pDevice);
 	void DrawLine(int x1, int y1, int x2, int y2, int thickness, D3DCOLOR color);
+	void DrawFilledRect(int x, int y, int w, int h, D3DCOLOR color);
 
 private:
 	LPDIRECT3DDEVICE9 pDevice;
