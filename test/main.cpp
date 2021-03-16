@@ -86,7 +86,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             Vec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
 
             if (screen.z > 0 and Entity->m_iHealth > 0 and Entity->m_iTeamNum != localPlayer->m_iTeamNum)
-                draw.DrawLine(width / 2, height, screen.x, screen.y, 2, D3DCOLOR_RGBA(
+                draw.DrawLine(width / 2, height, (int)screen.x, (int)screen.y, settings::SnapLinesESP::thicnes, D3DCOLOR_RGBA(
                     (int)(settings::SnapLinesESP::Color.x * 255),
                     (int)(settings::SnapLinesESP::Color.y * 255),
                     (int)(settings::SnapLinesESP::Color.z * 255),
@@ -170,9 +170,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Snap Lines");
             ImGui::Checkbox("Handle lines", &settings::SnapLinesESP::on);
             ImGui::SameLine();
-            ImGui::Combo("End point", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
+            ImGui::Combo("Point", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
             ImGui::ColorEdit4("Snap lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
-
+            ImGui::SameLine();
+            ImGui::InputInt("", &settings::SnapLinesESP::thicnes);
         }
         else if (settings::menu == 3) //misc sector
         {
