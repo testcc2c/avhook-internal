@@ -85,7 +85,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             }
             Vec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
 
-            if (screen.z > 0 and Entity->m_iHealth > 0 and Entity->m_iTeamNum != localPlayer->m_iTeamNum)
+            if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum)
                 draw.DrawLine(width / 2, height, (int)screen.x, (int)screen.y, settings::SnapLinesESP::thicnes, D3DCOLOR_RGBA(
                     (int)(settings::SnapLinesESP::Color.x * 255),
                     (int)(settings::SnapLinesESP::Color.y * 255),
@@ -124,7 +124,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowSize(ImVec2(550, 250));
 
-        ImGui::SameLine();
         ImGui::Text("AVhook");
 
         if (ImGui::Button("AIM", ImVec2(100, 30)))
@@ -158,6 +157,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
+            ImGui::SetWindowSize(ImVec2(550, 350));
+
             ImGui::Text("Extra Sensory Perception");
 
             ImGui::Text("Glow ESP");
