@@ -28,6 +28,9 @@ namespace settings
 	{
 		static bool on;
 		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static const char* Bones[] = { "Head", "Body", "Legs" };
+
+		int selectedBoneId;
 	}
 
 	// trigger bot

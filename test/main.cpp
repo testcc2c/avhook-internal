@@ -70,7 +70,19 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
             CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
 
-            Vec3 pos = Entity->m_vecOrigin;
+            Vec3 pos;
+            switch (settings::SnapLinesESP::selectedBoneId)
+            {
+            case 0:
+                pos = Entity->GetBonePosition(8);
+                break;
+            case 1:
+                pos = Entity->GetBonePosition(6);
+                break;
+            case 2:
+                pos = Entity->m_vecOrigin;
+                break;
+            }
             Vec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
 
             if (screen.z > 0 and Entity->m_iHealth > 0 and Entity->m_iTeamNum != localPlayer->m_iTeamNum)
@@ -147,14 +159,18 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         else if (settings::menu == 2) // esp sector
         {
             ImGui::Text("Extra Sensory Perception");
+
             ImGui::Text("Glow ESP");
             ImGui::Checkbox("Handle glow", &settings::inGameWallHack::on);
             ImGui::SameLine();
             ImGui::Combo("Draw mode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
             ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+
             ImGui::Text("Snap Lines");
             ImGui::Checkbox("Handle lines", &settings::SnapLinesESP::on);
+            ImGui::SameLine();
+            ImGui::Combo("End point", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
             ImGui::ColorEdit4("Snap lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
 
         }
@@ -291,8 +307,6 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
         {
             esp.HandleGlow(settings::inGameWallHack::EnemyGlowColor, settings::inGameWallHack::FriedndlyGlowColor);
             Sleep(1);
-
-            continue;
         }
     }
     return 0;

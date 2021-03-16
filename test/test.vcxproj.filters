@@ -49,6 +49,12 @@
     <Filter Include="Меню\DirectX">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\SDK\CBaseEntity">
+      <UniqueIdentifier>{942dcf71-8979-4e37-917a-750e732dfde4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Работа с памятью\SDK\ClientBase">
+      <UniqueIdentifier>{2b042b2d-c88e-4ac5-a14e-34e0c04824fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -120,15 +126,6 @@
     <ClInclude Include="GlowWhInGame.h">
       <Filter>Взлом\Glow WH in Game</Filter>
     </ClInclude>
-    <ClInclude Include="CBaseEntity.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientBase.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBase.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="hack.h">
       <Filter>Взлом\Abstract class</Filter>
     </ClInclude>
@@ -143,6 +140,15 @@
     </ClInclude>
     <ClInclude Include="DirectX9Drawer.h">
       <Filter>Меню\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseEntity.h">
+      <Filter>Работа с памятью\SDK\CBaseEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientBase.h">
+      <Filter>Работа с памятью\SDK\ClientBase</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineBase.h">
+      <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="DirectX9Drawer.cpp">
       <Filter>Меню\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="CBaseEntity.cpp">
+      <Filter>Работа с памятью\SDK\CBaseEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientBase.cpp">
+      <Filter>Работа с памятью\SDK\ClientBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

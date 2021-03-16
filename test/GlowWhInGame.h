@@ -3,7 +3,6 @@
 #include "offsets.h"
 #include "imgui/imgui.h"
 #include "CBaseEntity.h"
-#include "settings.h"
 
 class InGameGlowEsp : public Hack
 {

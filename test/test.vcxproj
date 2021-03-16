@@ -185,6 +185,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bhop.cpp" />
+    <ClCompile Include="CBaseEntity.cpp" />
+    <ClCompile Include="ClientBase.cpp" />
     <ClCompile Include="DirectX9Drawer.cpp" />
     <ClCompile Include="DX9ColorFix.cpp" />
     <ClCompile Include="GlowWhInGame.cpp" />
