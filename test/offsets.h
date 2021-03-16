@@ -6,6 +6,11 @@
 #define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
 #define DEFINE_MEMBER_N(type, name, offset) struct {unsigned char MAKE_PAD(offset); type name;}
 
+
+#define BONE_HEAD 8
+#define BONE_BODY 6
+
+
 namespace netvars {
 	constexpr DWORD cs_gamerules_data = 0x0;
 	constexpr DWORD m_ArmorValue = 0xB378;
