@@ -84,13 +84,25 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 break;
             }
             Vec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
+            Vec2 start = Vec2(width / 2, height);
 
             if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum)
-                draw.DrawLine(width / 2, height, (int)screen.x, (int)screen.y, settings::SnapLinesESP::thicnes, D3DCOLOR_RGBA(
+            {
+                draw.DrawLine(start, screen, settings::SnapLinesESP::thicnes, D3DCOLOR_RGBA(
                     (int)(settings::SnapLinesESP::Color.x * 255),
                     (int)(settings::SnapLinesESP::Color.y * 255),
                     (int)(settings::SnapLinesESP::Color.z * 255),
                     (int)(settings::SnapLinesESP::Color.w * 255)));
+                Vec3 playerOrigin = client->WorldToScreen(width, height, Entity->m_vecOrigin, client->dwViewmatrix);
+                pos.z += 7.5;
+                Vec3 playerhead = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
+                
+                draw.DrawEmptyRect(playerOrigin, playerhead, 3, D3DCOLOR_RGBA(
+                    (int)(settings::SnapLinesESP::Color.x * 255),
+                    (int)(settings::SnapLinesESP::Color.y * 255),
+                    (int)(settings::SnapLinesESP::Color.z * 255),
+                    (int)(settings::SnapLinesESP::Color.w * 255)));
+            }
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {

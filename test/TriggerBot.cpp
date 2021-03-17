@@ -13,10 +13,8 @@ void TriggerBot::Handle()
 
 		ClientBase* client = (ClientBase*)clientbase;
 
-		localplayer->AimAt(entity, 8);
-
-		//client->dwForceAttack = 6;
-		Sleep(1);
+		client->dwForceAttack = 6;
+		Sleep(10);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{

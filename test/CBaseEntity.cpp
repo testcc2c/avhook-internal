@@ -35,12 +35,7 @@ void CBaseEntity::AimAt(CBaseEntity* &entity, int bone)
 	Vec3 delta = Vec3(targetpos.x - myPos.x, targetpos.y - myPos.y, targetpos.z - myPos.z);
 	float legth = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
-	angles->x = -asin(delta.z / legth) * (180/ 3.1415926f);
+	angles->x = -asinf(delta.z / legth) * (180 / 3.1415926f);
 	angles->y = atan2f(delta.y , delta.x) * (180 / 3.1415926f);
-
-	client->dwForceAttack = 6;
-	Sleep(8);
-	angles->x = olda.x;
-	angles->y = olda.y;
 	
 }

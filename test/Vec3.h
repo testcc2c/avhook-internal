@@ -1,10 +1,10 @@
 #pragma once
+#include "Vec2.h"
 
-
-class Vec3
+class Vec3 : public Vec2
 {
 public:
-	float x, y, z = 0;
+	float z = 0;
 
 	Vec3(float x, float y, float z)
 	{

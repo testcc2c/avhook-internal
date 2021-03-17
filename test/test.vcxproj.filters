@@ -150,6 +150,9 @@
     <ClInclude Include="EngineBase.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
