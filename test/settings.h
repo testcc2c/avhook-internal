@@ -9,7 +9,7 @@ namespace settings
 	static bool isOpen;
 	static bool init;
 	static bool attach = true;
-
+	static bool render = true;
 	// aimbot sector
 	static bool aimbot;
 	static bool silent;
@@ -21,7 +21,7 @@ namespace settings
 		static bool on;
 		static ImVec4 EnemyGlowColor = ImVec4(1.f, 0.f, 0.f, 1.f);
 		static ImVec4 FriedndlyGlowColor = ImVec4(0.f, 1.f, 0.f, 1.f);
-		static const char* glowmode[] = {"Seted Color", "Health"};
+		static const char* glowmode[] = {"Custom Color", "Health"};
 		static int selected_glow_mode;
 	}
 	namespace SnapLinesESP
@@ -31,6 +31,20 @@ namespace settings
 		static const char* Bones[] = { "Head", "Body", "Legs" };
 		static int thicnes = 1;
 		static int selectedBoneId;
+	}
+	namespace BoxEsp
+	{
+		static bool on;
+		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static int thicnes = 1;
+
+	}
+	namespace SkeletonESP
+	{
+		static bool on;
+		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static int thicnes = 1;
+
 	}
 
 	// trigger bot

@@ -154,7 +154,7 @@
     <ClInclude Include="bhop.h" />
     <ClInclude Include="CBaseEntity.h" />
     <ClInclude Include="ClientBase.h" />
-    <ClInclude Include="DirectX9Drawer.h" />
+    <ClInclude Include="ESPDrawer.h" />
     <ClInclude Include="DX9ColorFix.h" />
     <ClInclude Include="EngineBase.h" />
     <ClInclude Include="GlowWhInGame.h" />
@@ -180,7 +180,6 @@
     <ClInclude Include="offsets.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="TriggerBot.h" />
-    <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="viewmatrix.h" />
   </ItemGroup>
@@ -188,7 +187,7 @@
     <ClCompile Include="bhop.cpp" />
     <ClCompile Include="CBaseEntity.cpp" />
     <ClCompile Include="ClientBase.cpp" />
-    <ClCompile Include="DirectX9Drawer.cpp" />
+    <ClCompile Include="ESPDrawer.cpp" />
     <ClCompile Include="DX9ColorFix.cpp" />
     <ClCompile Include="GlowWhInGame.cpp" />
     <ClCompile Include="hack.cpp" />

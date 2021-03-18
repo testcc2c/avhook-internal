@@ -1,18 +1,18 @@
 #pragma once
-#include "Vec2.h"
+#include "imgui/imgui.h"
 
-class Vec3 : public Vec2
+class ImVec3 : public ImVec2
 {
 public:
 	float z = 0;
 
-	Vec3(float x, float y, float z)
+	ImVec3(float x, float y, float z)
 	{
 		this->x = x;
 		this->y = y;
 		this->z = z;
 	}
-	Vec3()
+	ImVec3()
 	{
 	};
 

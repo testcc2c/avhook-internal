@@ -52,65 +52,9 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
-    DirectX9Drawer draw = DirectX9Drawer(pDevice);
-
-    for (short int i = 1; i < 32; i++)
-    {
-        __try
-        {
-            if (!settings::SnapLinesESP::on)
-                break;
-            RECT rect;
-
-            GetWindowRect(window, &rect);
-
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
-
-            CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-            CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
-
-            Vec3 pos;
-            switch (settings::SnapLinesESP::selectedBoneId)
-            {
-            case 0:
-                pos = Entity->GetBonePosition(8);
-                break;
-            case 1:
-                pos = Entity->GetBonePosition(6);
-                break;
-            case 2:
-                pos = Entity->m_vecOrigin;
-                break;
-            }
-            Vec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
-            Vec2 start = Vec2(width / 2, height);
-
-            if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum)
-            {
-                draw.DrawLine(start, screen, settings::SnapLinesESP::thicnes, D3DCOLOR_RGBA(
-                    (int)(settings::SnapLinesESP::Color.x * 255),
-                    (int)(settings::SnapLinesESP::Color.y * 255),
-                    (int)(settings::SnapLinesESP::Color.z * 255),
-                    (int)(settings::SnapLinesESP::Color.w * 255)));
-                Vec3 playerOrigin = client->WorldToScreen(width, height, Entity->m_vecOrigin, client->dwViewmatrix);
-                pos.z += 7.5;
-                Vec3 playerhead = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
-                
-                draw.DrawEmptyRect(playerOrigin, playerhead, 3, D3DCOLOR_RGBA(
-                    (int)(settings::SnapLinesESP::Color.x * 255),
-                    (int)(settings::SnapLinesESP::Color.y * 255),
-                    (int)(settings::SnapLinesESP::Color.z * 255),
-                    (int)(settings::SnapLinesESP::Color.w * 255)));
-            }
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-
-        }
-
-    }
-
+    if (!settings::render)
+        return oEndScene(pDevice);
+    
     if (!init)
     {
         InitImGui(pDevice);
@@ -122,17 +66,102 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         settings::isOpen = !settings::isOpen;
     }
 
+    DX9ColorFix colorfix(pDevice);
+
+    colorfix.RemoveColorFilter();
+
+    ImGui_ImplDX9_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+
+
+    auto drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
+
+    for (short int i = 1; i < 32; i++)
+    {
+        __try
+        {
+            if (!settings::SnapLinesESP::on && !settings::BoxEsp::on)
+                break;
+            RECT rect;
+
+            GetWindowRect(window, &rect);
+
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
+            CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
+
+
+            if (settings::SnapLinesESP::on)
+            {
+                ImVec3 pos;
+                switch (settings::SnapLinesESP::selectedBoneId)
+                {
+                case 0:
+                    pos = Entity->GetBonePosition(8);
+                    break;
+                case 1:
+                    pos = Entity->GetBonePosition(6);
+                    break;
+                case 2:
+                    pos = Entity->m_vecOrigin;
+                    break;
+                }
+                ImVec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
+                ImVec2 start = ImVec2(width / 2, height);
+
+                if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
+                {
+                    drawlist->AddLine(start, ImVec2(screen.x, screen.y), ImColor(
+                        (int)(settings::SnapLinesESP::Color.x * 255),
+                        (int)(settings::SnapLinesESP::Color.y * 255),
+                        (int)(settings::SnapLinesESP::Color.z * 255),
+                        (int)(settings::SnapLinesESP::Color.w * 255)), settings::SnapLinesESP::thicnes);
+                }
+            }
+
+            if (settings::BoxEsp::on)
+            {
+                ImVec3 origin = client->WorldToScreen(width, height, Entity->m_vecOrigin, client->dwViewmatrix);
+                ImVec3 playerhead = Entity->GetBonePosition(8);
+
+                playerhead.z += 7.9f;
+                playerhead = client->WorldToScreen(width, height, playerhead, client->dwViewmatrix);
+
+                if (origin.z >= 0.01f && playerhead.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
+                {
+                    drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, 
+                        ImColor(
+                            (int)(settings::BoxEsp::Color.x * 255),
+                            (int)(settings::BoxEsp::Color.y * 255),
+                            (int)(settings::BoxEsp::Color.z * 255),
+                            (int)(settings::BoxEsp::Color.w * 255)));
+                    
+                }
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+
+        }
+
+    }
+
     if (settings::isOpen)
     {
-        DX9ColorFix colorfix(pDevice);
+        RECT rect;
+
+        GetWindowRect(window, &rect);
+
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+
+        drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), ImColor(0, 0, 0, 90));
         CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
-
-        colorfix.RemoveColorFilter();
-
-        ImGui_ImplDX9_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-
+        
         ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowSize(ImVec2(550, 250));
 
@@ -184,9 +213,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Checkbox("Handle lines", &settings::SnapLinesESP::on);
             ImGui::SameLine();
             ImGui::Combo("Point", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
-            ImGui::ColorEdit4("Snap lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
             ImGui::SameLine();
-            ImGui::InputInt("", &settings::SnapLinesESP::thicnes);
+            ImGui::InputInt("Line size", &settings::SnapLinesESP::thicnes);
+
+            ImGui::Text("Boxes");
+            ImGui::Checkbox("Handle boxes", &settings::BoxEsp::on);
+            ImGui::ColorEdit4("Box color", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
+            ImGui::InputInt("Box size", &settings::BoxEsp::thicnes);
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -194,7 +228,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Checkbox("Bunny hop", &settings::bhop);
 
             if (localPlayer != nullptr)
-                ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 0, 150);
+                ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 1, 120);
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -226,16 +260,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
 
         ImGui::End();
-        ImGui::EndFrame();
-
-        colorfix.RestoreRenderState();
-
-        ImGui::Render();
-        ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
-        colorfix.RestoreColorFilter();
 
     }
+    drawlist->AddText(ImVec2(5, 0), ImColor(255, 94, 94), "AVhook by LSS");
+    ImGui::EndFrame();
+
+    colorfix.RestoreRenderState();
+
+    ImGui::Render();
+    ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
+    colorfix.RestoreColorFilter();
     return oEndScene(pDevice);
 }
 
@@ -271,7 +306,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
         }
 
         //remove imgui
-        settings::isOpen = false;
+        settings::render = false;
 
         ImGui_ImplWin32_Shutdown();
         ImGui_ImplDX9_Shutdown();

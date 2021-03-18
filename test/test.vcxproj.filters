@@ -138,7 +138,7 @@
     <ClInclude Include="viewmatrix.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="DirectX9Drawer.h">
+    <ClInclude Include="ESPDrawer.h">
       <Filter>Меню\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="CBaseEntity.h">
@@ -148,9 +148,6 @@
       <Filter>Работа с памятью\SDK\ClientBase</Filter>
     </ClInclude>
     <ClInclude Include="EngineBase.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,7 +209,7 @@
     <ClCompile Include="TriggerBot.cpp">
       <Filter>Взлом\Trigger bot</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX9Drawer.cpp">
+    <ClCompile Include="ESPDrawer.cpp">
       <Filter>Меню\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="CBaseEntity.cpp">

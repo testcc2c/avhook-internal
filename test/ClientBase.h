@@ -4,6 +4,7 @@
 #include "Windows.h"
 #include "CBaseEntity.h"
 
+
 class ClientBase
 {
 public:
@@ -14,7 +15,7 @@ public:
 		DEFINE_MEMBER_N(viewmatrix, dwViewmatrix, signatures::dwViewMatrix);
 
 	};
-	Vec3 WorldToScreen(int width, int height, const Vec3 pos, viewmatrix matrix);
+	ImVec3 WorldToScreen(int width, int height, const ImVec3 pos, viewmatrix matrix);
 
 
 };

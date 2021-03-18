@@ -1,7 +1,7 @@
 #include "ClientBase.h"
 
 
-Vec3 ClientBase::WorldToScreen(int width, int height, const Vec3 pos, viewmatrix matrix)
+ImVec3 ClientBase::WorldToScreen(int width, int height, const ImVec3 pos, viewmatrix matrix)
 {
     float _x = matrix[0][0] * pos.x + matrix[0][1] * pos.y + matrix[0][2] * pos.z + matrix[0][3];
     float _y = matrix[1][0] * pos.x + matrix[1][1] * pos.y + matrix[1][2] * pos.z + matrix[1][3];
@@ -13,5 +13,5 @@ Vec3 ClientBase::WorldToScreen(int width, int height, const Vec3 pos, viewmatrix
 
     float y = -(height / 2 * (_y / w)) + ((_y / w) + height / 2);
 
-    return Vec3(x, y, w);
+    return ImVec3(x, y, w);
 }
