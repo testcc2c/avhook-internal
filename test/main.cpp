@@ -114,14 +114,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
                 if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
                 {
-                    if (!settings::SnapLinesESP::colormode)
+                    if (!settings::SnapLinesESP::selected_colormode)
                         drawlist->AddLine(start, screen, ImColor(
                             (int)(settings::SnapLinesESP::Color.x * 255),
                             (int)(settings::SnapLinesESP::Color.y * 255),
                             (int)(settings::SnapLinesESP::Color.z * 255),
                             (int)(settings::SnapLinesESP::Color.w * 255)), settings::SnapLinesESP::thicnes);
                     else
-                        drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth());
+                        drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
                 }
             }
 
@@ -260,6 +260,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Trigger bot.");
             ImGui::Checkbox("Active", &settings::trigger_bot::on);
+            ImGui::SameLine();
+            ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
             ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
         }
 
@@ -372,7 +374,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 
 DWORD WINAPI Trigger(HMODULE hModule)
 {
-    TriggerBot triggerbot(&settings::trigger_bot::delay);
+    TriggerBot triggerbot(&settings::trigger_bot::delay, &settings::trigger_bot::rage);
 
     while (settings::attach)
     {

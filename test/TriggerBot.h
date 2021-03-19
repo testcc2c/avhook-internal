@@ -2,14 +2,15 @@
 #include "hack.h"
 #include "CBaseEntity.h"
 #include "ClientBase.h"
-
+#include "CLocalPlayer.h"
 class TriggerBot : public Hack
 {
 
 public:
-	TriggerBot(int* delay);
+	TriggerBot(int* delay, bool* rage);
 	void Handle();
 private:
 	int* delay;
+	bool* rage;
 };
 
