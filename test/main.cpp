@@ -52,7 +52,7 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 bool init = false;
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
-    if (!settings::render)
+    if (!settings::attach)
         return oEndScene(pDevice);
     
     if (!init)
@@ -92,8 +92,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             int height = rect.bottom - rect.top;
 
             CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-            CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
-
+            CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
 
             if (settings::SnapLinesESP::on)
             {
@@ -101,10 +100,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 switch (settings::SnapLinesESP::selectedBoneId)
                 {
                 case 0:
-                    pos = Entity->GetBonePosition(8);
+                    pos = Entity->GetBonePosition(BONE_HEAD);
                     break;
                 case 1:
-                    pos = Entity->GetBonePosition(6);
+                    pos = Entity->GetBonePosition(BONE_BODY);
                     break;
                 case 2:
                     pos = Entity->m_vecOrigin;
@@ -115,11 +114,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
                 if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
                 {
-                    drawlist->AddLine(start, ImVec2(screen.x, screen.y), ImColor(
-                        (int)(settings::SnapLinesESP::Color.x * 255),
-                        (int)(settings::SnapLinesESP::Color.y * 255),
-                        (int)(settings::SnapLinesESP::Color.z * 255),
-                        (int)(settings::SnapLinesESP::Color.w * 255)), settings::SnapLinesESP::thicnes);
+                    if (!settings::SnapLinesESP::colormode)
+                        drawlist->AddLine(start, screen, ImColor(
+                            (int)(settings::SnapLinesESP::Color.x * 255),
+                            (int)(settings::SnapLinesESP::Color.y * 255),
+                            (int)(settings::SnapLinesESP::Color.z * 255),
+                            (int)(settings::SnapLinesESP::Color.w * 255)), settings::SnapLinesESP::thicnes);
+                    else
+                        drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth());
                 }
             }
 
@@ -133,12 +135,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
                 if (origin.z >= 0.01f && playerhead.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
                 {
-                    drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, 
-                        ImColor(
-                            (int)(settings::BoxEsp::Color.x * 255),
-                            (int)(settings::BoxEsp::Color.y * 255),
-                            (int)(settings::BoxEsp::Color.z * 255),
-                            (int)(settings::BoxEsp::Color.w * 255)));
+                    if (!settings::BoxEsp::selected_colormode)
+                        drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, 
+                            ImColor(
+                                (int)(settings::BoxEsp::Color.x * 255),
+                                (int)(settings::BoxEsp::Color.y * 255),
+                                (int)(settings::BoxEsp::Color.z * 255),
+                                (int)(settings::BoxEsp::Color.w * 255)));
+                    else
+                        drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth());
                     
                 }
             }
@@ -160,30 +165,30 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         int height = rect.bottom - rect.top;
 
         drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), ImColor(0, 0, 0, 90));
-        CBaseEntity* localPlayer = *(CBaseEntity**)(clientBase + signatures::dwLocalPlayer);
+        CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
         
-        ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-        ImGui::SetWindowSize(ImVec2(550, 250));
 
+        ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+        ImGui::SetWindowSize(ImVec2(555, 252));
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("AIM", ImVec2(100, 30)))
+        if (ImGui::Button("AIM", ImVec2(102, 30)))
             settings::menu = 1;
 
         ImGui::SameLine();
-        if (ImGui::Button("TRIGGER", ImVec2(100, 30)))
+        if (ImGui::Button("TRIGGER", ImVec2(102, 30)))
             settings::menu = 5;
-
+        
         ImGui::SameLine();
-        if (ImGui::Button("VISUALS", ImVec2(100, 30)))
+        if (ImGui::Button("VISUALS", ImVec2(102, 30)))
             settings::menu = 2;
 
         ImGui::SameLine();
-        if (ImGui::Button("MISC", ImVec2(100, 30)))
+        if (ImGui::Button("MISC", ImVec2(102, 30)))
             settings::menu = 3;
 
         ImGui::SameLine();
-        if (ImGui::Button("MENU", ImVec2(100, 30)))
+        if (ImGui::Button("MENU", ImVec2(102, 30)))
             settings::menu = 4;
 
         if (settings::menu == 1) // aimbot sector
@@ -198,29 +203,34 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
-            ImGui::SetWindowSize(ImVec2(550, 350));
+            ImGui::SetWindowSize(ImVec2(555, 400));
 
             ImGui::Text("Extra Sensory Perception");
 
             ImGui::Text("Glow ESP");
-            ImGui::Checkbox("Handle glow", &settings::inGameWallHack::on);
+            ImGui::Checkbox("Active###Glow", &settings::inGameWallHack::on);
             ImGui::SameLine();
-            ImGui::Combo("Draw mode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
             ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
 
+            ImGui::Combo("###GlowEspDrawMode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
+
             ImGui::Text("Snap Lines");
-            ImGui::Checkbox("Handle lines", &settings::SnapLinesESP::on);
+            ImGui::Checkbox("Active###Draw lines", &settings::SnapLinesESP::on);
             ImGui::SameLine();
-            ImGui::Combo("Point", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
-            ImGui::ColorEdit4("Lines color", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
-            ImGui::SameLine();
-            ImGui::InputInt("Line size", &settings::SnapLinesESP::thicnes);
+            ImGui::ColorEdit4("Color###lineColor", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
+
+            ImGui::InputInt("###lineThickness", &settings::SnapLinesESP::thicnes);
+            ImGui::Combo("###LinePoint", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
+            ImGui::Combo("###LineEspDrawMode", &settings::SnapLinesESP::selected_colormode, settings::SnapLinesESP::colormode, IM_ARRAYSIZE(settings::SnapLinesESP::colormode));
 
             ImGui::Text("Boxes");
-            ImGui::Checkbox("Handle boxes", &settings::BoxEsp::on);
-            ImGui::ColorEdit4("Box color", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
-            ImGui::InputInt("Box size", &settings::BoxEsp::thicnes);
+            ImGui::Checkbox("Active###Draw boxes", &settings::BoxEsp::on);
+            ImGui::SameLine();
+            ImGui::ColorEdit4("Color###boxcolor", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
+            ImGui::InputInt("###boxThickness", &settings::BoxEsp::thicnes);
+            ImGui::Combo("###BoxEspDrawMode", &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
         }
         else if (settings::menu == 3) //misc sector
         {
@@ -232,7 +242,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 4) // menu settings
         {
-            ImGui::SetWindowSize(ImVec2(440, 350));
+            ImGui::SetWindowSize(ImVec2(555, 352));
 
             ImGui::Text("Menu configuration");
             ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
@@ -249,12 +259,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         else if (settings::menu == 5) // trigger
         {
             ImGui::Text("Trigger bot.");
-            ImGui::Checkbox("Handle", &settings::trigger_bot::on);
+            ImGui::Checkbox("Active", &settings::trigger_bot::on);
+            ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
         }
 
         else
-        {;
-            // Vec3* pos = (Vec3*)(baseAddr + 0x4D945A0);
+        {
             ImGui::Text("Welcome!");
 
         }
@@ -306,7 +316,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
         }
 
         //remove imgui
-        settings::render = false;
+        settings::attach = false;
 
         ImGui_ImplWin32_Shutdown();
         ImGui_ImplDX9_Shutdown();
@@ -319,7 +329,6 @@ DWORD WINAPI MainThread(HMODULE hModule)
         kiero::unbind(41);
         kiero::shutdown();
 
-        settings::attach = false;
         Sleep(1000);
         
 	}
@@ -363,7 +372,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 
 DWORD WINAPI Trigger(HMODULE hModule)
 {
-    TriggerBot triggerbot;
+    TriggerBot triggerbot(&settings::trigger_bot::delay);
 
     while (settings::attach)
     {

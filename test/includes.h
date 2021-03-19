@@ -16,9 +16,10 @@
 
 #include "bhop.h"
 #include "GlowWhInGame.h"
-#include "bhop.h"
 #include "CBaseEntity.h"
+#include "CLocalPlayer.h"
 #include "TriggerBot.h"
+
 
 #include "CBaseEntity.h"
 #include <iostream>

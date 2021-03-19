@@ -10,6 +10,8 @@
 #define BONE_HEAD 8
 #define BONE_BODY 6
 
+#define FL_ONGROUND 257
+#define FL_ONGROUND_DUCK 263
 
 namespace netvars {
 	constexpr DWORD cs_gamerules_data = 0x0;

@@ -1,5 +1,4 @@
 #include "CBaseEntity.h"
-#include "ClientBase.h"
 
 ImVec3 CBaseEntity::GetBonePosition(int bone)
 {
@@ -19,22 +18,17 @@ float CBaseEntity::CalcDistaceToEntity(CBaseEntity* entity)
 
 	return sqrtf(powf(enPos.x - myPos.x, 2) + powf(enPos.y - myPos.y, 2) + powf(enPos.z - myPos.z, 2));
 }
-
-void CBaseEntity::AimAt(CBaseEntity* &entity, int bone)
+ImColor CBaseEntity::GetColorBasedOnHealth()
 {
-	DWORD engineModule = (DWORD)GetModuleHandle(L"engine.dll");
-	ClientBase* client = (ClientBase*)((DWORD)GetModuleHandle(L"client.dll"));
-	ImVec3 calculated;
+	if (45 >= this->m_iHealth)
+		return ImColor(255, 0, 0);
 
-	ImVec3 targetpos = entity->GetBonePosition(bone);
-	ImVec3 myPos = this->m_vecOrigin;
-	myPos.z += this->m_vecViewOffset.z;
-	ImVec3* angles = (ImVec3*)(*(DWORD*)(engineModule + signatures::dwClientState) + signatures::dwClientState_ViewAngles);
+	else if (60 >= this->m_iHealth)
+		return ImColor(255, 255, 0);
 
-	ImVec3 delta = ImVec3(targetpos.x - myPos.x, targetpos.y - myPos.y, targetpos.z - myPos.z);
-	float legth = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+	else if (this->m_iHealth >= 60)
+		return ImColor(0, 255, 0);
 
-	angles->x = -asinf(delta.z / legth) * (180 / 3.1415926f);
-	angles->y = atan2f(delta.y , delta.x) * (180 / 3.1415926f);
-	
+	else
+		return ImColor(221, 0, 255);
 }

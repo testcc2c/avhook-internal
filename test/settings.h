@@ -21,7 +21,7 @@ namespace settings
 		static bool on;
 		static ImVec4 EnemyGlowColor = ImVec4(1.f, 0.f, 0.f, 1.f);
 		static ImVec4 FriedndlyGlowColor = ImVec4(0.f, 1.f, 0.f, 1.f);
-		static const char* glowmode[] = {"Custom Color", "Health"};
+		static const char* glowmode[] = {"Custom", "Health"};
 		static int selected_glow_mode;
 	}
 	namespace SnapLinesESP
@@ -31,6 +31,8 @@ namespace settings
 		static const char* Bones[] = { "Head", "Body", "Legs" };
 		static int thicnes = 1;
 		static int selectedBoneId;
+		static const char* colormode[] = { "Custom", "Health" };
+		static int selected_colormode;
 	}
 	namespace BoxEsp
 	{
@@ -38,6 +40,8 @@ namespace settings
 		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
 		static int thicnes = 1;
 
+		static const char* colormode[] = { "Custom", "Health" };
+		static int selected_colormode;
 	}
 	namespace SkeletonESP
 	{
@@ -51,12 +55,13 @@ namespace settings
 	namespace trigger_bot
 	{
 		static bool on;
+		static bool rage;
+		static int delay = 0;
 	}
 
 
 	// misc sector
 	static bool bhop;
 	static bool thirdperson;
-	static bool airjump;
 	
 }

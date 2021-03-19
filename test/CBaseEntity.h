@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <math.h>
 #include "imgui/imgui.h"
+#include "ClientBase.h"
+
 class CBaseEntity
 {
 public:
@@ -25,8 +27,7 @@ public:
 
 	};
 	ImVec3 GetBonePosition(int bone);
-	void AimAt(CBaseEntity* &entity, int bone);
 	float CalcDistaceToEntity(CBaseEntity* entity);
+	ImColor GetColorBasedOnHealth();
 
-private:
 };

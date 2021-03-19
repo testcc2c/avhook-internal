@@ -16,18 +16,6 @@
     <Filter Include="Работа с памятью">
       <UniqueIdentifier>{83f8c3ef-1e11-4d14-a5a7-26b2bae1952e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Меню">
-      <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Меню\imgui">
-      <UniqueIdentifier>{9de47536-533c-4ade-8e83-5ebc8e246666}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Меню\kiero">
-      <UniqueIdentifier>{8485b172-0c99-4088-9463-371a35d07def}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Меню\настройки">
-      <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Взлом">
       <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
     </Filter>
@@ -46,76 +34,94 @@
     <Filter Include="Взлом\Trigger bot">
       <UniqueIdentifier>{6fa0f419-b44c-4c3b-b9d3-c0f763c3c958}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Меню\DirectX">
-      <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Работа с памятью\SDK\CBaseEntity">
       <UniqueIdentifier>{942dcf71-8979-4e37-917a-750e732dfde4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Работа с памятью\SDK\ClientBase">
       <UniqueIdentifier>{2b042b2d-c88e-4ac5-a14e-34e0c04824fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\SDK\CLocalPlayer">
+      <UniqueIdentifier>{392b22a4-d945-4181-98c9-622afb4be131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал">
+      <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\imgui">
+      <UniqueIdentifier>{9de47536-533c-4ade-8e83-5ebc8e246666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\kiero">
+      <UniqueIdentifier>{8485b172-0c99-4088-9463-371a35d07def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\настройки">
+      <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\DirectX">
+      <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\DirectX\DX9ColorFix">
+      <UniqueIdentifier>{fea179df-9cd8-44dc-806b-53e111724890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Визуал\DirectX\ESPDrawer">
+      <UniqueIdentifier>{95953034-9d42-431e-8d1a-73887f9205d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_dx9.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_win32.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClInclude>
     <ClInclude Include="kiero\kiero.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\hde32.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\hde64.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\pstdint.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\table32.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\table64.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\buffer.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\trampoline.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\include\MinHook.h">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
-      <Filter>Меню\настройки</Filter>
-    </ClInclude>
-    <ClInclude Include="DX9ColorFix.h">
-      <Filter>Меню\DirectX</Filter>
+      <Filter>Визуал\настройки</Filter>
     </ClInclude>
     <ClInclude Include="offsets.h">
       <Filter>Взлом</Filter>
@@ -138,9 +144,6 @@
     <ClInclude Include="viewmatrix.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="ESPDrawer.h">
-      <Filter>Меню\DirectX</Filter>
-    </ClInclude>
     <ClInclude Include="CBaseEntity.h">
       <Filter>Работа с памятью\SDK\CBaseEntity</Filter>
     </ClInclude>
@@ -150,52 +153,58 @@
     <ClInclude Include="EngineBase.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="CLocalPlayer.h">
+      <Filter>Работа с памятью\SDK\CLocalPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="DX9ColorFix.h">
+      <Filter>Визуал\DirectX\DX9ColorFix</Filter>
+    </ClInclude>
+    <ClInclude Include="ESPDrawer.h">
+      <Filter>Визуал\DirectX\ESPDrawer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Меню\imgui</Filter>
+      <Filter>Визуал\imgui</Filter>
     </ClCompile>
     <ClCompile Include="kiero\kiero.cpp">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hde\hde32.c">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hde\hde64.c">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\buffer.c">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hook.c">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\trampoline.c">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="DX9ColorFix.cpp">
-      <Filter>Меню\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="bhop.cpp">
       <Filter>Взлом\Bunny Hop</Filter>
@@ -209,24 +218,30 @@
     <ClCompile Include="TriggerBot.cpp">
       <Filter>Взлом\Trigger bot</Filter>
     </ClCompile>
-    <ClCompile Include="ESPDrawer.cpp">
-      <Filter>Меню\DirectX</Filter>
-    </ClCompile>
     <ClCompile Include="CBaseEntity.cpp">
       <Filter>Работа с памятью\SDK\CBaseEntity</Filter>
     </ClCompile>
     <ClCompile Include="ClientBase.cpp">
       <Filter>Работа с памятью\SDK\ClientBase</Filter>
     </ClCompile>
+    <ClCompile Include="CLocalPlayer.cpp">
+      <Filter>Работа с памятью\SDK\CLocalPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="DX9ColorFix.cpp">
+      <Filter>Визуал\DirectX\DX9ColorFix</Filter>
+    </ClCompile>
+    <ClCompile Include="ESPDrawer.cpp">
+      <Filter>Визуал\DirectX\ESPDrawer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kiero\minhook\dll_resources\MinHook.def">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="kiero\minhook\dll_resources\MinHook.rc">
-      <Filter>Меню\kiero</Filter>
+      <Filter>Визуал\kiero</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

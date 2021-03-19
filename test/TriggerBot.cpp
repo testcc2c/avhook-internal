@@ -1,5 +1,9 @@
 #include "TriggerBot.h"
 
+TriggerBot::TriggerBot(int* delay)
+{
+	this->delay = delay;
+}
 void TriggerBot::Handle()
 {
 	__try
@@ -13,8 +17,8 @@ void TriggerBot::Handle()
 
 		ClientBase* client = (ClientBase*)clientbase;
 
+		Sleep(*delay);
 		client->dwForceAttack = 6;
-		Sleep(10);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
