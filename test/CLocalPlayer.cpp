@@ -8,8 +8,7 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool predicti
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
 	ImVec3 myPos = this->m_vecOrigin;
-	myPos.y += this->m_vecViewOffset.y;
-	myPos.x += this->m_vecViewOffset.x;
+
 	myPos.z += this->m_vecViewOffset.z;
 	
 

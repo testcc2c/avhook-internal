@@ -195,10 +195,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Automatic Target Acquisition System");
 
-            ImGui::Checkbox("Status", &settings::aimbot);
+            ImGui::Checkbox("Status", &settings::aimbot::on);
             ImGui::SameLine();
-            ImGui::Combo("HitBox", &settings::selectedhitbox, settings::hitboxes, IM_ARRAYSIZE(settings::hitboxes));
-            ImGui::Checkbox("Silent", &settings::silent);
+            ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
+            ImGui::Checkbox("Silent", &settings::aimbot::silent);
 
         }
         else if (settings::menu == 2) // esp sector
@@ -265,7 +265,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::SameLine();
             ImGui::Checkbox("Prediction", &settings::trigger_bot::predict);
             ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
-            ImGui::SliderInt("Pred time", &settings::trigger_bot::predtime, 0, 1000);
+            ImGui::SliderInt("Prediction time", &settings::trigger_bot::predtime, 0, 1000);
         }
 
         else
@@ -311,6 +311,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         client = (ClientBase*)GetModuleHandle(L"client.dll");
         clientBase = (DWORD)GetModuleHandle(L"client.dll");
+        DWORD x = (DWORD)GetModuleHandle(L"client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
 
@@ -390,6 +391,46 @@ DWORD WINAPI Trigger(HMODULE hModule)
     return 0;
 }
 
+DWORD WINAPI AimBot(HMODULE hModule)
+{
+    int bone = 8;
+    while (settings::attach)
+    {
+        __try
+        {
+            if (!settings::aimbot::on)
+            {
+                Sleep(500);
+                continue;
+            }
+
+            switch (settings::aimbot::selectedhitbox)
+            {
+            case 0:
+                bone = BONE_HEAD;
+                break;
+            case 1:
+                bone =  BONE_BODY;
+                break;
+            case 2:
+                bone = BONE_LEGS;
+                break;
+            }
+
+            CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
+            CBaseEntity* entity = localPlayer->GetClosestEnity();
+            if (localPlayer->m_iTeamNum != entity->m_iTeamNum)
+                localPlayer->AimAt(entity, bone);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            
+        }
+
+    }
+    return 0;
+}
+
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
@@ -400,6 +441,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot, hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
         break;

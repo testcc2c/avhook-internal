@@ -11,10 +11,13 @@ namespace settings
 	static bool attach = true;
 	static bool render = true;
 	// aimbot sector
-	static bool aimbot;
-	static bool silent;
-	static const char* hitboxes[] = {"Head", "Body", "Legs"};
-	static int selectedhitbox;
+	namespace aimbot
+	{
+		static bool on;
+		static bool silent;
+		static const char* hitboxes[] = { "Head", "Body", "Legs" };
+		static int selectedhitbox;
+	}
 
 	namespace inGameWallHack
 	{
@@ -38,7 +41,7 @@ namespace settings
 	{
 		static bool on;
 		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
-		static int thicnes = 1;
+		static int thicnes = 2;
 
 		static const char* colormode[] = { "Custom", "Health" };
 		static int selected_colormode;

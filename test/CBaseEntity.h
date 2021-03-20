@@ -28,8 +28,10 @@ public:
 
 
 	};
+
 	ImVec3 GetBonePosition(int bone);
 	float CalcDistaceToEntity(CBaseEntity* entity);
 	ImColor GetColorBasedOnHealth();
+	CBaseEntity* GetClosestEnity();
 
 };

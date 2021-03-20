@@ -9,7 +9,7 @@
 
 #define BONE_HEAD 8
 #define BONE_BODY 6
-
+#define BONE_LEGS 0
 #define FL_ONGROUND 257
 #define FL_ONGROUND_DUCK 263
 
