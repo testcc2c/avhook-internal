@@ -56,7 +56,10 @@ namespace settings
 	{
 		static bool on;
 		static bool rage;
+		static bool predict;
+
 		static int delay = 0;
+		static int predtime = 0;
 	}
 
 

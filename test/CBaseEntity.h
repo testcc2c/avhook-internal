@@ -23,7 +23,9 @@ public:
 		DEFINE_MEMBER_N(ImVec3, m_vecViewOffset, netvars::m_vecViewOffset);
 		DEFINE_MEMBER_N(ImVec3, m_vecOrigin, netvars::m_vecOrigin);
 		DEFINE_MEMBER_N(DWORD, boneMatrix, netvars::m_dwBoneMatrix);
+		DEFINE_MEMBER_N(ImVec3, m_vecVelocity, netvars::m_vecVelocity);
 		DEFINE_MEMBER_N(bool, m_bDormant, signatures::m_bDormant);
+
 
 	};
 	ImVec3 GetBonePosition(int bone);

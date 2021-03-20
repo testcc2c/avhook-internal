@@ -262,7 +262,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Checkbox("Active", &settings::trigger_bot::on);
             ImGui::SameLine();
             ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
+            ImGui::SameLine();
+            ImGui::Checkbox("Prediction", &settings::trigger_bot::predict);
             ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
+            ImGui::SliderInt("Pred time", &settings::trigger_bot::predtime, 0, 1000);
         }
 
         else
@@ -374,7 +377,8 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 
 DWORD WINAPI Trigger(HMODULE hModule)
 {
-    TriggerBot triggerbot(&settings::trigger_bot::delay, &settings::trigger_bot::rage);
+    using namespace settings::trigger_bot;
+    TriggerBot triggerbot(&delay, &rage, &predict, &predtime);
 
     while (settings::attach)
     {
