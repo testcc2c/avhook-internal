@@ -1,6 +1,7 @@
 #include "includes.h"
 #include "viewmatrix.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -10,7 +11,6 @@ ImVec4* theme;
 ClientBase* client;
 DWORD clientBase;
 HWND window;
-#define WINDOW_NAME "Counter-Strike: Global Offensive"
 
 
 
@@ -109,17 +109,18 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                     pos = Entity->m_vecOrigin;
                     break;
                 }
-                ImVec3 screen = client->WorldToScreen(width, height, pos, client->dwViewmatrix);
+                ImVec3 screen = client->WorldToScreen(pos, client->dwViewmatrix);
                 ImVec2 start = ImVec2(width / 2, height);
 
                 if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
                 {
+                
                     if (!settings::SnapLinesESP::selected_colormode)
                         drawlist->AddLine(start, screen, ImColor(
-                            (int)(settings::SnapLinesESP::Color.x * 255),
-                            (int)(settings::SnapLinesESP::Color.y * 255),
-                            (int)(settings::SnapLinesESP::Color.z * 255),
-                            (int)(settings::SnapLinesESP::Color.w * 255)), settings::SnapLinesESP::thicnes);
+                            settings::SnapLinesESP::Color.x,
+                            settings::SnapLinesESP::Color.y,
+                            settings::SnapLinesESP::Color.z,
+                            settings::SnapLinesESP::Color.w), settings::SnapLinesESP::thicnes);
                     else
                         drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
                 }
@@ -127,26 +128,27 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
             if (settings::BoxEsp::on)
             {
-                ImVec3 origin = client->WorldToScreen(width, height, Entity->m_vecOrigin, client->dwViewmatrix);
+                ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin, client->dwViewmatrix);
                 ImVec3 playerhead = Entity->GetBonePosition(8);
 
                 playerhead.z += 7.9f;
-                playerhead = client->WorldToScreen(width, height, playerhead, client->dwViewmatrix);
+                playerhead = client->WorldToScreen(playerhead, client->dwViewmatrix);
 
                 if (origin.z >= 0.01f && playerhead.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
                 {
                     if (!settings::BoxEsp::selected_colormode)
-                        drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, 
+                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
                             ImColor(
-                                (int)(settings::BoxEsp::Color.x * 255),
-                                (int)(settings::BoxEsp::Color.y * 255),
-                                (int)(settings::BoxEsp::Color.z * 255),
-                                (int)(settings::BoxEsp::Color.w * 255)));
+                                settings::BoxEsp::Color.x,
+                                settings::BoxEsp::Color.y,
+                                settings::BoxEsp::Color.z,
+                                settings::BoxEsp::Color.w));
                     else
-                        drawlist->DrawBoxEsp(origin, playerhead, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth());
+                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth());
                     
                 }
             }
+
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
@@ -172,7 +174,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         ImGui::SetWindowSize(ImVec2(555, 252));
         ImGui::Text("AVhook");
 
-        if (ImGui::Button("AIM", ImVec2(102, 30)))
+        if (ImGui::Button("AIMBOT", ImVec2(102, 30)))
             settings::menu = 1;
 
         ImGui::SameLine();
@@ -195,7 +197,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Automatic Target Acquisition System");
 
-            ImGui::Checkbox("Status", &settings::aimbot::on);
+            ImGui::Checkbox("Active", &settings::aimbot::on);
             ImGui::SameLine();
             ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
             ImGui::Checkbox("Silent", &settings::aimbot::silent);
@@ -212,6 +214,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::SameLine();
             ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
             ImGui::SameLine();
+
             ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
 
             ImGui::Combo("###GlowEspDrawMode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
@@ -311,7 +314,6 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         client = (ClientBase*)GetModuleHandle(L"client.dll");
         clientBase = (DWORD)GetModuleHandle(L"client.dll");
-        DWORD x = (DWORD)GetModuleHandle(L"client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
 
@@ -420,7 +422,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
             CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
             CBaseEntity* entity = localPlayer->GetClosestEnity();
             if (localPlayer->m_iTeamNum != entity->m_iTeamNum)
-                localPlayer->AimAt(entity, bone);
+                localPlayer->AimAt(entity, bone, 10, true);
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {

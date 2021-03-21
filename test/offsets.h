@@ -6,6 +6,7 @@
 #define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
 #define DEFINE_MEMBER_N(type, name, offset) struct {unsigned char MAKE_PAD(offset); type name;}
 
+#define WINDOW_NAME "Counter-Strike: Global Offensive"
 
 #define BONE_HEAD 8
 #define BONE_BODY 6

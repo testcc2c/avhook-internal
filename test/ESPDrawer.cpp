@@ -1,9 +1,21 @@
 #include "ESPDrawer.h"
+#include "ClientBase.h"
 
 
-void ESPDrawer::DrawBoxEsp(ImVec2& up, ImVec2& bottom, int& thickness, ImColor color)
+void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color)
 {
+    ClientBase* client = (ClientBase*)GetModuleHandle(L"client.dll");
+
+    ImVec3 up = client->WorldToScreen(entity->m_vecOrigin, client->dwViewmatrix);
+    ImVec3 headpos = entity->GetBonePosition(BONE_HEAD); 
+    headpos.z += 7.9;
+    ImVec3 bottom = client->WorldToScreen(headpos, client->dwViewmatrix);
+
     int height = ABS(up.y - bottom.y);
+
+    char buffer[256];
+    _itoa_s(entity->m_iHealth, buffer, 10);
+
 
     ImVec2 topleft, topright;
     ImVec2 bottomLeft, bottomRight;
@@ -20,4 +32,7 @@ void ESPDrawer::DrawBoxEsp(ImVec2& up, ImVec2& bottom, int& thickness, ImColor c
     this->AddLine(bottomLeft, bottomRight, color, thickness);
     this->AddLine(topleft, bottomLeft, color, thickness);
     this->AddLine(topright, bottomRight, color, thickness);
+
+    bottomRight.x += 5;
+    this->AddText(bottomRight, entity->GetColorBasedOnHealth(), buffer);
 }
