@@ -2,6 +2,8 @@
 #include "ClientBase.h"
 
 
+// Simple helper function to load an image into a DX9 texture with common settings
+
 void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color)
 {
     ClientBase* client = (ClientBase*)GetModuleHandle(L"client.dll");

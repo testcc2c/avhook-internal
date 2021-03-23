@@ -1,7 +1,38 @@
-#include "includes.h"
+#include <Windows.h>
+
+#include <d3d9.h>
+#include <d3dx9.h>
+
+#include <D3dx9tex.h>
+
+#include "ESPDrawer.h"
+#include "kiero/kiero.h"
+#include "kiero/minhook/include/MinHook.h"
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx9.h"
+
+#include "settings.h"
+#include "DX9ColorFix.h"
+
+#include "bhop.h"
+#include "GlowWhInGame.h"
+#include "CBaseEntity.h"
+#include "CLocalPlayer.h"
+#include "TriggerBot.h"
 #include "viewmatrix.h"
+
+#include "CBaseEntity.h"
+
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+
+#pragma comment(lib, "D3dx9")
+
+typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
+typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -12,7 +43,8 @@ ClientBase* client;
 DWORD clientBase;
 HWND window;
 
-
+PDIRECT3DTEXTURE9 textures[3];
+ESPDrawer* drawlist;
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -48,16 +80,20 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
     theme[ImGuiCol_TabHovered] = ImVec4(1.f, 0.57f, 0.57f, 1.f);
     theme[ImGuiCol_TabActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 }
-
 bool init = false;
+
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
     if (!settings::attach)
         return oEndScene(pDevice);
-    
+   
+
     if (!init)
     {
         InitImGui(pDevice);
+        D3DXCreateTextureFromFileA(pDevice, "avhook\\AV.jpg", &textures[0]);
+        drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
+
         init = true;
     }
     if (GetAsyncKeyState(VK_INSERT) & 1)
@@ -74,9 +110,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    RECT rect;
+
+    GetWindowRect(window, &rect);
+
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
 
 
-    auto drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
     for (short int i = 1; i < 32; i++)
     {
@@ -159,14 +200,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
-        RECT rect;
 
-        GetWindowRect(window, &rect);
-
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-
-        drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), ImColor(0, 0, 0, 90));
+        drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
         CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
         
 
@@ -239,7 +274,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         {
             ImGui::Text("Misc configuration");
             ImGui::Checkbox("Bunny hop", &settings::bhop);
-
+            ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
             if (localPlayer != nullptr)
                 ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 1, 120);
         }
@@ -257,6 +292,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Background color", (float*)(&settings::misc::backgrooundcolor));
         }
 
         else if (settings::menu == 5) // trigger
@@ -274,13 +310,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         else
         {
             ImGui::Text("Welcome!");
-
         }
 
         ImGui::End();
 
+
+        drawlist->AddImage((void*)textures[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
+        drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MISTAKES NULLIFIED");
+        
     }
-    drawlist->AddText(ImVec2(5, 0), ImColor(255, 94, 94), "AVhook by LSS");
+    drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
+
     ImGui::EndFrame();
 
     colorfix.RestoreRenderState();

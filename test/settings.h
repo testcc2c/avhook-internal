@@ -65,7 +65,11 @@ namespace settings
 		static int predtime = 0;
 	}
 
-
+	namespace misc
+	{
+		static bool nullcorelogo;
+		static ImColor backgrooundcolor = ImColor(0, 0, 0, 90);
+	}
 	// misc sector
 	static bool bhop;
 	static bool thirdperson;
