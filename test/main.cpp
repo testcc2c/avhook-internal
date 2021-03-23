@@ -316,15 +316,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 
         drawlist->AddImage((void*)textures[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
-        drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MISTAKES NULLIFIED");
+        drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
         
     }
     drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
     ImGui::EndFrame();
-
     colorfix.RestoreRenderState();
-
     ImGui::Render();
     ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
