@@ -6,7 +6,7 @@ InGameGlowEsp::InGameGlowEsp(int* mode) : Hack()
 	this->mode = mode;
 }
 
-void InGameGlowEsp::HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor)
+void InGameGlowEsp::HandleGlow(ImColor &enemyColor, ImColor &friendlyColor)
 {
 	__try
 	{
@@ -22,18 +22,18 @@ void InGameGlowEsp::HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor)
 				{
 					if (Entity->m_iTeamNum != LocalPlayer->m_iTeamNum)
 					{
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = enemyColor.x;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = enemyColor.y;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = enemyColor.z;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = enemyColor.w;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = enemyColor.Value.x;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = enemyColor.Value.y;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = enemyColor.Value.z;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = enemyColor.Value.w;
 
 					}
 					else
 					{
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = friendlyColor.x;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = friendlyColor.y;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = friendlyColor.z;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = friendlyColor.w;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = friendlyColor.Value.x;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = friendlyColor.Value.y;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = friendlyColor.Value.z;
+						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = friendlyColor.Value.w;
 					}
 				}
 				else

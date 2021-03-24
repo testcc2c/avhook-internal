@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #pragma comment(lib, "D3dx9")
+#pragma comment(lib, "winmm")
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -54,7 +55,6 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 
 	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 15.0f, 0);
-
 	ImGui_ImplWin32_Init(FindWindowA(NULL, WINDOW_NAME));
 	ImGui_ImplDX9_Init(pDevice);
 
@@ -91,7 +91,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     if (!init)
     {
         InitImGui(pDevice);
-        D3DXCreateTextureFromFileA(pDevice, "avhook\\AV.jpg", &textures[0]);
+        D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\AV.jpg", &textures[0]);
+        D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\ncc_logo.png", &textures[1]);
         drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
         init = true;
@@ -100,6 +101,11 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
 
         settings::isOpen = !settings::isOpen;
+    }
+    if (GetAsyncKeyState(VK_ESCAPE) & 1)
+    {
+
+        settings::isOpen = false;
     }
 
     DX9ColorFix colorfix(pDevice);
@@ -157,11 +163,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 {
                 
                     if (!settings::SnapLinesESP::selected_colormode)
-                        drawlist->AddLine(start, screen, ImColor(
-                            settings::SnapLinesESP::Color.x,
-                            settings::SnapLinesESP::Color.y,
-                            settings::SnapLinesESP::Color.z,
-                            settings::SnapLinesESP::Color.w), settings::SnapLinesESP::thicnes);
+                        drawlist->AddLine(start, screen, settings::SnapLinesESP::Color, settings::SnapLinesESP::thicnes);
                     else
                         drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
                 }
@@ -179,11 +181,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 {
                     if (!settings::BoxEsp::selected_colormode)
                         drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-                            ImColor(
-                                settings::BoxEsp::Color.x,
-                                settings::BoxEsp::Color.y,
-                                settings::BoxEsp::Color.z,
-                                settings::BoxEsp::Color.w));
+                            settings::SnapLinesESP::Color);
                     else
                         drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth());
                     
@@ -202,6 +200,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
 
         drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
+        //drawlist->AddText()
         CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
         
 
@@ -292,7 +291,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-            ImGui::ColorEdit4("Background color", (float*)(&settings::misc::backgrooundcolor));
+            ImGui::ColorEdit4("Background color", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
         }
 
         else if (settings::menu == 5) // trigger
@@ -314,9 +313,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
         ImGui::End();
 
-
-        drawlist->AddImage((void*)textures[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
-        drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
+        if (settings::misc::nullcorelogo)
+        {
+            drawlist->AddImage((void*)textures[1], ImVec2((width / 2) - 150, 20), ImVec2(300 + (width / 2) - 150, 180));
+        }
+        else
+        {
+            drawlist->AddImage((void*)textures[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
+            drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
+        }
         
     }
     drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
@@ -355,6 +360,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
         settings::attach = true;
 
+        PlaySound(L"avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
 
         while ( !GetAsyncKeyState(VK_END))
         {
@@ -363,7 +369,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
         //remove imgui
         settings::attach = false;
-
+        PlaySound(L"avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
         ImGui_ImplWin32_Shutdown();
         ImGui_ImplDX9_Shutdown();
         ImGui::DestroyContext();
@@ -391,7 +397,6 @@ DWORD WINAPI Bhop(HMODULE hModule)
         
         if (settings::bhop)
             bhop.HandleBhop();
-        
         else
             Sleep(500);
         

@@ -46,9 +46,8 @@ CBaseEntity* CBaseEntity::GetClosestEnity()
 		__try
 		{
 			CBaseEntity* entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-			if (entity->m_iHealth <= 0 or entity->m_bDormant )
-				continue;
-			entitylist[counter++] = entity;
+			if (entity->m_iHealth > 0 and !entity->m_bDormant)
+				entitylist[counter++] = entity;
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{

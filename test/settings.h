@@ -22,15 +22,15 @@ namespace settings
 	namespace inGameWallHack
 	{
 		static bool on;
-		static ImVec4 EnemyGlowColor = ImVec4(1.f, 0.f, 0.f, 1.f);
-		static ImVec4 FriedndlyGlowColor = ImVec4(0.f, 1.f, 0.f, 1.f);
+		static ImColor EnemyGlowColor = ImColor(1.f, 0.f, 0.f, 1.f);
+		static ImColor FriedndlyGlowColor = ImColor(0.f, 1.f, 0.f, 1.f);
 		static const char* glowmode[] = {"Custom", "Health"};
 		static int selected_glow_mode;
 	}
 	namespace SnapLinesESP
 	{
 		static bool on;
-		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static ImColor Color = ImColor(1.f, 0.f, 0.f, 1.f);
 		static const char* Bones[] = { "Head", "Body", "Legs" };
 		static int thicnes = 1;
 		static int selectedBoneId;
@@ -40,7 +40,7 @@ namespace settings
 	namespace BoxEsp
 	{
 		static bool on;
-		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static ImColor Color = ImColor(1.f, 0.f, 0.f, 1.f);
 		static int thicnes = 2;
 
 		static const char* colormode[] = { "Custom", "Health" };
@@ -49,7 +49,7 @@ namespace settings
 	namespace SkeletonESP
 	{
 		static bool on;
-		static ImVec4 Color = ImVec4(1.f, 0.f, 0.f, 1.f);
+		static ImColor Color = ImColor(1.f, 0.f, 0.f, 1.f);
 		static int thicnes = 1;
 
 	}

@@ -9,7 +9,7 @@ class InGameGlowEsp : public Hack
 public:
 	InGameGlowEsp(int* mode);
 
-	void HandleGlow(ImVec4 &enemyColor, ImVec4 &friendlyColor);
+	void HandleGlow(ImColor &enemyColor, ImColor &friendlyColor);
 private:
 	int* mode;
 };
