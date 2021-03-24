@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 
 #include <d3d9.h>
@@ -29,8 +30,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ctime>  
+
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
+
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -97,19 +101,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
         init = true;
     }
+
     if (GetAsyncKeyState(VK_INSERT) & 1)
-    {
-
         settings::isOpen = !settings::isOpen;
-    }
-    if (GetAsyncKeyState(VK_ESCAPE) & 1)
-    {
 
+    if (GetAsyncKeyState(VK_ESCAPE) & 1)
         settings::isOpen = false;
-    }
 
     DX9ColorFix colorfix(pDevice);
-
     colorfix.RemoveColorFilter();
 
     ImGui_ImplDX9_NewFrame();
@@ -124,7 +123,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     int height = rect.bottom - rect.top;
 
 
+    drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
+    // отрисовка esp
     for (short int i = 1; i < 32; i++)
     {
         __try
@@ -198,12 +199,18 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     if (settings::isOpen)
     {
-
+        // затемнение когда меню открыто
         drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
-        //drawlist->AddText()
-        CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
-        
 
+        // выводим время
+        char buffer[50];
+
+        time_t current_time = time(NULL);
+        sprintf_s(buffer, "%s" , ctime(&current_time));
+        drawlist->AddText(ImVec2(1, 20), ImColor(255, 255, 255), buffer);
+
+        // основное окно
+        CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
         ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowSize(ImVec2(555, 252));
         ImGui::Text("AVhook");
@@ -291,7 +298,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-            ImGui::ColorEdit4("Background color", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Background overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
         }
 
         else if (settings::menu == 5) // trigger
@@ -324,7 +331,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         
     }
-    drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
     ImGui::EndFrame();
     colorfix.RestoreRenderState();

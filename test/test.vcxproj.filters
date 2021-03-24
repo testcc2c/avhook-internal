@@ -16,23 +16,8 @@
     <Filter Include="Работа с памятью">
       <UniqueIdentifier>{83f8c3ef-1e11-4d14-a5a7-26b2bae1952e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Взлом">
-      <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Взлом\Bunny Hop">
-      <UniqueIdentifier>{13a40bf1-e8cd-4b76-865d-091271903df6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Взлом\Glow WH in Game">
-      <UniqueIdentifier>{437f29c6-11fb-447f-bc62-3186abb1c611}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Работа с памятью\SDK">
       <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Взлом\Abstract class">
-      <UniqueIdentifier>{b1dc7488-a061-4d86-bee2-0aae40abc5ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Взлом\Trigger bot">
-      <UniqueIdentifier>{6fa0f419-b44c-4c3b-b9d3-c0f763c3c958}</UniqueIdentifier>
     </Filter>
     <Filter Include="Работа с памятью\SDK\CBaseEntity">
       <UniqueIdentifier>{942dcf71-8979-4e37-917a-750e732dfde4}</UniqueIdentifier>
@@ -43,100 +28,115 @@
     <Filter Include="Работа с памятью\SDK\CLocalPlayer">
       <UniqueIdentifier>{392b22a4-d945-4181-98c9-622afb4be131}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал">
+    <Filter Include="Hacking features">
+      <UniqueIdentifier>{df480926-9fcd-4516-a6cc-9d5bdb276319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hacking features\Bunny Hop">
+      <UniqueIdentifier>{13a40bf1-e8cd-4b76-865d-091271903df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hacking features\Glow WH in Game">
+      <UniqueIdentifier>{437f29c6-11fb-447f-bc62-3186abb1c611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hacking features\Abstract class">
+      <UniqueIdentifier>{b1dc7488-a061-4d86-bee2-0aae40abc5ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hacking features\Trigger bot">
+      <UniqueIdentifier>{6fa0f419-b44c-4c3b-b9d3-c0f763c3c958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Visual stuff">
       <UniqueIdentifier>{0f933049-1151-48b0-b06f-3ab778db42dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\imgui">
+    <Filter Include="Visual stuff\imgui">
       <UniqueIdentifier>{9de47536-533c-4ade-8e83-5ebc8e246666}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\kiero">
+    <Filter Include="Visual stuff\kiero">
       <UniqueIdentifier>{8485b172-0c99-4088-9463-371a35d07def}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\настройки">
+    <Filter Include="Visual stuff\настройки">
       <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\DirectX">
+    <Filter Include="Visual stuff\DirectX">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\DirectX\DX9ColorFix">
+    <Filter Include="Visual stuff\DirectX\DX9ColorFix">
       <UniqueIdentifier>{fea179df-9cd8-44dc-806b-53e111724890}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Визуал\DirectX\ESPDrawer">
+    <Filter Include="Visual stuff\DirectX\ESPDrawer">
       <UniqueIdentifier>{95953034-9d42-431e-8d1a-73887f9205d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_dx9.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_win32.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClInclude>
     <ClInclude Include="kiero\kiero.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\hde32.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\hde64.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\pstdint.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\table32.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\hde\table64.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\buffer.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\trampoline.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\include\MinHook.h">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
-      <Filter>Визуал\настройки</Filter>
+      <Filter>Visual stuff\настройки</Filter>
     </ClInclude>
     <ClInclude Include="offsets.h">
-      <Filter>Взлом</Filter>
+      <Filter>Hacking features</Filter>
     </ClInclude>
     <ClInclude Include="bhop.h">
-      <Filter>Взлом\Bunny Hop</Filter>
+      <Filter>Hacking features\Bunny Hop</Filter>
     </ClInclude>
     <ClInclude Include="GlowWhInGame.h">
-      <Filter>Взлом\Glow WH in Game</Filter>
+      <Filter>Hacking features\Glow WH in Game</Filter>
     </ClInclude>
     <ClInclude Include="hack.h">
-      <Filter>Взлом\Abstract class</Filter>
+      <Filter>Hacking features\Abstract class</Filter>
     </ClInclude>
     <ClInclude Include="TriggerBot.h">
-      <Filter>Взлом\Trigger bot</Filter>
+      <Filter>Hacking features\Trigger bot</Filter>
     </ClInclude>
     <ClInclude Include="Vec3.h">
       <Filter>Работа с памятью\SDK</Filter>
@@ -157,66 +157,66 @@
       <Filter>Работа с памятью\SDK\CLocalPlayer</Filter>
     </ClInclude>
     <ClInclude Include="DX9ColorFix.h">
-      <Filter>Визуал\DirectX\DX9ColorFix</Filter>
+      <Filter>Visual stuff\DirectX\DX9ColorFix</Filter>
     </ClInclude>
     <ClInclude Include="ESPDrawer.h">
-      <Filter>Визуал\DirectX\ESPDrawer</Filter>
+      <Filter>Visual stuff\DirectX\ESPDrawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Визуал\imgui</Filter>
+      <Filter>Visual stuff\imgui</Filter>
     </ClCompile>
     <ClCompile Include="kiero\kiero.cpp">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hde\hde32.c">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hde\hde64.c">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\buffer.c">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\hook.c">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="kiero\minhook\src\trampoline.c">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="bhop.cpp">
-      <Filter>Взлом\Bunny Hop</Filter>
+      <Filter>Hacking features\Bunny Hop</Filter>
     </ClCompile>
     <ClCompile Include="GlowWhInGame.cpp">
-      <Filter>Взлом\Glow WH in Game</Filter>
+      <Filter>Hacking features\Glow WH in Game</Filter>
     </ClCompile>
     <ClCompile Include="hack.cpp">
-      <Filter>Взлом\Abstract class</Filter>
+      <Filter>Hacking features\Abstract class</Filter>
     </ClCompile>
     <ClCompile Include="TriggerBot.cpp">
-      <Filter>Взлом\Trigger bot</Filter>
+      <Filter>Hacking features\Trigger bot</Filter>
     </ClCompile>
     <ClCompile Include="CBaseEntity.cpp">
       <Filter>Работа с памятью\SDK\CBaseEntity</Filter>
@@ -228,20 +228,20 @@
       <Filter>Работа с памятью\SDK\CLocalPlayer</Filter>
     </ClCompile>
     <ClCompile Include="DX9ColorFix.cpp">
-      <Filter>Визуал\DirectX\DX9ColorFix</Filter>
+      <Filter>Visual stuff\DirectX\DX9ColorFix</Filter>
     </ClCompile>
     <ClCompile Include="ESPDrawer.cpp">
-      <Filter>Визуал\DirectX\ESPDrawer</Filter>
+      <Filter>Visual stuff\DirectX\ESPDrawer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kiero\minhook\dll_resources\MinHook.def">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="kiero\minhook\dll_resources\MinHook.rc">
-      <Filter>Визуал\kiero</Filter>
+      <Filter>Visual stuff\kiero</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>
