@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 
 #include <d3d9.h>
@@ -123,8 +122,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     int height = rect.bottom - rect.top;
 
 
-    drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
-
     // отрисовка esp
     for (short int i = 1; i < 32; i++)
     {
@@ -192,7 +189,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-
+        
         }
 
     }
@@ -206,7 +203,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         char buffer[50];
 
         time_t current_time = time(NULL);
-        sprintf_s(buffer, "%s" , ctime(&current_time));
+        ctime_s(buffer, 26, &current_time);
+
         drawlist->AddText(ImVec2(1, 20), ImColor(255, 255, 255), buffer);
 
         // основное окно
@@ -320,6 +318,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
         ImGui::End();
 
+
         if (settings::misc::nullcorelogo)
         {
             drawlist->AddImage((void*)textures[1], ImVec2((width / 2) - 150, 20), ImVec2(300 + (width / 2) - 150, 180));
@@ -331,6 +330,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         
     }
+    drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
     ImGui::EndFrame();
     colorfix.RestoreRenderState();
@@ -470,6 +470,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 
             CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
             CBaseEntity* entity = localPlayer->GetClosestEnity();
+
             if (localPlayer->m_iTeamNum != entity->m_iTeamNum)
                 localPlayer->AimAt(entity, bone, 10, true);
         }
