@@ -15,7 +15,7 @@ public:
 		DEFINE_MEMBER_N(viewmatrix, dwViewmatrix, signatures::dwViewMatrix);
 
 	};
-	static ImVec3 WorldToScreen(const ImVec3 pos, viewmatrix matrix);
+	ImVec3 WorldToScreen(const ImVec3 pos);
 
 
 };

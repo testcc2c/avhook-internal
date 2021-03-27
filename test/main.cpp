@@ -104,9 +104,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     if (GetAsyncKeyState(VK_INSERT) & 1)
         settings::isOpen = !settings::isOpen;
 
-    if (GetAsyncKeyState(VK_ESCAPE) & 1)
-        settings::isOpen = false;
-
     DX9ColorFix colorfix(pDevice);
     colorfix.RemoveColorFilter();
 
@@ -133,7 +130,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
             CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
 
-            if (client->WorldToScreen(Entity->m_vecOrigin, client->dwViewmatrix).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
+            if (client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
                 continue;
 
             if (settings::SnapLinesESP::on)
@@ -151,7 +148,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                     pos = Entity->m_vecOrigin;
                     break;
                 }
-                ImVec3 screen = client->WorldToScreen(pos, client->dwViewmatrix);
+                ImVec3 screen = client->WorldToScreen(pos);
                 ImVec2 start = ImVec2(width / 2, height);
 
                 if (!settings::SnapLinesESP::selected_colormode)
@@ -162,18 +159,21 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
             if (settings::BoxEsp::on)
             {
-                ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin, client->dwViewmatrix);
+                ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin);
                 ImVec3 playerhead = Entity->GetBonePosition(8);
 
                 playerhead.z += 7.9f;
-                playerhead = client->WorldToScreen(playerhead, client->dwViewmatrix);
+                playerhead = client->WorldToScreen(playerhead);
 
-                if (!settings::BoxEsp::selected_colormode)
-                    drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-                    settings::SnapLinesESP::Color, settings::BoxEsp::drawHpValue);
-                else
-                    drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
-               
+                if (playerhead.z > 0.01f)
+                {
+                    if (!settings::BoxEsp::selected_colormode)
+                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
+                            settings::SnapLinesESP::Color, settings::BoxEsp::drawHpValue);
+                    else
+                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
+
+                }
             }
 
             if (settings::SkeletonESP::showbones)

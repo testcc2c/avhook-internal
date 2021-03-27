@@ -5,10 +5,10 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, b
 {
     ClientBase* client = (ClientBase*)GetModuleHandle(L"client.dll");
 
-    ImVec3 up = client->WorldToScreen(entity->m_vecOrigin, client->dwViewmatrix);
+    ImVec3 up = client->WorldToScreen(entity->m_vecOrigin);
     ImVec3 headpos = entity->GetBonePosition(BONE_HEAD); 
     headpos.z += 7.9;
-    ImVec3 bottom = client->WorldToScreen(headpos, client->dwViewmatrix);
+    ImVec3 bottom = client->WorldToScreen(headpos);
 
     int height = ABS(up.y - bottom.y);
 
@@ -46,7 +46,7 @@ void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
     {
 
         sprintf_s(bon_id_char, "%d", bone_id);
-        ImVec3 bone_pos = client->WorldToScreen(entity->GetBonePosition(bone_id), client->dwViewmatrix);
+        ImVec3 bone_pos = client->WorldToScreen(entity->GetBonePosition(bone_id));
         this->AddText(bone_pos, ImColor(255, 255, 255), bon_id_char);
 
     }
