@@ -46,8 +46,7 @@ void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
     {
 
         sprintf_s(bon_id_char, "%d", bone_id);
-        ImVec3 bone_pos = client->WorldToScreen(entity->GetBonePosition(bone_id));
-        this->AddText(bone_pos, ImColor(255, 255, 255), bon_id_char);
+        this->AddText(client->WorldToScreen(entity->GetBonePosition(bone_id)), ImColor(255, 255, 255), bon_id_char);
 
     }
 }

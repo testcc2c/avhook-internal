@@ -289,14 +289,19 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
             ImGui::Text("Menu configuration");
             ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Background overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
         }
 
@@ -388,12 +393,10 @@ DWORD WINAPI MainThread(HMODULE hModule)
         kiero::unbind(41);
         kiero::shutdown();
 
-        Sleep(1000);
+        Sleep(2000);
         
 	}
     FreeLibraryAndExitThread(hModule, NULL);
-
-    return NULL;
 }
 
 DWORD WINAPI Bhop(HMODULE hModule)
