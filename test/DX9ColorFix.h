@@ -21,6 +21,6 @@ private:
     DWORD old_block[sizeof back_up / sizeof DWORD];
 
     D3DVIEWPORT9 view_port;
-    static const int size = sizeof back_up / sizeof DWORD;
+    const int size = sizeof back_up / sizeof DWORD;
 };
 

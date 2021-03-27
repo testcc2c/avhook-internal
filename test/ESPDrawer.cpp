@@ -1,10 +1,7 @@
 #include "ESPDrawer.h"
-#include "ClientBase.h"
 
 
-// Simple helper function to load an image into a DX9 texture with common settings
-
-void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color)
+void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, bool drawHp)
 {
     ClientBase* client = (ClientBase*)GetModuleHandle(L"client.dll");
 
@@ -14,10 +11,6 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color)
     ImVec3 bottom = client->WorldToScreen(headpos, client->dwViewmatrix);
 
     int height = ABS(up.y - bottom.y);
-
-    char buffer[256];
-    _itoa_s(entity->m_iHealth, buffer, 10);
-
 
     ImVec2 topleft, topright;
     ImVec2 bottomLeft, bottomRight;
@@ -35,6 +28,26 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color)
     this->AddLine(topleft, bottomLeft, color, thickness);
     this->AddLine(topright, bottomRight, color, thickness);
 
-    bottomRight.x += 5;
-    this->AddText(bottomRight, entity->GetColorBasedOnHealth(), buffer);
+    if (drawHp)
+    {
+        bottomRight.x += 5;
+        char buffer[256];
+        _itoa_s(entity->m_iHealth, buffer, 10);
+        this->AddText(bottomRight, entity->GetColorBasedOnHealth(), buffer);
+    }
+}
+
+void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
+{
+    ClientBase* client = (ClientBase*)GetModuleHandle(L"client.dll");
+
+    char bon_id_char[20];
+    for (int bone_id = 0; bone_id < 80; bone_id++)
+    {
+
+        sprintf_s(bon_id_char, "%d", bone_id);
+        ImVec3 bone_pos = client->WorldToScreen(entity->GetBonePosition(bone_id), client->dwViewmatrix);
+        this->AddText(bone_pos, ImColor(255, 255, 255), bon_id_char);
+
+    }
 }

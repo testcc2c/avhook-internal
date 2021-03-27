@@ -127,17 +127,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
     {
         __try
         {
-            if (!settings::SnapLinesESP::on && !settings::BoxEsp::on)
+            if (!settings::SnapLinesESP::on && !settings::BoxEsp::on && !settings::SkeletonESP::on)
                 break;
-            RECT rect;
-
-            GetWindowRect(window, &rect);
-
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
 
             CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
             CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
+
+            if (client->WorldToScreen(Entity->m_vecOrigin, client->dwViewmatrix).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
+                continue;
 
             if (settings::SnapLinesESP::on)
             {
@@ -157,14 +154,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 ImVec3 screen = client->WorldToScreen(pos, client->dwViewmatrix);
                 ImVec2 start = ImVec2(width / 2, height);
 
-                if (screen.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
-                {
-                
-                    if (!settings::SnapLinesESP::selected_colormode)
-                        drawlist->AddLine(start, screen, settings::SnapLinesESP::Color, settings::SnapLinesESP::thicnes);
-                    else
-                        drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
-                }
+                if (!settings::SnapLinesESP::selected_colormode)
+                    drawlist->AddLine(start, screen, settings::SnapLinesESP::Color, settings::SnapLinesESP::thicnes);
+                else
+                    drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
             }
 
             if (settings::BoxEsp::on)
@@ -175,17 +168,18 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 playerhead.z += 7.9f;
                 playerhead = client->WorldToScreen(playerhead, client->dwViewmatrix);
 
-                if (origin.z >= 0.01f && playerhead.z >= 0.01f && Entity->m_iHealth > 0 && Entity->m_iTeamNum != localPlayer->m_iTeamNum && !Entity->m_bDormant)
-                {
-                    if (!settings::BoxEsp::selected_colormode)
-                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-                            settings::SnapLinesESP::Color);
-                    else
-                        drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth());
-                    
-                }
+                if (!settings::BoxEsp::selected_colormode)
+                    drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
+                    settings::SnapLinesESP::Color, settings::BoxEsp::drawHpValue);
+                else
+                    drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
+               
             }
 
+            if (settings::SkeletonESP::showbones)
+            {
+                drawlist->DrawBonesNumbers(Entity);
+            }
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
@@ -244,7 +238,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         }
         else if (settings::menu == 2) // esp sector
         {
-            ImGui::SetWindowSize(ImVec2(555, 400));
+
+            ImGui::SetWindowSize(ImVec2(555, 500));
 
             ImGui::Text("Extra Sensory Perception");
 
@@ -270,9 +265,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Boxes");
             ImGui::Checkbox("Active###Draw boxes", &settings::BoxEsp::on);
             ImGui::SameLine();
+            ImGui::Checkbox("HP value", &settings::BoxEsp::drawHpValue);
+            ImGui::SameLine();
             ImGui::ColorEdit4("Color###boxcolor", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
             ImGui::InputInt("###boxThickness", &settings::BoxEsp::thicnes);
             ImGui::Combo("###BoxEspDrawMode", &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
+
+            ImGui::Text("Skeleton");
+            ImGui::Checkbox("Active###Draw skeletones", &settings::SkeletonESP::on);
+            ImGui::Checkbox("Show bones", &settings::SkeletonESP::showbones);
         }
         else if (settings::menu == 3) //misc sector
         {

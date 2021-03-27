@@ -45,13 +45,15 @@ namespace settings
 
 		static const char* colormode[] = { "Custom", "Health" };
 		static int selected_colormode;
+		static bool drawHpValue;
 	}
 	namespace SkeletonESP
 	{
 		static bool on;
+		bool showbones;
+
 		static ImColor Color = ImColor(1.f, 0.f, 0.f, 1.f);
 		static int thicnes = 1;
-
 	}
 
 	// trigger bot
