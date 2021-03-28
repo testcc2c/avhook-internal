@@ -2,6 +2,6 @@
 
 Hack::Hack()
 {
-	this->clientbase = (DWORD)GetModuleHandle(L"client.dll");
+	this->clientbase = (ClientBase*)GetModuleHandle(L"client.dll");
 	this->enginebase = (DWORD)GetModuleHandle(L"engine.dll");
 }

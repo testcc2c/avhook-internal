@@ -29,7 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ctime>  
+#include <time.h>
+
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
@@ -57,7 +58,9 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	ImGuiIO& io = ImGui::GetIO();
 
 	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 15.0f, 0);
+    
 	ImGui_ImplWin32_Init(FindWindowA(NULL, WINDOW_NAME));
 	ImGui_ImplDX9_Init(pDevice);
 
@@ -117,7 +120,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
-
+    viewmatrix matrix = client->dwViewmatrix;
 
     // отрисовка esp
     for (short int i = 1; i < 32; i++)
@@ -169,7 +172,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
                 {
                     if (!settings::BoxEsp::selected_colormode)
                         drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-                            settings::SnapLinesESP::Color, settings::BoxEsp::drawHpValue);
+                            settings::BoxEsp::Color, settings::BoxEsp::drawHpValue);
                     else
                         drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
 
@@ -194,12 +197,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
         drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
 
         // выводим время
-        char buffer[50];
+        time_t now = time(NULL);
+        tm  tstruct;
+        char buf[80];
 
-        time_t current_time = time(NULL);
-        ctime_s(buffer, 26, &current_time);
-
-        drawlist->AddText(ImVec2(1, 20), ImColor(255, 255, 255), buffer);
+        localtime_s(&tstruct, &now);
+        strftime(buf, sizeof(buf), "%X", &tstruct);
+        drawlist->AddText(ImVec2(1, 15), ImColor(255, 255, 255), buf);
 
         // основное окно
         CBaseEntity* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
@@ -280,8 +284,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::Text("Misc configuration");
             ImGui::Checkbox("Bunny hop", &settings::bhop);
             ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
-            if (localPlayer != nullptr)
-                ImGui::SliderInt("FOV", &localPlayer->m_iDefaultFOV, 1, 120);
+            __try
+            {
+                ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+
+            }
         }
         else if (settings::menu == 4) // menu settings
         {
@@ -302,7 +312,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
             ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
             ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
             ImGui::SameLine();
-            ImGui::ColorEdit4("Background overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit4("Overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
         }
 
         else if (settings::menu == 5) // trigger

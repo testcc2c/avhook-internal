@@ -10,12 +10,12 @@ void InGameGlowEsp::HandleGlow(ImColor &enemyColor, ImColor &friendlyColor)
 {
 	__try
 	{
-		DWORD glowObject = *(DWORD*)(this->clientbase + signatures::dwGlowObjectManager);
+		DWORD glowObject = this->clientbase->dwGlowObjectManager;
 
-		CBaseEntity* LocalPlayer = *(CBaseEntity**)(this->clientbase + signatures::dwLocalPlayer);
+		CBaseEntity* LocalPlayer = this->clientbase->dwLocalPlayer;
 		for (short int i = 0; i < 32; i++)
 		{
-			CBaseEntity* Entity = *(CBaseEntity**)(this->clientbase + signatures::dwEntityList + i * 0x10);
+			CBaseEntity* Entity = *(CBaseEntity**)((DWORD)(this->clientbase) + signatures::dwEntityList + i * 0x10);
 			__try
 			{
 				if (!*this->mode)

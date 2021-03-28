@@ -1,4 +1,5 @@
 #include "CLocalPlayer.h"
+#include "ClientBase.h"
 
 void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool prediction)
 {

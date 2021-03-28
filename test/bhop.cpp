@@ -4,17 +4,15 @@ void BunnyHop::HandleBhop()
 {
     __try
     {
-        CBaseEntity* LocalPlayer = *(CBaseEntity**)(this->clientbase + signatures::dwLocalPlayer);
-        ClientBase* client = (ClientBase*)(this->clientbase);
 
         if (GetAsyncKeyState(VK_SPACE))
-            switch (LocalPlayer->m_fFlags)
+            switch (this->clientbase->dwLocalPlayer->m_fFlags)
             {
             case FL_ONGROUND:
             case FL_ONGROUND_DUCK:
-                client->dwForceJump = 5;
+                this->clientbase->dwForceJump = 5;
                 Sleep(10);
-                client->dwForceJump = 4;
+                this->clientbase->dwForceJump = 4;
                 break;
             }
     }

@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "ClientBase.h"
 
 class Hack
 {
@@ -7,7 +8,7 @@ public:
 	Hack();
 
 protected:
-	DWORD clientbase;
+	ClientBase* clientbase;
 	DWORD enginebase;
 
 };

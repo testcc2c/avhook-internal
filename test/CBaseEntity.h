@@ -4,7 +4,6 @@
 #include <Windows.h>
 #include <math.h>
 #include "imgui/imgui.h"
-#include "ClientBase.h"
 
 class CBaseEntity
 {
