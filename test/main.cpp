@@ -114,11 +114,11 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	ImGui::NewFrame();
 
 	RECT rect;
-
 	GetWindowRect(window, &rect);
 
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
+
 	viewmatrix matrix = client->dwViewmatrix;
 
 	// отрисовка esp
@@ -196,8 +196,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 		// затемнение когда меню открыто
 		drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
+		
 		// таск бар
-
 		ImGui::Begin("Task bar", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 		ImGui::SetWindowPos(ImVec2(0, height - 33));
 		ImGui::SetWindowSize(ImVec2(width, 2));
@@ -213,143 +213,156 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		ImGui::Text(buf);
 
 		ImGui::End();
-
-		ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-		ImGui::SetWindowSize(ImVec2(555, 252));
-		ImGui::Text("AVhook");
-
-		if (ImGui::Button("AIMBOT", ImVec2(102, 30)))
-			settings::menu::menutab = 1;
-
-		ImGui::SameLine();
-		if (ImGui::Button("TRIGGER", ImVec2(102, 30)))
-			settings::menu::menutab = 5;
-
-		ImGui::SameLine();
-		if (ImGui::Button("VISUALS", ImVec2(102, 30)))
-			settings::menu::menutab = 2;
-
-		ImGui::SameLine();
-		if (ImGui::Button("MISC", ImVec2(102, 30)))
-			settings::menu::menutab = 3;
-
-		ImGui::SameLine();
-		if (ImGui::Button("MENU", ImVec2(102, 30)))
-			settings::menu::menutab = 4;
-
-
-		if (settings::menu::menutab == 1) // aimbot sector
+		if (settings::menu::settings_menu)
 		{
-			ImGui::Text("Automatic Target Acquisition System");
+			ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::SetWindowSize(ImVec2(555, 252));
+			ImGui::Text("AVhook");
 
-			ImGui::Checkbox("Active", &settings::aimbot::on);
+			if (ImGui::Button("AIMBOT", ImVec2(102, 30)))
+				settings::menu::menutab = 1;
+
 			ImGui::SameLine();
-			ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
-			ImGui::Checkbox("Silent", &settings::aimbot::silent);
+			if (ImGui::Button("TRIGGER", ImVec2(102, 30)))
+				settings::menu::menutab = 5;
 
-		}
-		else if (settings::menu::menutab == 2) // esp sector
-		{
-
-			ImGui::SetWindowSize(ImVec2(555, 500));
-
-			ImGui::Text("Extra Sensory Perception");
-
-			ImGui::Text("Glow ESP");
-			ImGui::Checkbox("Active###Glow", &settings::inGameWallHack::on);
 			ImGui::SameLine();
-			ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+			if (ImGui::Button("VISUALS", ImVec2(102, 30)))
+				settings::menu::menutab = 2;
+
 			ImGui::SameLine();
+			if (ImGui::Button("MISC", ImVec2(102, 30)))
+				settings::menu::menutab = 3;
 
-			ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
-
-			ImGui::Combo("###GlowEspDrawMode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
-
-			ImGui::Text("Snap Lines");
-			ImGui::Checkbox("Active###Draw lines", &settings::SnapLinesESP::on);
 			ImGui::SameLine();
-			ImGui::ColorEdit4("Color###lineColor", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
+			if (ImGui::Button("MENU", ImVec2(102, 30)))
+				settings::menu::menutab = 4;
 
-			ImGui::InputInt("###lineThickness", &settings::SnapLinesESP::thicnes);
-			ImGui::Combo("###LinePoint", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
-			ImGui::Combo("###LineEspDrawMode", &settings::SnapLinesESP::selected_colormode, settings::SnapLinesESP::colormode, IM_ARRAYSIZE(settings::SnapLinesESP::colormode));
 
-			ImGui::Text("Boxes");
-			ImGui::Checkbox("Active###Draw boxes", &settings::BoxEsp::on);
-			ImGui::SameLine();
-			ImGui::Checkbox("HP value", &settings::BoxEsp::drawHpValue);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Color###boxcolor", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
-			ImGui::InputInt("###boxThickness", &settings::BoxEsp::thicnes);
-			ImGui::Combo("###BoxEspDrawMode", &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
-
-			ImGui::Text("Skeleton");
-			ImGui::Checkbox("Active###Draw skeletones", &settings::SkeletonESP::on);
-			ImGui::Checkbox("Show bones", &settings::SkeletonESP::showbones);
-		}
-		else if (settings::menu::menutab == 3) //misc sector
-		{
-			ImGui::Text("Misc configuration");
-			ImGui::Checkbox("Bunny hop", &settings::bhop);
-			ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
-			__try
+			if (settings::menu::menutab == 1) // aimbot sector
 			{
-				ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
-			}
-			__except (EXCEPTION_EXECUTE_HANDLER)
-			{
+				ImGui::Text("Automatic Target Acquisition System");
+
+				ImGui::Checkbox("Active", &settings::aimbot::on);
+				ImGui::SameLine();
+				ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
+				ImGui::Checkbox("Silent", &settings::aimbot::silent);
 
 			}
-		}
-		else if (settings::menu::menutab == 4) // menu settings
-		{
-			ImGui::SetWindowSize(ImVec2(555, 352));
+			else if (settings::menu::menutab == 2) // esp sector
+			{
 
-			ImGui::Text("Menu configuration");
-			ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
-			ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-			ImGui::SameLine();
-			ImGui::ColorEdit4("Overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
-		}
-		else if (settings::menu::menutab == 5) // trigger
-		{
-			ImGui::Text("Trigger bot.");
-			ImGui::Checkbox("Active", &settings::trigger_bot::on);
-			ImGui::SameLine();
-			ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
-			ImGui::SameLine();
-			ImGui::Checkbox("Prediction", &settings::trigger_bot::predict);
-			ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
-			ImGui::SliderInt("Prediction time", &settings::trigger_bot::predtime, 0, 1000);
-		}
-		else
-		{
-			ImGui::Text("Welcome!");
-		}
+				ImGui::SetWindowSize(ImVec2(555, 500));
 
-		ImGui::End();
+				ImGui::Text("Extra Sensory Perception");
 
+				ImGui::Text("Glow ESP");
+				ImGui::Checkbox("Active###Glow", &settings::inGameWallHack::on);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+
+				ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+
+				ImGui::Combo("###GlowEspDrawMode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
+
+				ImGui::Text("Snap Lines");
+				ImGui::Checkbox("Active###Draw lines", &settings::SnapLinesESP::on);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Color###lineColor", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
+
+				ImGui::InputInt("###lineThickness", &settings::SnapLinesESP::thicnes);
+				ImGui::Combo("###LinePoint", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
+				ImGui::Combo("###LineEspDrawMode", &settings::SnapLinesESP::selected_colormode, settings::SnapLinesESP::colormode, IM_ARRAYSIZE(settings::SnapLinesESP::colormode));
+
+				ImGui::Text("Boxes");
+				ImGui::Checkbox("Active###Draw boxes", &settings::BoxEsp::on);
+				ImGui::SameLine();
+				ImGui::Checkbox("HP value", &settings::BoxEsp::drawHpValue);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Color###boxcolor", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
+				ImGui::InputInt("###boxThickness", &settings::BoxEsp::thicnes);
+				ImGui::Combo("###BoxEspDrawMode", &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
+
+				ImGui::Text("Skeleton");
+				ImGui::Checkbox("Active###Draw skeletones", &settings::SkeletonESP::on);
+				ImGui::Checkbox("Show bones", &settings::SkeletonESP::showbones);
+			}
+			else if (settings::menu::menutab == 3) //misc sector
+			{
+				ImGui::Text("Misc configuration");
+				ImGui::Checkbox("Bunny hop", &settings::bhop);
+				ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
+				__try
+				{
+					ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
+				}
+				__except (EXCEPTION_EXECUTE_HANDLER)
+				{
+
+				}
+			}
+			else if (settings::menu::menutab == 4) // menu settings
+			{
+				ImGui::SetWindowSize(ImVec2(555, 352));
+
+				ImGui::Text("Menu configuration");
+				ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
+			}
+			else if (settings::menu::menutab == 5) // trigger
+			{
+				ImGui::Text("Trigger bot.");
+				ImGui::Checkbox("Active", &settings::trigger_bot::on);
+				ImGui::SameLine();
+				ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
+				ImGui::SameLine();
+				ImGui::Checkbox("Prediction", &settings::trigger_bot::predict);
+				ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
+				ImGui::SliderInt("Prediction time", &settings::trigger_bot::predtime, 0, 1000);
+			}
+			else
+			{
+				ImGui::Text("Welcome!");
+			}
+
+			ImGui::End();
+		}
 		if (settings::menu::start_menu)
 		{
 			ImGui::Begin("Start menu", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 			ImGui::SetWindowPos(ImVec2(0, height - 374));
 			ImGui::SetWindowSize(ImVec2(300, 342));
-			ImGui::Button("PLAYER LIST", ImVec2(100, 25));
-			ImGui::Button("SETTINGS", ImVec2(100, 25));
-			ImGui::Button("ABOUT", ImVec2(100, 25));
 
-			
+			ImGui::Button("PLAYER LIST", ImVec2(100, 25));
+			if (ImGui::Button("SETTINGS", ImVec2(100, 25)))
+				settings::menu::settings_menu = !settings::menu::settings_menu;
+
+			if (ImGui::Button("ABOUT", ImVec2(100, 25)))
+				settings::menu::about_menu = !settings::menu::about_menu;
+
+
+			ImGui::End();
+		}
+		if (settings::menu::about_menu)
+		{
+			ImGui::Begin("About", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::SetWindowSize(ImVec2(150, 300));
+			ImGui::Text("About");
+
 			ImGui::End();
 		}
 

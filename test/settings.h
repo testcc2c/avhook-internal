@@ -14,6 +14,8 @@ namespace settings
 		static bool isOpen;
 		static bool init = false;
 		static bool start_menu = false;
+		static bool about_menu = false;
+		static bool settings_menu = false;
 	}
 	// aimbot sector
 	namespace aimbot
@@ -29,7 +31,7 @@ namespace settings
 		static bool on;
 		static ImColor EnemyGlowColor = ImColor(1.f, 0.f, 0.f, 1.f);
 		static ImColor FriedndlyGlowColor = ImColor(0.f, 1.f, 0.f, 1.f);
-		static const char* glowmode[] = {"Custom", "Health"};
+		static const char* glowmode[] = { "Custom", "Health" };
 		static int selected_glow_mode;
 	}
 	namespace SnapLinesESP
@@ -80,5 +82,5 @@ namespace settings
 	// misc sector
 	static bool bhop;
 	static bool thirdperson;
-	
+
 }

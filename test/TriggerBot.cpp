@@ -1,6 +1,6 @@
 #include "TriggerBot.h"
 
-TriggerBot::TriggerBot(int* delay, bool* rage, bool *predict, int* predict_time)
+TriggerBot::TriggerBot(int* delay, bool* rage, bool* predict, int* predict_time)
 {
 	this->delay = delay;
 	this->rage = rage;
@@ -14,8 +14,8 @@ void TriggerBot::Handle()
 		CLocalPlayer* localplayer = this->clientbase->dwLocalPlayer;
 		CBaseEntity* entity = *(CBaseEntity**)((DWORD)(this->clientbase) + signatures::dwEntityList + ((localplayer->m_iCrosshairId - 1) * 0x10));
 
-		
-		if ( (localplayer->m_iTeamNum == entity->m_iTeamNum  or !entity->m_iHealth) or !localplayer->m_iCrosshairId)
+
+		if ((localplayer->m_iTeamNum == entity->m_iTeamNum or !entity->m_iHealth) or !localplayer->m_iCrosshairId)
 			return;
 
 		Sleep(*delay);
