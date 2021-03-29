@@ -4,12 +4,17 @@
 
 namespace settings
 {
-	// menu
-	static short int menu;
-	static bool isOpen;
-	static bool init;
 	static bool attach = true;
 	static bool render = true;
+
+	// menu
+	namespace menu
+	{
+		static short int menutab;
+		static bool isOpen;
+		static bool init = false;
+		static bool start_menu = false;
+	}
 	// aimbot sector
 	namespace aimbot
 	{

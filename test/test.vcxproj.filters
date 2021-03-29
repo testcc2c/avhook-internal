@@ -52,9 +52,6 @@
     <Filter Include="Visual stuff\kiero">
       <UniqueIdentifier>{8485b172-0c99-4088-9463-371a35d07def}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Visual stuff\настройки">
-      <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Visual stuff\DirectX">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,9 @@
     </Filter>
     <Filter Include="Visual stuff\DirectX\ESPDrawer">
       <UniqueIdentifier>{95953034-9d42-431e-8d1a-73887f9205d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Visual stuff\cheat settings">
+      <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,7 +121,7 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
-      <Filter>Visual stuff\настройки</Filter>
+      <Filter>Visual stuff\cheat settings</Filter>
     </ClInclude>
     <ClInclude Include="offsets.h">
       <Filter>Hacking features</Filter>
