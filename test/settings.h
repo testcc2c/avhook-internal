@@ -16,6 +16,7 @@ namespace settings
 		static bool start_menu = false;
 		static bool about_menu = false;
 		static bool settings_menu = false;
+		static bool player_list = false;
 	}
 	// aimbot sector
 	namespace aimbot
@@ -77,6 +78,7 @@ namespace settings
 	namespace misc
 	{
 		static bool nullcorelogo;
+		static bool wallpaper;
 		static ImColor backgrooundcolor = ImColor(0, 0, 0, 90);
 	}
 	// misc sector

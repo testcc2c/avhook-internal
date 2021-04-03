@@ -179,6 +179,7 @@
     <ClInclude Include="kiero\minhook\src\hde\table32.h" />
     <ClInclude Include="kiero\minhook\src\hde\table64.h" />
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
+    <ClInclude Include="memory.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="TriggerBot.h" />

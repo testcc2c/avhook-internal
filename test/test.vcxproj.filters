@@ -64,6 +64,9 @@
     <Filter Include="Visual stuff\cheat settings">
       <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\memory">
+      <UniqueIdentifier>{01097549-1e0f-46a1-8713-7141c76413c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -123,9 +126,6 @@
     <ClInclude Include="settings.h">
       <Filter>Visual stuff\cheat settings</Filter>
     </ClInclude>
-    <ClInclude Include="offsets.h">
-      <Filter>Hacking features</Filter>
-    </ClInclude>
     <ClInclude Include="bhop.h">
       <Filter>Hacking features\Bunny Hop</Filter>
     </ClInclude>
@@ -161,6 +161,12 @@
     </ClInclude>
     <ClInclude Include="ESPDrawer.h">
       <Filter>Visual stuff\DirectX\ESPDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="memory.h">
+      <Filter>Работа с памятью\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="offsets.h">
+      <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

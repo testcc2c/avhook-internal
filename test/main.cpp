@@ -1,4 +1,4 @@
-#include <Windows.h>
+п»ї#include <Windows.h>
 
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -28,6 +28,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <shellapi.h>
 
 #include <time.h>
 
@@ -38,6 +39,7 @@
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EndScene oEndScene;
@@ -45,10 +47,14 @@ WNDPROC oWndProc;
 
 ImVec4* theme;
 ClientBase* client;
+
 DWORD clientBase;
+
 HWND window;
 
-PDIRECT3DTEXTURE9 textures[3];
+PDIRECT3DTEXTURE9 logos[3];
+PDIRECT3DTEXTURE9 icons[3];
+
 ESPDrawer* drawlist;
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
@@ -59,7 +65,7 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 
 	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 15.0f, 0);
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Impact.ttf", 17.0f, 0);
 
 	ImGui_ImplWin32_Init(FindWindowA(NULL, WINDOW_NAME));
 	ImGui_ImplDX9_Init(pDevice);
@@ -96,8 +102,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	if (!settings::menu::init)
 	{
 		InitImGui(pDevice);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\AV.jpg", &textures[0]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\ncc_logo.png", &textures[1]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\AV.jpg", &logos[0]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\ncc_logo.png", &logos[1]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\bg.jpg", &logos[2]);
+
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\playerlist.jpg", &icons[0]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\settings.jpg", &icons[1]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\about.jpg", &icons[2]);
 		drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
 		settings::menu::init = true;
@@ -121,7 +132,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 	viewmatrix matrix = client->dwViewmatrix;
 
-	// отрисовка esp
+	// РѕС‚СЂРёСЃРѕРІРєР° esp
 	for (short int i = 1; i < 32; i++)
 	{
 		__try
@@ -194,10 +205,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	{
 		CBaseEntity* localPlayer = client->dwLocalPlayer;
 
-		// затемнение когда меню открыто
-		drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
+		if (!settings::misc::wallpaper)
+			drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
+		else
+			drawlist->AddImage(logos[2], ImVec2(0, 0), ImVec2(width, height));
 		
-		// таск бар
+		// С‚Р°СЃРє Р±Р°СЂ
 		ImGui::Begin("Task bar", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 		ImGui::SetWindowPos(ImVec2(0, height - 33));
 		ImGui::SetWindowSize(ImVec2(width, 2));
@@ -210,14 +223,24 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		tm  tstruct;
 		char buf[80]; localtime_s(&tstruct, &now); strftime(buf, sizeof(buf), "%X", &tstruct);
 		ImGui::SetCursorPos(ImVec2(width - 60, 7));
+
 		ImGui::Text(buf);
 
 		ImGui::End();
+
 		if (settings::menu::settings_menu)
 		{
 			ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 			ImGui::SetWindowSize(ImVec2(555, 252));
+
+			ImGui::Image(icons[1], ImVec2(16, 16));
+			ImGui::SameLine();
+
 			ImGui::Text("AVhook");
+
+			ImGui::SetCursorPos(ImVec2(555-25, 5));
+			if (ImGui::Button(" ", ImVec2(20, 20)))
+				settings::menu::settings_menu = false;
 
 			if (ImGui::Button("AIMBOT", ImVec2(102, 30)))
 				settings::menu::menutab = 1;
@@ -293,6 +316,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				ImGui::Text("Misc configuration");
 				ImGui::Checkbox("Bunny hop", &settings::bhop);
 				ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
+				ImGui::Checkbox("Custom wallpaper", &settings::misc::wallpaper);
 				__try
 				{
 					ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
@@ -347,10 +371,20 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			ImGui::SetWindowPos(ImVec2(0, height - 374));
 			ImGui::SetWindowSize(ImVec2(300, 342));
 
-			ImGui::Button("PLAYER LIST", ImVec2(100, 25));
+			ImGui::Image(icons[0], ImVec2(25, 25));
+			ImGui::SameLine();
+			if (ImGui::Button("PLAYER LIST", ImVec2(100, 25)))
+			{
+				settings::menu::player_list = !settings::menu::player_list;
+			}
+
+			ImGui::Image(icons[1], ImVec2(25, 25));
+			ImGui::SameLine();
 			if (ImGui::Button("SETTINGS", ImVec2(100, 25)))
 				settings::menu::settings_menu = !settings::menu::settings_menu;
 
+			ImGui::Image(icons[2], ImVec2(25, 25));
+			ImGui::SameLine();
 			if (ImGui::Button("ABOUT", ImVec2(100, 25)))
 				settings::menu::about_menu = !settings::menu::about_menu;
 
@@ -360,19 +394,63 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		if (settings::menu::about_menu)
 		{
 			ImGui::Begin("About", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-			ImGui::SetWindowSize(ImVec2(150, 300));
+			ImGui::SetWindowSize(ImVec2(180, 300));
+
+			ImGui::Image(icons[2], ImVec2(16, 16));
+			ImGui::SameLine();
+
+
 			ImGui::Text("About");
+
+			ImGui::SetCursorPos(ImVec2(180 - 25, 5));
+			if (ImGui::Button(" ", ImVec2(20, 20)))
+				settings::menu::about_menu = false;
+
+			if (ImGui::Button("VK group"))
+				ShellExecute(0, 0, L"https://vk.com/avhook", 0, 0, SW_SHOW);
+			if (ImGui::Button("Creator contacts"))
+				ShellExecute(0, 0, L"https://vk.com/nullifiedvlad", 0, 0, SW_SHOW);
+			ImGui::SetCursorPos(ImVec2(20, 280));
+			ImGui::Text("(C) Little Software Studio");
+			ImGui::End();
+		}
+		if (settings::menu::player_list)
+		{
+			ImGui::Begin("Player list", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::SetWindowSize(ImVec2(500, 300));
+
+			ImGui::Image(icons[0], ImVec2(16, 16));
+			ImGui::SameLine();
+
+			ImGui::Text("Player list");
+			ImGui::SetCursorPos(ImVec2(500 - 25, 5));
+			if (ImGui::Button(" ", ImVec2(20, 20)))
+				settings::menu::player_list = false;
+
+			for (int i = 1; i < 33; i++)
+			{
+				__try
+				{
+					CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
+					ImGui::Text("PLAYER-%d TEAM-ID: %d HEALTH: %d", i, Entity->m_iTeamNum, Entity->m_iHealth);
+				}
+				__except(EXCEPTION_EXECUTE_HANDLER)
+				{
+
+				}
+			}
 
 			ImGui::End();
 		}
 
+
 		if (settings::misc::nullcorelogo)
 		{
-			drawlist->AddImage((void*)textures[1], ImVec2((width / 2) - 150, 20), ImVec2(300 + (width / 2) - 150, 180));
+			drawlist->AddImage((void*)logos[1], ImVec2((width / 2) - 150, 20), ImVec2(300 + (width / 2) - 150, 180));
 		}
 		else
 		{
-			drawlist->AddImage((void*)textures[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
+			drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
 			drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
 		}
 
