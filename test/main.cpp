@@ -22,6 +22,7 @@
 #include "CLocalPlayer.h"
 #include "TriggerBot.h"
 #include "viewmatrix.h"
+#include "IClientEntityList.h"
 
 #include "CBaseEntity.h"
 
@@ -32,6 +33,7 @@
 
 #include <time.h>
 
+#include "types.h"
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
@@ -53,8 +55,13 @@ DWORD clientBase;
 HWND window;
 
 PDIRECT3DTEXTURE9 logos[3];
-PDIRECT3DTEXTURE9 icons[3];
 
+PDIRECT3DTEXTURE9 icons[6];
+// 0 - иконка списка игроков
+// 1 - иконка настроек
+// 3 - иконка about
+// 4 - иконка кт
+// 5 - иконка т
 ESPDrawer* drawlist;
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
@@ -109,6 +116,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\playerlist.jpg", &icons[0]);
 		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\settings.jpg", &icons[1]);
 		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\about.jpg", &icons[2]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\about.jpg", &icons[3]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\ct_icon.png", &icons[4]);
+		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\t_icon.png", &icons[5]);
 		drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
 		settings::menu::init = true;
@@ -400,16 +410,17 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			ImGui::SameLine();
 
 
-			ImGui::Text("About");
+			ImGui::Text("ABOUT");
 
 			ImGui::SetCursorPos(ImVec2(180 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::about_menu = false;
 
 			if (ImGui::Button("VK group"))
-				ShellExecute(0, 0, L"https://vk.com/avhook", 0, 0, SW_SHOW);
+				ShellExecute(0, 0, "https://vk.com/avhook", 0, 0, SW_SHOW);
 			if (ImGui::Button("Creator contacts"))
-				ShellExecute(0, 0, L"https://vk.com/nullifiedvlad", 0, 0, SW_SHOW);
+				ShellExecute(0, 0, "https://vk.com/nullifiedvlad", 0, 0, SW_SHOW);
+
 			ImGui::SetCursorPos(ImVec2(20, 280));
 			ImGui::Text("(C) Little Software Studio");
 			ImGui::End();
@@ -417,22 +428,32 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		if (settings::menu::player_list)
 		{
 			ImGui::Begin("Player list", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-			ImGui::SetWindowSize(ImVec2(500, 300));
+			ImGui::SetWindowSize(ImVec2(800, 500));
 
 			ImGui::Image(icons[0], ImVec2(16, 16));
 			ImGui::SameLine();
 
-			ImGui::Text("Player list");
-			ImGui::SetCursorPos(ImVec2(500 - 25, 5));
+			ImGui::Text("PLAYER LIST");
+			ImGui::SetCursorPos(ImVec2(800 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::player_list = false;
+
+			IClientEntityList* entlist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
 
 			for (int i = 1; i < 33; i++)
 			{
 				__try
 				{
-					CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-					ImGui::Text("PLAYER-%d TEAM-ID: %d HEALTH: %d", i, Entity->m_iTeamNum, Entity->m_iHealth);
+					CBaseEntity* ent = (CBaseEntity*)entlist->GetClientEntity(i);
+					if (ent->m_iTeamNum == 2)
+						ImGui::Image(icons[4], ImVec2(16, 16));
+					else
+						ImGui::Image(icons[5], ImVec2(16, 16));
+					ImGui::SameLine();
+					ImGui::Text("ID-%d   TEAM-ID:   %d   HEALTH:  ", i, ent->m_iTeamNum);
+					ImGui::SameLine();
+					ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
+
 				}
 				__except(EXCEPTION_EXECUTE_HANDLER)
 				{
@@ -486,12 +507,16 @@ DWORD WINAPI MainThread(HMODULE hModule)
 		kiero::init(kiero::RenderType::D3D9);
 		kiero::bind(42, (void**)&oEndScene, hkEndScene);
 
-		client = (ClientBase*)GetModuleHandle(L"client.dll");
-		clientBase = (DWORD)GetModuleHandle(L"client.dll");
+		IClientEntityList* entlist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
+
+		CBaseEntity* ent =  (CBaseEntity*)entlist->GetClientEntity(1);
+		
+		client = (ClientBase*)GetModuleHandle("client.dll");
+		clientBase = (DWORD)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		settings::attach = true;
 
-		PlaySound(L"avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
+		PlaySound("avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -500,7 +525,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
 		//remove imgui
 		settings::attach = false;
-		PlaySound(L"avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
+		PlaySound("avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX9_Shutdown();
 		ImGui::DestroyContext();

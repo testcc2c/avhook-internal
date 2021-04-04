@@ -3,8 +3,8 @@
 
 void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool prediction)
 {
-	DWORD engineModule = (DWORD)GetModuleHandle(L"engine.dll");
-	ClientBase* client = (ClientBase*)((DWORD)GetModuleHandle(L"client.dll"));
+	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
+	ClientBase* client = (ClientBase*)((DWORD)GetModuleHandle("client.dll"));
 	ImVec3 calculated;
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);

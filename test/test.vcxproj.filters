@@ -168,6 +168,12 @@
     <ClInclude Include="offsets.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="IClientEntityList.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">

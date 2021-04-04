@@ -38,7 +38,7 @@ CBaseEntity* CBaseEntity::GetClosestEnity()
 {
 	CBaseEntity* entitylist[32];
 
-	DWORD clientBase = (DWORD)GetModuleHandle(L"client.dll");
+	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
 	int counter = 0;
 
 	for (short int i = 1; i < 33; i++)
