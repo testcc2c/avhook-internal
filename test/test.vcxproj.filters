@@ -49,9 +49,6 @@
     <Filter Include="Visual stuff\imgui">
       <UniqueIdentifier>{9de47536-533c-4ade-8e83-5ebc8e246666}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Visual stuff\kiero">
-      <UniqueIdentifier>{8485b172-0c99-4088-9463-371a35d07def}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Visual stuff\DirectX">
       <UniqueIdentifier>{a528e633-3e23-48a0-8f6e-b785122dde90}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,9 @@
     </Filter>
     <Filter Include="Работа с памятью\memory">
       <UniqueIdentifier>{01097549-1e0f-46a1-8713-7141c76413c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Visual stuff\DirectX\DirectX9Device">
+      <UniqueIdentifier>{6da338b9-df3b-4eac-b737-cab856b66d6d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -92,33 +92,6 @@
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Visual stuff\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\kiero.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\hde32.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\hde64.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\pstdint.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\table32.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\table64.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\buffer.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\trampoline.h">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\include\MinHook.h">
-      <Filter>Visual stuff\kiero</Filter>
     </ClInclude>
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
@@ -174,6 +147,12 @@
     <ClInclude Include="IClientEntityList.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="IVEngineClient013.h">
+      <Filter>Работа с памятью\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX9VTableCreator.h">
+      <Filter>Visual stuff\DirectX\DirectX9Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -196,24 +175,6 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>Visual stuff\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\kiero.cpp">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hde\hde32.c">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hde\hde64.c">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\buffer.c">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hook.c">
-      <Filter>Visual stuff\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\trampoline.c">
-      <Filter>Visual stuff\kiero</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
@@ -245,15 +206,11 @@
     <ClCompile Include="ESPDrawer.cpp">
       <Filter>Visual stuff\DirectX\ESPDrawer</Filter>
     </ClCompile>
+    <ClCompile Include="DirectX9VTableCreator.cpp">
+      <Filter>Visual stuff\DirectX\DirectX9Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="kiero\minhook\dll_resources\MinHook.def">
-      <Filter>Visual stuff\kiero</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="kiero\minhook\dll_resources\MinHook.rc">
-      <Filter>Visual stuff\kiero</Filter>
-    </ResourceCompile>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

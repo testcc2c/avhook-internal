@@ -1,44 +1,55 @@
 #pragma once
 #include <Windows.h>
+#include <Psapi.h>
 
 #define NOP 0x90
 #define JUMP 0x9E
 
-void patch(BYTE* dst, BYTE* src, unsigned int size)
+ // \x8d\x47\x00\xf7\xdb\x1b\xdb\x23\xd8\x89\x5d\x00\x33\xf6\x89\x75\x00\x39\x73\x00\x75 xx ? xxxxxxxx ? xxxx ? xx ? x
+
+class Memory
 {
-	DWORD oProc;
+public:
+	static void patch(BYTE* dst, BYTE* src, unsigned int size)
+	{
+		DWORD oProc;
 
-	VirtualProtect(src, size, PAGE_EXECUTE_READWRITE, &oProc);
-	memcpy(dst, src, size);
-	VirtualProtect(src, size, oProc, &oProc);
-}
-bool hook(char* dst, char* src, int len)
-{
-	if (len < 5) return false;
-	DWORD oProc;
+		VirtualProtect(src, size, PAGE_EXECUTE_READWRITE, &oProc);
+		memcpy(dst, src, size);
+		VirtualProtect(src, size, oProc, &oProc);
+	}
 
-	VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oProc);
-	memset(src, NOP, len);
+	MODULEINFO GetModuleInfo(const char* szModule)
+	{
+		MODULEINFO modinfo = { 0 };
+		HMODULE hModule = GetModuleHandle(szModule);
+		if (hModule == 0)
+			return modinfo;
+		GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
+		return modinfo;
+	}
 
-	DWORD relative_addres = (DWORD)(dst - src - 5);
-	*src = (char)JUMP;
-	*(DWORD*)(src + 1) = (DWORD)relative_addres;
+	// for finding a signature/pattern in memory of another process
+	DWORD FindPattern(const char* module,const char* pattern,const  char* mask)
+	{
+		MODULEINFO mInfo = this->GetModuleInfo(module);
+		DWORD base = (DWORD)mInfo.lpBaseOfDll;
+		DWORD size = (DWORD)mInfo.SizeOfImage;
+		DWORD patternLength = (DWORD)strlen(mask);
 
-	VirtualProtect(src, len, oProc, &oProc);
-}
-char* trampolinehook(char* dst, char* src, int len)
-{
-	if (len < 5) return false;
-	char* gateway = (char*)VirtualAlloc(NULL, len + 5, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		for (DWORD i = 0; i < size - patternLength; i++)
+		{
+			bool found = true;
+			for (DWORD j = 0; j < patternLength; j++)
+			{
+				found &= mask[j] == '?' || pattern[j] == *(char*)(base + i + j);
+			}
+			if (found)
+			{
+				return base + i;
+			}
+		}
 
-	memcpy(gateway, src, len);
-	DWORD jumpAddr = (DWORD)(src - gateway - 5);
-	*(gateway + len) = (char)JUMP;
-	*(DWORD*)(gateway + len + 1) = jumpAddr;
-
-	if (hook(src, dst, len))
-		return gateway;
-
-	else return nullptr;
-
-}
+		return NULL;
+	}
+};

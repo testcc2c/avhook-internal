@@ -1,5 +1,7 @@
 #include "DX9ColorFix.h"
 
+
+
 DX9ColorFix::DX9ColorFix(LPDIRECT3DDEVICE9 pDevice)
 {
     this->pDevice = pDevice;

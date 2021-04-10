@@ -6,9 +6,6 @@
 #include <D3dx9tex.h>
 
 #include "ESPDrawer.h"
-#include "kiero/kiero.h"
-#include "kiero/minhook/include/MinHook.h"
-
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx9.h"
@@ -23,6 +20,7 @@
 #include "TriggerBot.h"
 #include "viewmatrix.h"
 #include "IClientEntityList.h"
+#include "IVEngineClient013.h"
 
 #include "CBaseEntity.h"
 
@@ -30,10 +28,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <shellapi.h>
-
+#include <detours.h>
 #include <time.h>
 
 #include "types.h"
+#include "DirectX9VTableCreator.h"
+#include "memory.h"
+
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
@@ -62,6 +63,7 @@ PDIRECT3DTEXTURE9 icons[6];
 // 3 - иконка about
 // 4 - иконка кт
 // 5 - иконка т
+
 ESPDrawer* drawlist;
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
@@ -500,20 +502,26 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 DWORD WINAPI MainThread(HMODULE hModule)
 {
+	Memory mem;
+	// НИВКОЕМ СЛУЧАЕ НЕ УБИРАЙ 0xF ТАК КАК ЭТО ПРИВЕДЕТ К НЕПРАВИЛЬНОМУ НАХОЖДЕНИЮ АДРЕССА!
+
+	DWORD end_scene_addr = mem.FindPattern("d3d9.dll",
+						   "\x8b\xdf\x8d\x47\x00\xf7\xdb\x1b\xdb\x23\xd8\x89\x5d\x00\x33\xf6\x89\x75\x00\x39\x73\x00\x75",
+						   "xxxx?xxxxxxxx?xxxx?xx?x") - 0xF;
+
 	window = FindWindowA(NULL, WINDOW_NAME);
 	if (window)
 	{
+		DetourTransactionBegin();
+		DetourAttach(&(LPVOID&)end_scene_addr, hkEndScene);
+		DetourTransactionCommit();
 
-		kiero::init(kiero::RenderType::D3D9);
-		kiero::bind(42, (void**)&oEndScene, hkEndScene);
+		oEndScene = (EndScene)end_scene_addr;
 
-		IClientEntityList* entlist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
-
-		CBaseEntity* ent =  (CBaseEntity*)entlist->GetClientEntity(1);
-		
 		client = (ClientBase*)GetModuleHandle("client.dll");
 		clientBase = (DWORD)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+
 		settings::attach = true;
 
 		PlaySound("avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
@@ -523,20 +531,18 @@ DWORD WINAPI MainThread(HMODULE hModule)
 			Sleep(500);
 		}
 
-		//remove imgui
+
 		settings::attach = false;
 		PlaySound("avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX9_Shutdown();
 		ImGui::DestroyContext();
 
-		//unhook wndproc
 		SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
-		//unhook kiero
-		kiero::unbind(41);
-		kiero::shutdown();
-
+		DetourTransactionBegin();
+		DetourDetach(&(LPVOID&)end_scene_addr, hkEndScene);
+		DetourTransactionCommit();
 		Sleep(2000);
 
 	}
