@@ -4,8 +4,8 @@
 class CLocalPlayer : public CBaseEntity
 {
 public:
-	void AimAt(CBaseEntity*& entity, int bone,int time = 1, bool prediction = false);
-
+	void AimAt(CBaseEntity*& entity, int bone, float speed = 999999.0f, bool prediction = false);
+	CBaseEntity* GetClosestTarget();
 private:
 
 };

@@ -7,7 +7,7 @@ class TriggerBot : public Hack
 {
 
 public:
-	TriggerBot(int* delay, bool* rage, bool* predict, int* predict_time);
+	TriggerBot(int* delay, bool* rage);
 	void Handle();
 private:
 	int* delay;

@@ -10,18 +10,50 @@
 class Memory
 {
 public:
-	static void patch(BYTE* dst, BYTE* src, unsigned int size)
+	void patch(BYTE* dst, BYTE* src, unsigned int size)
 	{
-		DWORD oProc;
-
-		VirtualProtect(src, size, PAGE_EXECUTE_READWRITE, &oProc);
+		DWORD oproc;
+		VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oproc);
 		memcpy(dst, src, size);
-		VirtualProtect(src, size, oProc, &oProc);
+		VirtualProtect(dst, size, oproc, &oproc);
+	}
+	bool detour32(char* src, char* dst, const intptr_t len)
+	{
+		if (len < 5) return false;
+
+		DWORD  curProtection;
+		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &curProtection);
+
+		intptr_t  relativeAddress = (intptr_t)(dst - (intptr_t)src) - 5;
+
+		*src = (char)'\xE9';
+		*(intptr_t*)((intptr_t)src + 1) = relativeAddress;
+
+		VirtualProtect(src, len, curProtection, &curProtection);
+		return true;
+	}
+
+	char* trampHook32(char* src, char* dst, const intptr_t len)
+	{
+		if (len < 5) return 0;
+
+		void* gateway = VirtualAlloc(0, len + 5, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+		memcpy(gateway, src, len);
+
+		intptr_t  gatewayRelativeAddr = ((intptr_t)src - (intptr_t)gateway) - 5;
+
+		*(char*)((intptr_t)gateway + len) = 0xE9;
+
+		*(intptr_t*)((intptr_t)gateway + len + 1) = gatewayRelativeAddr;
+		detour32(src, dst, len);
+
+		return (char*)gateway;
 	}
 
 	MODULEINFO GetModuleInfo(const char* szModule)
 	{
-		MODULEINFO modinfo = { 0 };
+		MODULEINFO modinfo { 0 };
 		HMODULE hModule = GetModuleHandle(szModule);
 		if (hModule == 0)
 			return modinfo;

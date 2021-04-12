@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <shellapi.h>
-#include <detours.h>
 #include <time.h>
 
 #include "types.h"
@@ -365,10 +364,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				ImGui::Checkbox("Active", &settings::trigger_bot::on);
 				ImGui::SameLine();
 				ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
-				ImGui::SameLine();
-				ImGui::Checkbox("Prediction", &settings::trigger_bot::predict);
 				ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
-				ImGui::SliderInt("Prediction time", &settings::trigger_bot::predtime, 0, 1000);
 			}
 			else
 			{
@@ -447,10 +443,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				__try
 				{
 					CBaseEntity* ent = (CBaseEntity*)entlist->GetClientEntity(i);
-					if (ent->m_iTeamNum == 2)
+
+					if (ent->m_iTeamNum == 3)
 						ImGui::Image(icons[4], ImVec2(16, 16));
 					else
 						ImGui::Image(icons[5], ImVec2(16, 16));
+
 					ImGui::SameLine();
 					ImGui::Text("ID-%d   TEAM-ID:   %d   HEALTH:  ", i, ent->m_iTeamNum);
 					ImGui::SameLine();
@@ -476,7 +474,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
 			drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
 		}
-
 	}
 	drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
@@ -500,31 +497,29 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 
-DWORD WINAPI MainThread(HMODULE hModule)
+DWORD WINAPI EntryPoint(HMODULE hModule)
 {
-	Memory mem;
-	// НИВКОЕМ СЛУЧАЕ НЕ УБИРАЙ 0xF ТАК КАК ЭТО ПРИВЕДЕТ К НЕПРАВИЛЬНОМУ НАХОЖДЕНИЮ АДРЕССА!
-
-	DWORD end_scene_addr = mem.FindPattern("d3d9.dll",
-						   "\x8b\xdf\x8d\x47\x00\xf7\xdb\x1b\xdb\x23\xd8\x89\x5d\x00\x33\xf6\x89\x75\x00\x39\x73\x00\x75",
-						   "xxxx?xxxxxxxx?xxxx?xx?x") - 0xF;
+	// НИ В КОЕМ СЛУЧАЕ НЕ УБИРАЙ 0xF ТАК КАК ЭТО ПРИВЕДЕТ К НЕПРАВИЛЬНОМУ НАХОЖДЕНИЮ АДРЕССА!
+	
+	DWORD end_scene_addr = (DWORD)GetModuleHandle("d3d9.dll") + 0x64130;
+	BYTE end_scene_bytes[7] = { 0 };
 
 	window = FindWindowA(NULL, WINDOW_NAME);
 	if (window)
 	{
-		DetourTransactionBegin();
-		DetourAttach(&(LPVOID&)end_scene_addr, hkEndScene);
-		DetourTransactionCommit();
-
-		oEndScene = (EndScene)end_scene_addr;
-
+		Memory mem;
 		client = (ClientBase*)GetModuleHandle("client.dll");
 		clientBase = (DWORD)GetModuleHandle("client.dll");
+
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 
 		settings::attach = true;
 
 		PlaySound("avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
+		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
+
+		oEndScene = (EndScene)mem.trampHook32((char*)end_scene_addr, (char*)hkEndScene, 7);
+		
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -534,16 +529,15 @@ DWORD WINAPI MainThread(HMODULE hModule)
 
 		settings::attach = false;
 		PlaySound("avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
+
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX9_Shutdown();
 		ImGui::DestroyContext();
 
 		SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
-		DetourTransactionBegin();
-		DetourDetach(&(LPVOID&)end_scene_addr, hkEndScene);
-		DetourTransactionCommit();
-		Sleep(2000);
+		mem.patch((BYTE*)(end_scene_addr), end_scene_bytes, 7);
+		Sleep(5000);
 
 	}
 	FreeLibraryAndExitThread(hModule, NULL);
@@ -560,7 +554,7 @@ DWORD WINAPI Bhop(HMODULE hModule)
 		else
 			Sleep(500);
 	}
-	return 0;
+	ExitThread(0);
 }
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
@@ -576,13 +570,13 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 			Sleep(1);
 		}
 	}
-	return 0;
+	ExitThread(0);
 }
 
 DWORD WINAPI Trigger(HMODULE hModule)
 {
 	using namespace settings::trigger_bot;
-	TriggerBot triggerbot(&delay, &rage, &predict, &predtime);
+	TriggerBot triggerbot(&delay, &rage);
 
 	while (settings::attach)
 	{
@@ -591,7 +585,7 @@ DWORD WINAPI Trigger(HMODULE hModule)
 		else
 			Sleep(100);
 	}
-	return 0;
+	ExitThread(0);
 }
 
 DWORD WINAPI AimBot(HMODULE hModule)
@@ -599,9 +593,10 @@ DWORD WINAPI AimBot(HMODULE hModule)
 	int bone = 8;
 	while (settings::attach)
 	{
+		CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
 		__try
 		{
-			if (!settings::aimbot::on)
+			if (!settings::aimbot::on or localPlayer <= 0)
 			{
 				Sleep(500);
 				continue;
@@ -620,11 +615,10 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				break;
 			}
 
-			CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
-			CBaseEntity* entity = localPlayer->GetClosestEnity();
+			CBaseEntity* entity = localPlayer->GetClosestTarget();
 
 			if (localPlayer->m_iTeamNum != entity->m_iTeamNum)
-				localPlayer->AimAt(entity, bone, 10, true);
+				localPlayer->AimAt(entity, bone);
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
@@ -632,7 +626,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 		}
 
 	}
-	return 0;
+	ExitThread(0);
 }
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -641,7 +635,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 
 	case DLL_PROCESS_ATTACH:
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger, hModule, 0, nullptr);

@@ -34,39 +34,3 @@ ImColor CBaseEntity::GetColorBasedOnHealth()
 		return ImColor(221, 0, 255);
 }
 
-CBaseEntity* CBaseEntity::GetClosestEnity()
-{
-	CBaseEntity* entitylist[32];
-
-	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
-	int counter = 0;
-
-	for (short int i = 1; i < 33; i++)
-	{
-		__try
-		{
-			CBaseEntity* entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-			if (entity->m_iHealth > 0 and !entity->m_bDormant)
-				entitylist[counter++] = entity;
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-
-		}
-	}
-
-	for (short int i = 0; i < counter; i++)
-	{
-		for (short int j = 0; j < counter - 1; j++)
-		{
-			if (this->CalcDistaceToEntity(entitylist[j]) > this->CalcDistaceToEntity(entitylist[j + 1]))
-			{
-				CBaseEntity* temp = entitylist[j];
-				entitylist[j] = entitylist[j + 1];
-				entitylist[j + 1] = temp;
-			}
-		}
-
-	}
-	return entitylist[0];
-}

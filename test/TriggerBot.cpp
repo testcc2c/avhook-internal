@@ -1,6 +1,6 @@
 #include "TriggerBot.h"
 
-TriggerBot::TriggerBot(int* delay, bool* rage, bool* predict, int* predict_time)
+TriggerBot::TriggerBot(int* delay, bool* rage)
 {
 	this->delay = delay;
 	this->rage = rage;
@@ -20,7 +20,7 @@ void TriggerBot::Handle()
 
 		Sleep(*delay);
 		if (*this->rage)
-			localplayer->AimAt(entity, 8, *predict_time, *predict);
+			localplayer->AimAt(entity, 8);
 
 		this->clientbase->dwForceAttack = 6;
 		Sleep(20);

@@ -1,7 +1,7 @@
 #include "CLocalPlayer.h"
 #include "ClientBase.h"
 
-void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool prediction)
+void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool prediction)
 {
 	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
 	ClientBase* client = (ClientBase*)((DWORD)GetModuleHandle("client.dll"));
@@ -19,8 +19,8 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool predicti
 	float distance = this->CalcDistaceToEntity(entity);
 	if (prediction)
 	{
-		targetpos.x += entity->m_vecVelocity.x * (time / 1000.f);
-		targetpos.y += entity->m_vecVelocity.y * (time / 1000.f);
+		targetpos.x += entity->m_vecVelocity.x * (distance / speed);
+		targetpos.y += entity->m_vecVelocity.y * (distance / speed);
 
 		distance = sqrtf(powf(targetpos.x - myPos.x, 2) + powf(targetpos.y - myPos.y, 2) + powf(targetpos.z - myPos.z, 2));
 	}
@@ -33,6 +33,41 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, int time, bool predicti
 		angles->x = pitch;
 		angles->y = yaw;
 	}
-	if (prediction)
-		Sleep(time);
+}
+CBaseEntity* CLocalPlayer::GetClosestTarget()
+{
+	CBaseEntity* entitylist[32];
+
+	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
+	int counter = 0;
+
+	for (short int i = 1; i < 33; i++)
+	{
+		__try
+		{
+			CBaseEntity* entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
+
+			if (entity->m_iHealth > 0 and !entity->m_bDormant and this->m_iTeamNum != entity->m_iTeamNum)
+				entitylist[counter++] = entity;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+
+		}
+	}
+
+	for (short int i = 0; i < counter; i++)
+	{
+		for (short int j = 0; j < counter - 1; j++)
+		{
+			if (this->CalcDistaceToEntity(entitylist[j]) > this->CalcDistaceToEntity(entitylist[j + 1]))
+			{
+				CBaseEntity* temp = entitylist[j];
+				entitylist[j] = entitylist[j + 1];
+				entitylist[j + 1] = temp;
+			}
+		}
+
+	}
+	return entitylist[0];
 }
