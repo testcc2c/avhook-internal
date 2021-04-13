@@ -27,9 +27,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <shellapi.h>
 #include <time.h>
-
+#include <shlobj_core.h>
 #include "types.h"
 #include "DirectX9VTableCreator.h"
 #include "memory.h"
@@ -38,6 +39,13 @@
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
 
+
+#define T_ICON 101
+#define CT_ICON 102
+#define PLAYER_LIST_ICON 103
+#define SETTINGS_ICON 104
+#define ABOUT_ICON 105
+#define AV_LOGO 106
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -49,6 +57,7 @@ WNDPROC oWndProc;
 
 ImVec4* theme;
 ClientBase* client;
+HMODULE hmodule;
 
 DWORD clientBase;
 
@@ -56,12 +65,12 @@ HWND window;
 
 PDIRECT3DTEXTURE9 logos[3];
 
-PDIRECT3DTEXTURE9 icons[6];
+PDIRECT3DTEXTURE9 icons[5];
 // 0 - иконка списка игроков
 // 1 - иконка настроек
-// 3 - иконка about
-// 4 - иконка кт
-// 5 - иконка т
+// 2 - иконка about
+// 3 - иконка кт
+// 4 - иконка т
 
 ESPDrawer* drawlist;
 
@@ -105,21 +114,27 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 	if (!settings::attach)
 		return oEndScene(pDevice);
-
+	IClientEntityList* entitylist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
 
 	if (!settings::menu::init)
 	{
-		InitImGui(pDevice);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\AV.jpg", &logos[0]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\ncc_logo.png", &logos[1]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\photos\\bg.jpg", &logos[2]);
+		TCHAR path[256];
+		SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, NULL, path);
 
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\playerlist.jpg", &icons[0]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\settings.jpg", &icons[1]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\about.jpg", &icons[2]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\about.jpg", &icons[3]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\ct_icon.png", &icons[4]);
-		D3DXCreateTextureFromFileA(pDevice, "avhook\\icons\\t_icon.png", &icons[5]);
+		std::string path_to_wp = std::string(path);
+		path_to_wp += "\\Microsoft\\Windows\\Themes\\TranscodedWallpaper";
+
+		InitImGui(pDevice);
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(AV_LOGO), &logos[0]);
+
+		D3DXCreateTextureFromFileA(pDevice, path_to_wp.c_str(), &logos[2]);
+
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(PLAYER_LIST_ICON), &icons[0]);
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(SETTINGS_ICON), &icons[1]);
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(ABOUT_ICON), &icons[2]);
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON), &icons[3]);
+		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON), &icons[4]);
+
 		drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
 		settings::menu::init = true;
@@ -144,70 +159,64 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	viewmatrix matrix = client->dwViewmatrix;
 
 	// отрисовка esp
-	for (short int i = 1; i < 32; i++)
+	for (byte i = 1; i < 32; i++)
 	{
-		__try
+		CBaseEntity* Entity = (CBaseEntity*)entitylist->GetClientEntity(i);
+
+		CLocalPlayer* localPlayer = client->dwLocalPlayer;
+
+		if (!Entity or !localPlayer)
+			continue;
+
+		if (client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
+			continue;
+
+		if (settings::SnapLinesESP::on)
 		{
-			if (!settings::SnapLinesESP::on && !settings::BoxEsp::on && !settings::SkeletonESP::on)
+			ImVec3 pos;
+			switch (settings::SnapLinesESP::selectedBoneId)
+			{
+			case 0:
+				pos = Entity->GetBonePosition(BONE_HEAD);
 				break;
+			case 1:
+				pos = Entity->GetBonePosition(BONE_BODY);
+				break;
+			case 2:
+				pos = Entity->m_vecOrigin;
+				break;
+			}
+			ImVec3 screen = client->WorldToScreen(pos);
+			ImVec2 start = ImVec2(width / 2, height);
 
-			CBaseEntity* Entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-			CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
+			if (!settings::SnapLinesESP::selected_colormode)
+				drawlist->AddLine(start, screen, settings::SnapLinesESP::Color, settings::SnapLinesESP::thicnes);
+			else
+				drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
+		}
 
-			if (client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
-				continue;
+		if (settings::BoxEsp::on)
+		{
+			ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin);
+			ImVec3 playerhead = Entity->GetBonePosition(8);
 
-			if (settings::SnapLinesESP::on)
+			playerhead.z += 7.9f;
+			playerhead = client->WorldToScreen(playerhead);
+
+			if (playerhead.z > 0.01f)
 			{
-				ImVec3 pos;
-				switch (settings::SnapLinesESP::selectedBoneId)
-				{
-				case 0:
-					pos = Entity->GetBonePosition(BONE_HEAD);
-					break;
-				case 1:
-					pos = Entity->GetBonePosition(BONE_BODY);
-					break;
-				case 2:
-					pos = Entity->m_vecOrigin;
-					break;
-				}
-				ImVec3 screen = client->WorldToScreen(pos);
-				ImVec2 start = ImVec2(width / 2, height);
-
-				if (!settings::SnapLinesESP::selected_colormode)
-					drawlist->AddLine(start, screen, settings::SnapLinesESP::Color, settings::SnapLinesESP::thicnes);
+				if (!settings::BoxEsp::selected_colormode)
+					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
+						settings::BoxEsp::Color, settings::BoxEsp::drawHpValue);
 				else
-					drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
-			}
+					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
 
-			if (settings::BoxEsp::on)
-			{
-				ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin);
-				ImVec3 playerhead = Entity->GetBonePosition(8);
-
-				playerhead.z += 7.9f;
-				playerhead = client->WorldToScreen(playerhead);
-
-				if (playerhead.z > 0.01f)
-				{
-					if (!settings::BoxEsp::selected_colormode)
-						drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-							settings::BoxEsp::Color, settings::BoxEsp::drawHpValue);
-					else
-						drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
-
-				}
-			}
-
-			if (settings::SkeletonESP::showbones)
-			{
-				drawlist->DrawBonesNumbers(Entity);
 			}
 		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
 
+		if (settings::SkeletonESP::showbones)
+		{
+			drawlist->DrawBonesNumbers(Entity);
 		}
 
 	}
@@ -220,7 +229,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			drawlist->AddRectFilled(ImVec2(0, 0), ImVec2(width, height), settings::misc::backgrooundcolor);
 		else
 			drawlist->AddImage(logos[2], ImVec2(0, 0), ImVec2(width, height));
-		
+
 		// таск бар
 		ImGui::Begin("Task bar", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 		ImGui::SetWindowPos(ImVec2(0, height - 33));
@@ -233,8 +242,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		time_t now = time(NULL);
 		tm  tstruct;
 		char buf[80]; localtime_s(&tstruct, &now); strftime(buf, sizeof(buf), "%X", &tstruct);
-		ImGui::SetCursorPos(ImVec2(width - 60, 7));
 
+		ImGui::SetCursorPos(ImVec2(width - 50, 7));
 		ImGui::Text(buf);
 
 		ImGui::End();
@@ -249,7 +258,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 			ImGui::Text("AVhook");
 
-			ImGui::SetCursorPos(ImVec2(555-25, 5));
+			ImGui::SetCursorPos(ImVec2(555 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::settings_menu = false;
 
@@ -326,16 +335,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			{
 				ImGui::Text("Misc configuration");
 				ImGui::Checkbox("Bunny hop", &settings::bhop);
-				ImGui::Checkbox("NullCore joke logo", &settings::misc::nullcorelogo);
-				ImGui::Checkbox("Custom wallpaper", &settings::misc::wallpaper);
-				__try
-				{
-					ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
-				}
-				__except (EXCEPTION_EXECUTE_HANDLER)
-				{
+				ImGui::Checkbox("Desktop wallpaper", &settings::misc::wallpaper);
 
-				}
+				if (client->dwLocalPlayer)
+					ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
 			}
 			else if (settings::menu::menutab == 4) // menu settings
 			{
@@ -379,20 +382,14 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			ImGui::SetWindowPos(ImVec2(0, height - 374));
 			ImGui::SetWindowSize(ImVec2(300, 342));
 
-			ImGui::Image(icons[0], ImVec2(25, 25));
-			ImGui::SameLine();
 			if (ImGui::Button("PLAYER LIST", ImVec2(100, 25)))
 			{
 				settings::menu::player_list = !settings::menu::player_list;
 			}
 
-			ImGui::Image(icons[1], ImVec2(25, 25));
-			ImGui::SameLine();
 			if (ImGui::Button("SETTINGS", ImVec2(100, 25)))
 				settings::menu::settings_menu = !settings::menu::settings_menu;
 
-			ImGui::Image(icons[2], ImVec2(25, 25));
-			ImGui::SameLine();
 			if (ImGui::Button("ABOUT", ImVec2(100, 25)))
 				settings::menu::about_menu = !settings::menu::about_menu;
 
@@ -414,9 +411,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::about_menu = false;
 
-			if (ImGui::Button("VK group"))
+			if (ImGui::Button("VK GROUP"))
 				ShellExecute(0, 0, "https://vk.com/avhook", 0, 0, SW_SHOW);
-			if (ImGui::Button("Creator contacts"))
+			if (ImGui::Button("CREATOR"))
 				ShellExecute(0, 0, "https://vk.com/nullifiedvlad", 0, 0, SW_SHOW);
 
 			ImGui::SetCursorPos(ImVec2(20, 280));
@@ -436,44 +433,29 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::player_list = false;
 
-			IClientEntityList* entlist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
-
-			for (int i = 1; i < 33; i++)
+			for (byte i = 1; i < 33; i++)
 			{
-				__try
-				{
-					CBaseEntity* ent = (CBaseEntity*)entlist->GetClientEntity(i);
+				CBaseEntity* ent = (CBaseEntity*)entitylist->GetClientEntity(i);
 
-					if (ent->m_iTeamNum == 3)
-						ImGui::Image(icons[4], ImVec2(16, 16));
-					else
-						ImGui::Image(icons[5], ImVec2(16, 16));
+				if (!ent)
+					continue;
 
-					ImGui::SameLine();
-					ImGui::Text("ID-%d   TEAM-ID:   %d   HEALTH:  ", i, ent->m_iTeamNum);
-					ImGui::SameLine();
-					ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
+				if (ent->m_iTeamNum == 3)
+					ImGui::Image(icons[3], ImVec2(16, 16));
+				else
+					ImGui::Image(icons[4], ImVec2(16, 16));
 
-				}
-				__except(EXCEPTION_EXECUTE_HANDLER)
-				{
+				ImGui::SameLine();
+				ImGui::Text("ID-%d   TEAM-ID:   %d   HEALTH:  ", i, ent->m_iTeamNum);
+				ImGui::SameLine();
+				ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
 
-				}
 			}
 
 			ImGui::End();
 		}
-
-
-		if (settings::misc::nullcorelogo)
-		{
-			drawlist->AddImage((void*)logos[1], ImVec2((width / 2) - 150, 20), ImVec2(300 + (width / 2) - 150, 180));
-		}
-		else
-		{
-			drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
-			drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
-		}
+		drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
+		drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
 	}
 	drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
 
@@ -500,7 +482,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
 	// НИ В КОЕМ СЛУЧАЕ НЕ УБИРАЙ 0xF ТАК КАК ЭТО ПРИВЕДЕТ К НЕПРАВИЛЬНОМУ НАХОЖДЕНИЮ АДРЕССА!
-	
+
 	DWORD end_scene_addr = (DWORD)GetModuleHandle("d3d9.dll") + 0x64130;
 	BYTE end_scene_bytes[7] = { 0 };
 
@@ -519,7 +501,7 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
 
 		oEndScene = (EndScene)mem.trampHook32((char*)end_scene_addr, (char*)hkEndScene, 7);
-		
+
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -593,15 +575,15 @@ DWORD WINAPI AimBot(HMODULE hModule)
 	int bone = 8;
 	while (settings::attach)
 	{
-		CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
 		__try
 		{
-			if (!settings::aimbot::on or localPlayer <= 0)
+
+			if (!settings::aimbot::on)
 			{
 				Sleep(500);
 				continue;
 			}
-
+			CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
 			switch (settings::aimbot::selectedhitbox)
 			{
 			case 0:
@@ -635,6 +617,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 
 	case DLL_PROCESS_ATTACH:
+		hmodule = hModule;
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);

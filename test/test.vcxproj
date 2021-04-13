@@ -175,6 +175,7 @@
     <ClInclude Include="IVEngineClient013.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="offsets.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="types.h" />
@@ -203,6 +204,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="test.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\about.bmp" />
+    <Image Include="images\av_logo.bmp" />
+    <Image Include="images\ct-icon.bmp" />
+    <Image Include="images\player_list.bmp" />
+    <Image Include="images\settings.bmp" />
+    <Image Include="images\t-icon.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
