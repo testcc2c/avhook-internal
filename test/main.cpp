@@ -19,8 +19,10 @@
 #include "CLocalPlayer.h"
 #include "TriggerBot.h"
 #include "viewmatrix.h"
+
 #include "IClientEntityList.h"
 #include "IVEngineClient013.h"
+#include "IBaseClientDLL.h"
 
 #include "CBaseEntity.h"
 
@@ -114,6 +116,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 	if (!settings::attach)
 		return oEndScene(pDevice);
+
 	IClientEntityList* entitylist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
 
 	if (!settings::menu::init)
@@ -156,20 +159,39 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
 
-	viewmatrix matrix = client->dwViewmatrix;
 
 	// отрисовка esp
+
 	for (byte i = 1; i < 32; i++)
 	{
 		CBaseEntity* Entity = (CBaseEntity*)entitylist->GetClientEntity(i);
 
 		CLocalPlayer* localPlayer = client->dwLocalPlayer;
-
 		if (!Entity or !localPlayer)
 			continue;
+		viewmatrix matrix = client->dwViewmatrix;
 
 		if (client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
 			continue;
+
+		if (settings::BoxEsp::on)
+		{
+			ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin);
+			ImVec3 playerhead = Entity->GetBonePosition(8);
+
+			playerhead.z += 7.9f;
+			playerhead = client->WorldToScreen(playerhead);
+
+			if (playerhead.z > 0.01f)
+			{
+				if (!settings::BoxEsp::selected_colormode)
+					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
+						settings::BoxEsp::Color, settings::BoxEsp::drawHpValue);
+				else
+					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
+
+			}
+		}
 
 		if (settings::SnapLinesESP::on)
 		{
@@ -195,34 +217,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				drawlist->AddLine(start, screen, Entity->GetColorBasedOnHealth(), settings::SnapLinesESP::thicnes);
 		}
 
-		if (settings::BoxEsp::on)
-		{
-			ImVec3 origin = client->WorldToScreen(Entity->m_vecOrigin);
-			ImVec3 playerhead = Entity->GetBonePosition(8);
-
-			playerhead.z += 7.9f;
-			playerhead = client->WorldToScreen(playerhead);
-
-			if (playerhead.z > 0.01f)
-			{
-				if (!settings::BoxEsp::selected_colormode)
-					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes,
-						settings::BoxEsp::Color, settings::BoxEsp::drawHpValue);
-				else
-					drawlist->DrawBoxEsp(Entity, settings::BoxEsp::thicnes, Entity->GetColorBasedOnHealth(), settings::BoxEsp::drawHpValue);
-
-			}
-		}
 
 		if (settings::SkeletonESP::showbones)
-		{
 			drawlist->DrawBonesNumbers(Entity);
-		}
 
 	}
 
 	if (settings::menu::isOpen)
 	{
+
 		CBaseEntity* localPlayer = client->dwLocalPlayer;
 
 		if (!settings::misc::wallpaper)
@@ -472,19 +475,23 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
-	if (true && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
-		return true;
+	if (settings::menu::isOpen) 
+	{
 
+		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam); // handle keyboard input
+		return true; // block input for csgo if menu is shown
+	}
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
-	// НИ В КОЕМ СЛУЧАЕ НЕ УБИРАЙ 0xF ТАК КАК ЭТО ПРИВЕДЕТ К НЕПРАВИЛЬНОМУ НАХОЖДЕНИЮ АДРЕССА!
-
 	DWORD end_scene_addr = (DWORD)GetModuleHandle("d3d9.dll") + 0x64130;
 	BYTE end_scene_bytes[7] = { 0 };
+
+
+	DWORD engine_client = (DWORD)GetInterface("engine.dll", "VEngineClient014");
 
 	window = FindWindowA(NULL, WINDOW_NAME);
 	if (window)
@@ -492,7 +499,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 		Memory mem;
 		client = (ClientBase*)GetModuleHandle("client.dll");
 		clientBase = (DWORD)GetModuleHandle("client.dll");
-
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 
 		settings::attach = true;
@@ -562,7 +568,7 @@ DWORD WINAPI Trigger(HMODULE hModule)
 
 	while (settings::attach)
 	{
-		if (settings::trigger_bot::on and GetAsyncKeyState(VK_XBUTTON1))
+		if (on and GetAsyncKeyState(VK_XBUTTON1))
 			triggerbot.Handle();
 		else
 			Sleep(100);

@@ -162,6 +162,7 @@
     <ClInclude Include="EngineBase.h" />
     <ClInclude Include="GlowWhInGame.h" />
     <ClInclude Include="hack.h" />
+    <ClInclude Include="IBaseClientDLL.h" />
     <ClInclude Include="IClientEntityList.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

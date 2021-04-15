@@ -1,9 +1,11 @@
+#pragma once
+#include <Windows.h>
+
 #define PRINTF_FORMAT_STRING _Printf_format_string_
 #define SCANF_FORMAT_STRING _Scanf_format_string_impl_
 
 class IVEngineClient013
 {
-
 public:
 	// Find the model's surfaces that intersect the given sphere.
 	// Returns the number of surfaces filled in.
@@ -100,16 +102,16 @@ public:
 	//  numbered lines starting at position 0
 	virtual void				Con_NPrintf(int pos, PRINTF_FORMAT_STRING const char* fmt, ...) = 0;
 	// Similar to Con_NPrintf, but allows specifying custom text color and duration information
-	virtual void				Con_NXPrintf(const struct con_nprint_s* info, const char* fmt, ...) = 0;
+	virtual void				Con_NXPrintf(const struct con_nprint_s* info, PRINTF_FORMAT_STRING const char* fmt, ...) = 0;
 
 	// Is the specified world-space bounding box inside the view frustum?
 	virtual int					IsBoxVisible(const int& mins, const int& maxs) = 0;
 
 	// Is the specified world-space boudning box in the same PVS cluster as the view origin?
 	virtual int					IsBoxInViewCluster(const int& mins, const int& maxs) = 0;
-	
-		// Returns true if the specified box is outside of the view frustum and should be culled
-	_Printf_format_string_ virtual bool				CullBox(const int& mins, const int& maxs) = 0;
+
+	// Returns true if the specified box is outside of the view frustum and should be culled
+	virtual bool				CullBox(const int& mins, const int& maxs) = 0;
 
 	// Allow the sound system to paint additional data (during lengthy rendering operations) to prevent stuttering sound.
 	virtual void				Sound_ExtraUpdate(void) = 0;
@@ -293,4 +295,289 @@ public:
 
 	// This version does NOT check against FCVAR_CLIENTCMD_CAN_EXECUTE.
 	virtual void			ClientCmd_Unrestricted(const char* szCmdString) = 0;
+
+	// This used to be accessible through the cl_restrict_server_commands cvar.
+	// By default, Valve games restrict the server to only being able to execute commands marked with FCVAR_SERVER_CAN_EXECUTE.
+	// By default, mods are allowed to execute any server commands, and they can restrict the server's ability to execute client
+	// commands with this function.
+	virtual void			SetRestrictServerCommands(bool bRestrict) = 0;
+
+	// If set to true (defaults to true for Valve games and false for others), then IVEngineClient::ClientCmd
+	// can only execute things marked with FCVAR_CLIENTCMD_CAN_EXECUTE.
+	virtual void			SetRestrictClientCommands(bool bRestrict) = 0;
+
+	// Sets the client renderable for an overlay's material proxy to bind to
+	virtual void			SetOverlayBindProxy(int iOverlayID, void* pBindProxy) = 0;
+
+	virtual bool			CopyFrameBufferToMaterial(const char* pMaterialName) = 0;
+
+	// Matchmaking
+	virtual void			ChangeTeam(const char* pTeamName) = 0;
+
+	// Causes the engine to read in the user's configuration on disk
+	virtual void			ReadConfiguration(const bool readDefault = false) = 0;
+
+	virtual void SetAchievementMgr(int* pAchievementMgr) = 0;
+	virtual int* GetAchievementMgr() = 0;
+
+	virtual bool			MapLoadFailed(void) = 0;
+	virtual void			SetMapLoadFailed(bool bState) = 0;
+
+	virtual bool			IsLowViolence() = 0;
+	virtual const char* GetMostRecentSaveGame(void) = 0;
+	virtual void			SetMostRecentSaveGame(const char* lpszFilename) = 0;
+
+	virtual void			StartXboxExitingProcess() = 0;
+	virtual bool			IsSaveInProgress() = 0;
+	virtual int			OnStorageDeviceAttached(void) = 0;
+	virtual void			OnStorageDeviceDetached(void) = 0;
+
+	virtual void			ResetDemoInterpolation(void) = 0;
+
+	// Methods to set/get a gamestats data container so client & server running in same process can send combined data
+	virtual void SetGamestatsData(int* pGamestatsData) = 0;
+	virtual int* GetGamestatsData() = 0;
+
+#if defined( USE_SDL )
+	// we need to pull delta's from the cocoa mgr, the engine vectors this for us
+	virtual void GetMouseDelta(int& x, int& y, bool bIgnoreNextMouseDelta = false) = 0;
+#endif
+
+	// Sends a key values server command, not allowed from scripts execution
+	// Params:
+	//	pKeyValues	- key values to be serialized and sent to server
+	//				  the pointer is deleted inside the function: pKeyValues->deleteThis()
+	virtual void ServerCmdKeyValues(int* pKeyValues) = 0;
+
+	virtual bool IsSkippingPlayback(void) = 0;
+	virtual bool IsLoadingDemo(void) = 0;
+
+	// Returns true if the engine is playing back a "locally recorded" demo, which includes
+	// both SourceTV and replay demos, since they're recorded locally (on servers), as opposed
+	// to a client recording a demo while connected to a remote server.
+	virtual bool IsPlayingDemoALocallyRecordedDemo() = 0;
+
+	// Given the string pBinding which may be bound to a key, 
+	//  returns the string name of the key to which this string is bound. Returns NULL if no such binding exists
+	// Unlike Key_LookupBinding, leading '+' characters are not stripped from bindings.
+	virtual	const char* Key_LookupBindingExact(const char* pBinding) = 0;
+};
+class IBaseClientDLL
+{
+public:
+	// Called once when the client DLL is loaded
+	virtual int				Init(int appSystemFactory,
+		int physicsFactory,
+		int* pGlobals) = 0;
+
+	virtual void			PostInit() = 0;
+
+	// Called once when the client DLL is being unloaded
+	virtual void			Shutdown(void) = 0;
+
+	// Called once the client is initialized to setup client-side replay interface pointers
+	virtual bool			ReplayInit(int replayFactory) = 0;
+	virtual bool			ReplayPostInit() = 0;
+
+	// Called at the start of each level change
+	virtual void			LevelInitPreEntity(char const* pMapName) = 0;
+	// Called at the start of a new level, after the entities have been received and created
+	virtual void			LevelInitPostEntity() = 0;
+	// Called at the end of a level
+	virtual void			LevelShutdown(void) = 0;
+
+	// Request a pointer to the list of client datatable classes
+	virtual int* GetAllClasses(void) = 0;
+
+	// Called once per level to re-initialize any hud element drawing stuff
+	virtual int				HudVidInit(void) = 0;
+	// Called by the engine when gathering user input
+	virtual void			HudProcessInput(bool bActive) = 0;
+	// Called oncer per frame to allow the hud elements to think
+	virtual void			HudUpdate(bool bActive) = 0;
+	// Reset the hud elements to their initial states
+	virtual void			HudReset(void) = 0;
+	// Display a hud text message
+	virtual void			HudText(const char* message) = 0;
+
+	// Mouse Input Interfaces
+	// Activate the mouse (hides the cursor and locks it to the center of the screen)
+	virtual void			IN_ActivateMouse(void) = 0;
+	// Deactivates the mouse (shows the cursor and unlocks it)
+	virtual void			IN_DeactivateMouse(void) = 0;
+	// This is only called during extra sound updates and just accumulates mouse x, y offets and recenters the mouse.
+	//  This call is used to try to prevent the mouse from appearing out of the side of a windowed version of the engine if 
+	//  rendering or other processing is taking too long
+	virtual void			IN_Accumulate(void) = 0;
+	// Reset all key and mouse states to their initial, unpressed state
+	virtual void			IN_ClearStates(void) = 0;
+	// If key is found by name, returns whether it's being held down in isdown, otherwise function returns false
+	virtual bool			IN_IsKeyDown(const char* name, bool& isdown) = 0;
+	// Notify the client that the mouse was wheeled while in game - called prior to executing any bound commands.
+	virtual void			IN_OnMouseWheeled(int nDelta) = 0;
+	// Raw keyboard signal, if the client .dll returns 1, the engine processes the key as usual, otherwise,
+	//  if the client .dll returns 0, the key is swallowed.
+	virtual int				IN_KeyEvent(int eventcode, int keynum, const char* pszCurrentBinding) = 0;
+
+	// This function is called once per tick to create the player CUserCmd (used for prediction/physics simulation of the player)
+	// Because the mouse can be sampled at greater than the tick interval, there is a separate input_sample_frametime, which
+	//  specifies how much additional mouse / keyboard simulation to perform.
+	virtual void			CreateMove(
+		int sequence_number,			// sequence_number of this cmd
+		float input_sample_frametime,	// Frametime for mouse input sampling
+		bool active) = 0;				// True if the player is active (not paused)
+
+// If the game is running faster than the tick_interval framerate, then we do extra mouse sampling to avoid jittery input
+//  This code path is much like the normal move creation code, except no move is created
+	virtual void			ExtraMouseSample(float frametime, bool active) = 0;
+
+	// Encode the delta (changes) between the CUserCmd in slot from vs the one in slot to.  The game code will have
+	//  matching logic to read the delta.
+	virtual bool			WriteUsercmdDeltaToBuffer(int* buf, int from, int to, bool isnewcommand) = 0;
+	// Demos need to be able to encode/decode CUserCmds to memory buffers, so these functions wrap that
+	virtual void			EncodeUserCmdToBuffer(int& buf, int slot) = 0;
+	virtual void			DecodeUserCmdFromBuffer(int& buf, int slot) = 0;
+
+	// Set up and render one or more views (e.g., rear view window, etc.).  This called into RenderView below
+	virtual void			View_Render(int* rect) = 0;
+
+	// Allow engine to expressly render a view (e.g., during timerefresh)
+	// See IVRenderView.h, PushViewFlags_t for nFlags values
+	virtual void			RenderView(const int& view, int nClearFlags, int whatToDraw) = 0;
+
+	// Apply screen fade directly from engine
+	virtual void			View_Fade(int* pSF) = 0;
+
+	// The engine has parsed a crosshair angle message, this function is called to dispatch the new crosshair angle
+	virtual void			SetCrosshairAngle(const int& angle) = 0;
+
+	// Sprite (.spr) model handling code
+	// Load a .spr file by name
+	virtual void			InitSprite(int* pSprite, const char* loadname) = 0;
+	// Shutdown a .spr file
+	virtual void			ShutdownSprite(int* pSprite) = 0;
+	// Returns sizeof( CEngineSprite ) so the engine can allocate appropriate memory
+	virtual int				GetSpriteSize(void) const = 0;
+
+	// Called when a player starts or stops talking.
+	// entindex is -1 to represent the local client talking (before the data comes back from the server). 
+	// entindex is -2 to represent the local client's voice being acked by the server.
+	// entindex is GetPlayer() when the server acknowledges that the local client is talking.
+	virtual void			VoiceStatus(int entindex, int bTalking) = 0;
+
+	// Networked string table definitions have arrived, allow client .dll to 
+	//  hook string changes with a callback function ( see INetworkStringTableClient.h )
+	virtual void			InstallStringTableCallback(char const* tableName) = 0;
+
+	// Notification that we're moving into another stage during the frame.
+	virtual void			FrameStageNotify(int curStage) = 0;
+
+	// The engine has received the specified user message, this code is used to dispatch the message handler
+	virtual bool			DispatchUserMessage(int msg_type, int& msg_data) = 0;
+
+	// Save/restore system hooks
+	virtual int* SaveInit(int size) = 0;
+	virtual void			SaveWriteFields(int*, const char*, void*, int*, int*, int) = 0;
+	virtual void			SaveReadFields(int*, const char*, void*, int*, int*, int) = 0;
+	virtual void			PreSave(int*) = 0;
+	virtual void			Save(int*) = 0;
+	virtual void			WriteSaveHeaders(int*) = 0;
+	virtual void			ReadRestoreHeaders(int*) = 0;
+	virtual void			Restore(int*, bool) = 0;
+	virtual void			DispatchOnRestore() = 0;
+
+	// Hand over the StandardRecvProxies in the client DLL's module.
+	virtual int* GetStandardRecvProxies() = 0;
+
+	// save game screenshot writing
+	virtual void			WriteSaveGameScreenshot(const char* pFilename) = 0;
+
+	// Given a list of "S(wavname) S(wavname2)" tokens, look up the localized text and emit
+	//  the appropriate close caption if running with closecaption = 1
+	virtual void			EmitSentenceCloseCaption(char const* tokenstream) = 0;
+	// Emits a regular close caption by token name
+	virtual void			EmitCloseCaption(char const* captionname, float duration) = 0;
+
+	// Returns true if the client can start recording a demo now.  If the client returns false,
+	// an error message of up to length bytes should be returned in errorMsg.
+	virtual bool			CanRecordDemo(char* errorMsg, int length) const = 0;
+
+	// Give the Client a chance to do setup/cleanup.
+	virtual void			OnDemoRecordStart(char const* pDemoBaseName) = 0;
+	virtual void			OnDemoRecordStop() = 0;
+	virtual void			OnDemoPlaybackStart(char const* pDemoBaseName) = 0;
+	virtual void			OnDemoPlaybackStop() = 0;
+
+	// Draw the console overlay?
+	virtual bool			ShouldDrawDropdownConsole() = 0;
+
+	// Get client screen dimensions
+	virtual int				GetScreenWidth() = 0;
+	virtual int				GetScreenHeight() = 0;
+
+	// Added interface
+
+	// save game screenshot writing
+	virtual void			WriteSaveGameScreenshotOfSize(const char* pFilename, int width, int height, bool bCreatePowerOf2Padded = false, bool bWriteVTF = false) = 0;
+
+	// Gets the current view
+	virtual bool			GetPlayerView(int& playerView) = 0;
+
+	// Matchmaking
+	virtual void			SetupGameProperties() = 0;
+	virtual int			GetPresenceID(const char* pIDName) = 0;
+	virtual const char* GetPropertyIdString(const int id) = 0;
+	virtual void			GetPropertyDisplayString(int id, int value, char* pOutput, int nBytes) = 0;
+
+#ifdef WIN32
+	virtual void			StartStatsReporting(HANDLE handle, bool bArbitrated) = 0;
+#endif
+
+	virtual void			InvalidateMdlCache() = 0;
+
+	virtual void			IN_SetSampleTime(float frametime) = 0;
+
+
+	// For sv_pure mode. The filesystem figures out which files the client needs to reload to be "pure" ala the server's preferences.
+	virtual void			ReloadFilesInList(int* pFilesToReload) = 0;
+#ifdef POSIX
+	// AR: Same as above win32 defn but down here at the end of the vtable for back compat
+	virtual void			StartStatsReporting(HANDLE handle, bool bArbitrated) = 0;
+#endif
+
+	// Let the client handle UI toggle - if this function returns false, the UI will toggle, otherwise it will not.
+	virtual bool			HandleUiToggle() = 0;
+
+	// Allow the console to be shown?
+	virtual bool			ShouldAllowConsole() = 0;
+
+	// Get renamed recv tables
+	virtual int* GetRenamedRecvTableInfos() = 0;
+
+	// Get the mouthinfo for the sound being played inside UI panels
+	virtual int* GetClientUIMouthInfo() = 0;
+
+	// Notify the client that a file has been received from the game server
+	virtual void			FileReceived(const char* fileName, unsigned int transferID) = 0;
+
+	virtual const char* TranslateEffectForVisionFilter(const char* pchEffectType, const char* pchEffectName) = 0;
+
+	// Give the client a chance to modify sound settings however they want before the sound plays. This is used for
+	// things like adjusting pitch of voice lines in Pyroland in TF2.
+	virtual void			ClientAdjustStartSoundParams(struct StartSoundParams_t& params) = 0;
+
+	// Returns true if the disconnect command has been handled by the client
+	virtual bool DisconnectAttempt(void) = 0;
+
+	virtual bool IsConnectedUserInfoChangeAllowed(int* pCvar) = 0;
+};
+
+#define CLIENT_DLL_INTERFACE_VERSION		"VClient017"
+
+class IConsoleDisplayFunc
+{
+public:
+	virtual void ColorPrint(const int& clr, const char* pMessage) = 0;
+	virtual void Print(const char* pMessage) = 0;
+	virtual void DPrint(const char* pMessage) = 0;
 };

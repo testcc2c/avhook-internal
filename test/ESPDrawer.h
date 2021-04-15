@@ -4,6 +4,7 @@
 #include "CBaseEntity.h"
 #include "ClientBase.h"
 #include <stdio.h>
+#include <string>
 
 #define ABS(x) ((x < 0) ? (-x): (x))
 

@@ -40,7 +40,7 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, b
 void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
 {
     ClientBase* client = (ClientBase*)GetModuleHandle("client.dll");
-
+    
     char bon_id_char[20];
     for (int bone_id = 0; bone_id < 80; bone_id++)
     {
