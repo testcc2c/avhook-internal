@@ -1,6 +1,6 @@
 #include "DirectX9VTableCreator.h"
 
-bool DirectX9VTableCreator::GetD3D9Device(void** pTable, size_t size, HWND& window) 
+bool DirectX9VTableCreator::GetD3D9Device(void** pTable, size_t size, HWND window) 
 {
 	if (!pTable)
 		return false;

@@ -57,24 +57,15 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 EndScene oEndScene;
 WNDPROC oWndProc;
 
-ImVec4* theme;
 ClientBase* client;
 HMODULE hmodule;
-
-DWORD clientBase;
 
 HWND window;
 
 PDIRECT3DTEXTURE9 logos[3];
 
 PDIRECT3DTEXTURE9 icons[5];
-// 0 - иконка списка игроков
-// 1 - иконка настроек
-// 2 - иконка about
-// 3 - иконка кт
-// 4 - иконка т
 
-ESPDrawer* drawlist;
 
 inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -89,7 +80,7 @@ inline void InitImGui(LPDIRECT3DDEVICE9 pDevice)
 	ImGui_ImplWin32_Init(FindWindowA(NULL, WINDOW_NAME));
 	ImGui_ImplDX9_Init(pDevice);
 
-	theme = ImGui::GetStyle().Colors;
+	ImVec4* theme = ImGui::GetStyle().Colors;
 	theme[ImGuiCol_WindowBg] = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
 	theme[ImGuiCol_Button] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	theme[ImGuiCol_Tab] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
@@ -118,7 +109,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		return oEndScene(pDevice);
 
 	IClientEntityList* entitylist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
-
+	
 	if (!settings::menu::init)
 	{
 		TCHAR path[256];
@@ -138,13 +129,13 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON), &icons[3]);
 		D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON), &icons[4]);
 
-		drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
-
 		settings::menu::init = true;
 	}
 
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 		settings::menu::isOpen = !settings::menu::isOpen;
+
+	ESPDrawer* drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
 	DX9ColorFix colorfix(pDevice);
 	colorfix.RemoveColorFilter();
@@ -246,7 +237,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		tm  tstruct;
 		char buf[80]; localtime_s(&tstruct, &now); strftime(buf, sizeof(buf), "%X", &tstruct);
 
-		ImGui::SetCursorPos(ImVec2(width - 50, 7));
+		ImGui::SetCursorPos(ImVec2(width - 57, 7));
 		ImGui::Text(buf);
 
 		ImGui::End();
@@ -346,7 +337,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			else if (settings::menu::menutab == 4) // menu settings
 			{
 				ImGui::SetWindowSize(ImVec2(555, 352));
-
+				ImVec4* theme = ImGui::GetStyle().Colors;
 				ImGui::Text("Menu configuration");
 				ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
@@ -487,20 +478,21 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
-	DWORD end_scene_addr = (DWORD)GetModuleHandle("d3d9.dll") + 0x64130;
+	void* d3dDevice[119];
+	DWORD end_scene_addr;
 	BYTE end_scene_bytes[7] = { 0 };
 
+	DirectX9VTableCreator dx9;
 
 	DWORD engine_client = (DWORD)GetInterface("engine.dll", "VEngineClient014");
 
 	window = FindWindowA(NULL, WINDOW_NAME);
-	if (window)
+	if (dx9.GetD3D9Device(d3dDevice, sizeof(d3dDevice), window))
 	{
 		Memory mem;
+		end_scene_addr = (DWORD)d3dDevice[42];
 		client = (ClientBase*)GetModuleHandle("client.dll");
-		clientBase = (DWORD)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
-
 		settings::attach = true;
 
 		PlaySound("avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
@@ -589,7 +581,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				Sleep(500);
 				continue;
 			}
-			CLocalPlayer* localPlayer = *(CLocalPlayer**)(clientBase + signatures::dwLocalPlayer);
+			CLocalPlayer* localPlayer = *(CLocalPlayer**)((DWORD)client + signatures::dwLocalPlayer);
 			switch (settings::aimbot::selectedhitbox)
 			{
 			case 0:

@@ -8,7 +8,7 @@
 class DirectX9VTableCreator
 {
 public:
-	static bool GetD3D9Device(void** pTable, size_t size, HWND& window);
+	static bool GetD3D9Device(void** pTable, size_t size, HWND window);
 private:
 
 };
