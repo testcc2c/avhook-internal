@@ -1,0 +1,11 @@
+#pragma once
+#include "CBaseEntity.h"
+#include "ClientBase.h"
+#include "EngineBase.h"
+#include "offsets.h"
+#include "types.h"
+#include "IBaseClientDLL.h"
+#include "IClientEntityList.h"
+#include "IVEngineClient013.h"
+#include "viewmatrix.h"
+#include "Vec3.h"

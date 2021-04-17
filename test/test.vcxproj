@@ -112,6 +112,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,6 +177,7 @@
     <ClInclude Include="memory.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SDK.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="types.h" />

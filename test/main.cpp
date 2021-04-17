@@ -18,13 +18,7 @@
 #include "CBaseEntity.h"
 #include "CLocalPlayer.h"
 #include "TriggerBot.h"
-#include "viewmatrix.h"
 
-#include "IClientEntityList.h"
-#include "IVEngineClient013.h"
-#include "IBaseClientDLL.h"
-
-#include "CBaseEntity.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -33,10 +27,10 @@
 #include <shellapi.h>
 #include <time.h>
 #include <shlobj_core.h>
-#include "types.h"
+
 #include "DirectX9VTableCreator.h"
 #include "memory.h"
-
+#include "SDK.h"
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
@@ -469,8 +463,8 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	if (settings::menu::isOpen) 
 	{
 
-		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam); // handle keyboard input
-		return true; // block input for csgo if menu is shown
+		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+		return true;
 	}
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }

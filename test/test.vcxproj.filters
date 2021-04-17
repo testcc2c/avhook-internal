@@ -67,6 +67,9 @@
     <Filter Include="Visual stuff\DirectX\DirectX9Device">
       <UniqueIdentifier>{6da338b9-df3b-4eac-b737-cab856b66d6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Работа с памятью\SDK\Source SDK">
+      <UniqueIdentifier>{6d3c7d1c-8d8c-493f-a3b0-902f15a814ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -141,12 +144,6 @@
     <ClInclude Include="types.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="IClientEntityList.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="IVEngineClient013.h">
-      <Filter>Работа с памятью\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="DirectX9VTableCreator.h">
       <Filter>Visual stuff\DirectX\DirectX9Device</Filter>
     </ClInclude>
@@ -154,6 +151,15 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="IBaseClientDLL.h">
+      <Filter>Работа с памятью\SDK\Source SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="IClientEntityList.h">
+      <Filter>Работа с памятью\SDK\Source SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="IVEngineClient013.h">
+      <Filter>Работа с памятью\SDK\Source SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
   </ItemGroup>
