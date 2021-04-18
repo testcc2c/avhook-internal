@@ -17,6 +17,7 @@ public:
 		DEFINE_MEMBER_N(CLocalPlayer*, dwLocalPlayer, signatures::dwLocalPlayer);
 		DEFINE_MEMBER_N(DWORD, dwGlowObjectManager, signatures::dwGlowObjectManager);
 	};
+	// Transfer 3D position to 2D screen position
 	ImVec3 WorldToScreen(const ImVec3 pos);
 
 

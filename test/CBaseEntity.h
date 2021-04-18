@@ -2,8 +2,9 @@
 #include "offsets.h"
 #include "Vec3.h"
 #include <Windows.h>
-#include <math.h>
 #include "imgui/imgui.h"
+#include "TraceLine.h"
+#include "types.h"
 
 class CBaseEntity
 {
@@ -25,9 +26,19 @@ public:
 		DEFINE_MEMBER_N(ImVec3, m_vecVelocity, netvars::m_vecVelocity);
 		DEFINE_MEMBER_N(bool, m_bDormant, signatures::m_bDormant);
 	};
-
+	// Get position of bone like head, pelvis and etc...
 	ImVec3 GetBonePosition(int bone);
+	// Calc distance to entity
 	float CalcDistaceToEntity(CBaseEntity* entity);
+	/*
+	Get color based on entity health
+	Green - high health
+	Yellow - midle health
+	Red - low health
+	*/
 	ImColor GetColorBasedOnHealth();
-
+	// Get entity camera position
+	ImVec3 GetCameraPosition();
+	// Is enitity is visible?
+	bool isVisible();
 };

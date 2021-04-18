@@ -179,9 +179,11 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SDK.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="TraceLine.h" />
     <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="VectorAligned.h" />
     <ClInclude Include="viewmatrix.h" />
   </ItemGroup>
   <ItemGroup>

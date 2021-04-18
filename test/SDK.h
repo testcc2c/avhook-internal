@@ -9,3 +9,5 @@
 #include "IVEngineClient013.h"
 #include "viewmatrix.h"
 #include "Vec3.h"
+#include "TraceLine.h"
+#include "VectorAligned.h"

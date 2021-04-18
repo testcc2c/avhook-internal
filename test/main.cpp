@@ -152,11 +152,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		CBaseEntity* Entity = (CBaseEntity*)entitylist->GetClientEntity(i);
 
 		CLocalPlayer* localPlayer = client->dwLocalPlayer;
-		if (!Entity or !localPlayer)
-			continue;
+
 		viewmatrix matrix = client->dwViewmatrix;
 
-		if (client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
+		if (!Entity or !localPlayer or client->WorldToScreen(Entity->m_vecOrigin).z < 0.01f or Entity->m_iHealth <= 0 or Entity->m_iTeamNum == localPlayer->m_iTeamNum or Entity->m_bDormant)
 			continue;
 
 		if (settings::BoxEsp::on)
@@ -203,9 +202,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		}
 
 
-		if (settings::SkeletonESP::showbones)
-			drawlist->DrawBonesNumbers(Entity);
-
+		if (settings::SkeletonESP::on)
+		{
+			drawlist->DrawSkeleton(Entity, settings::SkeletonESP::Color, settings::SkeletonESP::thicnes);
+		}
 	}
 
 	if (settings::menu::isOpen)
@@ -317,7 +317,9 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 				ImGui::Text("Skeleton");
 				ImGui::Checkbox("Active###Draw skeletones", &settings::SkeletonESP::on);
-				ImGui::Checkbox("Show bones", &settings::SkeletonESP::showbones);
+				ImGui::SameLine();
+				ImGui::ColorEdit4("Color###SkeletColor", (float*)&settings::SkeletonESP::Color, ImGuiColorEditFlags_NoInputs);
+				ImGui::InputInt("###SkeletThickness", &settings::SkeletonESP::thicnes);
 			}
 			else if (settings::menu::menutab == 3) //misc sector
 			{
@@ -346,6 +348,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				ImGui::SameLine();
 				ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
 				ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4("Check mark", (float*)&theme[ImGuiCol_CheckMark], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
 				ImGui::ColorEdit4("Overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
 			}
@@ -473,18 +476,19 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
 	void* d3dDevice[119];
-	DWORD end_scene_addr;
+	DWORD end_scene_addr = (DWORD)(GetModuleHandle("d3d9.dll")) + 0x63130;
 	BYTE end_scene_bytes[7] = { 0 };
 
-	DirectX9VTableCreator dx9;
+	//DirectX9VTableCreator dx9;
 
 	DWORD engine_client = (DWORD)GetInterface("engine.dll", "VEngineClient014");
-
+	// dx9.GetD3D9Device(d3dDevice, sizeof(d3dDevice), window)
 	window = FindWindowA(NULL, WINDOW_NAME);
-	if (dx9.GetD3D9Device(d3dDevice, sizeof(d3dDevice), window))
+
+	if (window)
 	{
 		Memory mem;
-		end_scene_addr = (DWORD)d3dDevice[42];
+		//end_scene_addr = (DWORD)d3dDevice[42];
 		client = (ClientBase*)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		settings::attach = true;
@@ -591,7 +595,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 
 			CBaseEntity* entity = localPlayer->GetClosestTarget();
 
-			if (localPlayer->m_iTeamNum != entity->m_iTeamNum)
+			if (entity and localPlayer->m_iTeamNum != entity->m_iTeamNum)
 				localPlayer->AimAt(entity, bone);
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)

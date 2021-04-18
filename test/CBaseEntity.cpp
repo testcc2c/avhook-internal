@@ -1,5 +1,4 @@
 #include "CBaseEntity.h"
-
 ImVec3 CBaseEntity::GetBonePosition(int bone)
 {
 	DWORD pBone = this->boneMatrix;
@@ -34,3 +33,28 @@ ImColor CBaseEntity::GetColorBasedOnHealth()
 		return ImColor(221, 0, 255);
 }
 
+ImVec3 CBaseEntity::GetCameraPosition()
+{
+	return this->m_vecOrigin + this->m_vecViewOffset;
+}
+
+bool CBaseEntity::isVisible()
+{
+	CBaseEntity* localplayer = *(CBaseEntity**)((DWORD)GetModuleHandle("client.dll") + signatures::dwLocalPlayer);
+
+	IEngineTrace* EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient004");
+	CGameTrace trace;
+	Ray_t ray;
+	CTraceFilter tracefilter;
+	tracefilter.pSkip = (void*)localplayer;
+
+	ray.Init(localplayer->GetCameraPosition(), this->GetCameraPosition());
+
+	EngineTrace->TraceRay(ray, MASK_SHOT | CONTENTS_GRATE, &tracefilter, &trace);
+
+	if (this == trace.hit_entity)
+		return true;
+	else
+		return false;
+
+}

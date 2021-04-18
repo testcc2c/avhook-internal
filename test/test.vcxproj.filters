@@ -162,6 +162,12 @@
     <ClInclude Include="SDK.h">
       <Filter>Работа с памятью\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="TraceLine.h">
+      <Filter>Работа с памятью\SDK\Source SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorAligned.h">
+      <Filter>Работа с памятью\SDK\Source SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">

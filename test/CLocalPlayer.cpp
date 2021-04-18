@@ -1,10 +1,8 @@
 #include "CLocalPlayer.h"
-#include "ClientBase.h"
 
 void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool prediction)
 {
 	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
-	ClientBase* client = (ClientBase*)((DWORD)GetModuleHandle("client.dll"));
 	ImVec3 calculated;
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
@@ -39,14 +37,16 @@ CBaseEntity* CLocalPlayer::GetClosestTarget()
 	CBaseEntity* entitylist[32];
 
 	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
+	IClientEntityList* VClientEntityList = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
 	int counter = 0;
 
-	for (short int i = 1; i < 33; i++)
+	for (byte i = 1; i < 33; i++)
 	{
 		__try
 		{
-			CBaseEntity* entity = *(CBaseEntity**)(clientBase + signatures::dwEntityList + i * 0x10);
-
+			CBaseEntity* entity = (CBaseEntity*)VClientEntityList->GetClientEntity(i);
+			if (!entity)
+				continue;
 			if (entity->m_iHealth > 0 and !entity->m_bDormant and this->m_iTeamNum != entity->m_iTeamNum)
 				entitylist[counter++] = entity;
 		}

@@ -45,6 +45,7 @@ namespace settings
 		static const char* colormode[] = { "Custom", "Health" };
 		static int selected_colormode;
 	}
+
 	namespace BoxEsp
 	{
 		static bool on;
