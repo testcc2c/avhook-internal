@@ -48,9 +48,7 @@ WNDPROC oWndProc;
 ClientBase* client;
 HMODULE hmodule;
 
-
 PDIRECT3DTEXTURE9 logos[3];
-
 PDIRECT3DTEXTURE9 icons[5];
 
 
@@ -620,11 +618,11 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 
 	case DLL_PROCESS_ATTACH:
 		hmodule = hModule;
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint, hModule, 0, nullptr);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop, hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint,   hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,		   hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger, hModule, 0, nullptr);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot, hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	   hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,       hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		break;
