@@ -31,17 +31,11 @@
 #include "DirectX9VTableCreator.h"
 #include "memory.h"
 #include "SDK.h"
+#include "resource.h"
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
 
-
-#define T_ICON 101
-#define CT_ICON 102
-#define PLAYER_LIST_ICON 103
-#define SETTINGS_ICON 104
-#define ABOUT_ICON 105
-#define AV_LOGO 106
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -54,7 +48,6 @@ WNDPROC oWndProc;
 ClientBase* client;
 HMODULE hmodule;
 
-HWND window;
 
 PDIRECT3DTEXTURE9 logos[3];
 
@@ -139,7 +132,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	ImGui::NewFrame();
 
 	RECT rect;
-	GetWindowRect(window, &rect);
+	GetWindowRect(FindWindowA(NULL, WINDOW_NAME), &rect);
 
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
@@ -278,7 +271,8 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				ImGui::SameLine();
 				ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
 				ImGui::Checkbox("Silent", &settings::aimbot::silent);
-
+				ImGui::SameLine();
+				ImGui::InputInt("FOV", &settings::aimbot::fov);
 			}
 			else if (settings::menu::menutab == 2) // esp sector
 			{
@@ -475,15 +469,14 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
-	void* d3dDevice[119];
+	//void* d3dDevice[119];
 	DWORD end_scene_addr = (DWORD)(GetModuleHandle("d3d9.dll")) + 0x63130;
 	BYTE end_scene_bytes[7] = { 0 };
 
 	//DirectX9VTableCreator dx9;
 
-	DWORD engine_client = (DWORD)GetInterface("engine.dll", "VEngineClient014");
 	// dx9.GetD3D9Device(d3dDevice, sizeof(d3dDevice), window)
-	window = FindWindowA(NULL, WINDOW_NAME);
+	HWND window = FindWindowA(NULL, WINDOW_NAME);
 
 	if (window)
 	{
@@ -523,14 +516,13 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 
 DWORD WINAPI Bhop(HMODULE hModule)
 {
-	BunnyHop bhop = BunnyHop();
+	BunnyHop bhop;
 	while (settings::attach)
 	{
-
-		if (settings::bhop)
-			bhop.HandleBhop();
-		else
+		if (!settings::bhop)
 			Sleep(500);
+		else if (GetAsyncKeyState(VK_SPACE))
+			bhop.HandleBhop();
 	}
 	ExitThread(0);
 }
@@ -596,7 +588,21 @@ DWORD WINAPI AimBot(HMODULE hModule)
 			CBaseEntity* entity = localPlayer->GetClosestTarget();
 
 			if (entity and localPlayer->m_iTeamNum != entity->m_iTeamNum)
-				localPlayer->AimAt(entity, bone);
+			{
+				if (settings::aimbot::fov == 0)
+				{
+					localPlayer->AimAt(entity, bone); 
+					continue;
+				}
+				ImVec3* localAngles = localPlayer->GetViewAngles();
+				ImVec3  targetAngles = localPlayer->GetAimTargetAngles(entity, bone);
+				ImVec2 fov_target = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
+
+				if (fov_target.x <= settings::aimbot::fov and fov_target.y <= settings::aimbot::fov and fov_target.x >= -settings::aimbot::fov and fov_target.y >= -settings::aimbot::fov)
+				{
+					localPlayer->AimAt(entity, bone);
+				}
+			}
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{

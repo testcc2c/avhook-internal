@@ -23,6 +23,7 @@ namespace settings
 	{
 		static bool on;
 		static bool silent;
+		static int fov;
 		static const char* hitboxes[] = { "Head", "Body", "Legs" };
 		static int selectedhitbox;
 	}

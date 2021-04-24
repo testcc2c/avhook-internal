@@ -2,8 +2,6 @@
 
 void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool prediction)
 {
-	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
-	ImVec3 calculated;
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
 	ImVec3 myPos = this->m_vecOrigin;
@@ -12,7 +10,7 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool predi
 	
 
 
-	ImVec3* angles = (ImVec3*)(*(DWORD*)(engineModule + signatures::dwClientState) + signatures::dwClientState_ViewAngles);
+	ImVec3* angles = this->GetViewAngles();
 
 	float distance = this->CalcDistaceToEntity(entity);
 	if (prediction)
@@ -70,4 +68,27 @@ CBaseEntity* CLocalPlayer::GetClosestTarget()
 
 	}
 	return entitylist[0];
+}
+
+ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int bone)
+{
+	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
+	ImVec3 calculated;
+
+	ImVec3 targetpos = entity->GetBonePosition(bone);
+	ImVec3 myPos = this->m_vecOrigin;
+
+	myPos.z += this->m_vecViewOffset.z;
+
+	float distance = this->CalcDistaceToEntity(entity);
+	calculated.x = -asinf((targetpos.z - myPos.z) / distance) * (180 / 3.1415926f);
+	calculated.y = atan2f(targetpos.y - myPos.y, targetpos.x - myPos.x) * (180 / 3.1415926f);
+
+	return calculated;
+}
+
+ImVec3* CLocalPlayer::GetViewAngles()
+{
+	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
+	return (ImVec3*)(*(DWORD*)(engineModule + signatures::dwClientState) + signatures::dwClientState_ViewAngles);
 }

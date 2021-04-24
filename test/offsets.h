@@ -167,3 +167,5 @@ namespace signatures {
 	const DWORD set_abs_angles = 0x1DF9C0;
 	const DWORD set_abs_origin = 0x1DF800;
 } // namespace signatures
+
+ // namespace signatures

@@ -9,6 +9,14 @@
 #define IDB_BITMAP5                     105
 #define IDB_BITMAP6                     106
 
+#define T_ICON                          101
+#define CT_ICON                         102
+#define PLAYER_LIST_ICON                103
+#define SETTINGS_ICON                   104
+#define ABOUT_ICON						105
+#define AV_LOGO							106
+
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
