@@ -168,6 +168,9 @@
     <ClInclude Include="VectorAligned.h">
       <Filter>Работа с памятью\SDK\Source SDK</Filter>
     </ClInclude>
+    <ClInclude Include="xorstr.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">

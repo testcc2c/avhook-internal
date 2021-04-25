@@ -1,8 +1,9 @@
 #include "CBaseEntity.h"
 ImVec3 CBaseEntity::GetBonePosition(int bone)
 {
-	DWORD pBone = this->boneMatrix;
+	DWORD  pBone = this->boneMatrix;
 	ImVec3 position;
+
 	position.x = *(float*)(pBone + 0x30 * bone + 0x0C);
 	position.y = *(float*)(pBone + 0x30 * bone + 0x1C);
 	position.z = *(float*)(pBone + 0x30 * bone + 0x2C);
@@ -40,12 +41,13 @@ ImVec3 CBaseEntity::GetCameraPosition()
 
 bool CBaseEntity::isVisible()
 {
-	CBaseEntity* localplayer = *(CBaseEntity**)((DWORD)GetModuleHandle("client.dll") + signatures::dwLocalPlayer);
+	CBaseEntity* localplayer = *(CBaseEntity**)((DWORD)GetModuleHandle(xorstr("client.dll")) + signatures::dwLocalPlayer);
 
-	IEngineTrace* EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient004");
-	CGameTrace trace;
-	Ray_t ray;
-	CTraceFilter tracefilter;
+	IEngineTrace* EngineTrace = (IEngineTrace*)GetInterface(xorstr("engine.dll"), xorstr("EngineTraceClient004"));
+	CGameTrace	  trace;
+	Ray_t		  ray;
+	CTraceFilter  tracefilter;
+
 	tracefilter.pSkip = (void*)localplayer;
 
 	ray.Init(localplayer->GetCameraPosition(), this->GetCameraPosition());

@@ -5,7 +5,7 @@
 #include "imgui/imgui.h"
 #include "TraceLine.h"
 #include "types.h"
-
+#include "xorstr.h"
 class CBaseEntity
 {
 public:

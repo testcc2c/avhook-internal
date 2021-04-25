@@ -5,7 +5,7 @@ typedef void* (__cdecl* tCreateInterface)(const char* name, int* returncode);
 
 static void* GetInterface(const char* dllname, const char* interfacename)
 {
-	tCreateInterface CreateInterFace = (tCreateInterface)GetProcAddress(GetModuleHandle(dllname), "CreateInterface");
+	tCreateInterface CreateInterFace = (tCreateInterface)GetProcAddress(GetModuleHandle(dllname), xorstr("CreateInterface"));
 
 	int returnCode = 0;
 

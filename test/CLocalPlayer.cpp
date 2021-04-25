@@ -72,7 +72,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget()
 
 ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int bone)
 {
-	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
+	DWORD engineModule = (DWORD)GetModuleHandle(xorstr("engine.dll"));
 	ImVec3 calculated;
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
@@ -89,6 +89,6 @@ ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int bone)
 
 ImVec3* CLocalPlayer::GetViewAngles()
 {
-	DWORD engineModule = (DWORD)GetModuleHandle("engine.dll");
+	DWORD engineModule = (DWORD)GetModuleHandle(xorstr("engine.dll"));
 	return (ImVec3*)(*(DWORD*)(engineModule + signatures::dwClientState) + signatures::dwClientState_ViewAngles);
 }

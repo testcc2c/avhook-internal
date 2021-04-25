@@ -162,11 +162,11 @@ public:
 class CGameTrace : public CBaseTrace
 {
 public:
-    bool DidHitWorld() const;
+    bool DidHitWorld()          const;
     bool DidHitNonWorldEntity() const;
-    int GetEntityIndex() const;
-    bool DidHit() const;
-    bool IsVisible() const;
+    int  GetEntityIndex()       const;
+    bool DidHit()               const;
+    bool IsVisible()            const;
 
 public:
 
@@ -176,7 +176,7 @@ public:
     short               physicsbone;        // physics bone hit by trace in studio
     unsigned short      worldSurfaceIndex;  // Index of the msurface2_t, if applicable
     //IClientEntity* hit_entity;
-    void* hit_entity;
+    void*               hit_entity;
     int                 hitbox;                       // box hit by trace in studio
 
     CGameTrace() {}
@@ -192,33 +192,33 @@ private:
         hit_entity(other.hit_entity),
         hitbox(other.hitbox)
     {
-        startpos = other.startpos;
-        endpos = other.endpos;
-        plane = other.plane;
-        fraction = other.fraction;
-        contents = other.contents;
-        dispFlags = other.dispFlags;
-        allsolid = other.allsolid;
+        startpos   = other.startpos;
+        endpos     = other.endpos;
+        plane      = other.plane;
+        fraction   = other.fraction;
+        contents   = other.contents;
+        dispFlags  = other.dispFlags;
+        allsolid   = other.allsolid;
         startsolid = other.startsolid;
     }
 
     CGameTrace& operator=(const CGameTrace& other)
     {
-        startpos = other.startpos;
-        endpos = other.endpos;
-        plane = other.plane;
-        fraction = other.fraction;
-        contents = other.contents;
-        dispFlags = other.dispFlags;
-        allsolid = other.allsolid;
-        startsolid = other.startsolid;
+        startpos          = other.startpos;
+        endpos            = other.endpos;
+        plane             = other.plane;
+        fraction          = other.fraction;
+        contents          = other.contents;
+        dispFlags         = other.dispFlags;
+        allsolid          = other.allsolid;
+        startsolid        = other.startsolid;
         fractionleftsolid = other.fractionleftsolid;
-        surface = other.surface;
-        hitgroup = other.hitgroup;
-        physicsbone = other.physicsbone;
+        surface           = other.surface;
+        hitgroup          = other.hitgroup;
+        physicsbone       = other.physicsbone;
         worldSurfaceIndex = other.worldSurfaceIndex;
-        hit_entity = other.hit_entity;
-        hitbox = other.hitbox;
+        hit_entity        = other.hit_entity;
+        hitbox            = other.hitbox;
         return *this;
     }
 };

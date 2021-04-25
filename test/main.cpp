@@ -32,6 +32,7 @@
 #include "memory.h"
 #include "SDK.h"
 #include "resource.h"
+#include "xorstr.h"
 
 #pragma comment(lib, "D3dx9")
 #pragma comment(lib, "winmm")
@@ -42,12 +43,10 @@ typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-EndScene oEndScene;
-WNDPROC oWndProc;
-
-ClientBase* client;
-HMODULE hmodule;
-
+EndScene		  oEndScene;
+WNDPROC			  oWndProc;
+ClientBase*		  client;
+HMODULE			  hmodule;
 PDIRECT3DTEXTURE9 logos[3];
 PDIRECT3DTEXTURE9 icons[5];
 
@@ -93,7 +92,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 	if (!settings::attach)
 		return oEndScene(pDevice);
 
-	IClientEntityList* entitylist = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
+	IClientEntityList* entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
 	
 	if (!settings::menu::init)
 	{
@@ -210,12 +209,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			drawlist->AddImage(logos[2], ImVec2(0, 0), ImVec2(width, height));
 
 		// таск бар
-		ImGui::Begin("Task bar", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+		ImGui::Begin("taskbar", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 		ImGui::SetWindowPos(ImVec2(0, height - 33));
 		ImGui::SetWindowSize(ImVec2(width, 2));
 
 		ImGui::SetCursorPos(ImVec2(3, 5));
-		if (ImGui::Button("START"))
+		if (ImGui::Button(xorstr("START")))
 			settings::menu::start_menu = !settings::menu::start_menu;
 
 		time_t now = time(NULL);
@@ -229,151 +228,153 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 		if (settings::menu::settings_menu)
 		{
-			ImGui::Begin("AVhook", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::Begin("Settings", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 			ImGui::SetWindowSize(ImVec2(555, 252));
 
 			ImGui::Image(icons[1], ImVec2(16, 16));
 			ImGui::SameLine();
 
-			ImGui::Text("AVhook");
+			ImGui::Text(xorstr("AVhook"));
 
 			ImGui::SetCursorPos(ImVec2(555 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::settings_menu = false;
 
-			if (ImGui::Button("AIMBOT", ImVec2(102, 30)))
+			if (ImGui::Button(xorstr("AIMBOT"), ImVec2(102, 30)))
 				settings::menu::menutab = 1;
 
 			ImGui::SameLine();
-			if (ImGui::Button("TRIGGER", ImVec2(102, 30)))
+			if (ImGui::Button(xorstr("TRIGGER"), ImVec2(102, 30)))
 				settings::menu::menutab = 5;
 
 			ImGui::SameLine();
-			if (ImGui::Button("VISUALS", ImVec2(102, 30)))
+			if (ImGui::Button(xorstr("VISUALS"), ImVec2(102, 30)))
 				settings::menu::menutab = 2;
 
 			ImGui::SameLine();
-			if (ImGui::Button("MISC", ImVec2(102, 30)))
+			if (ImGui::Button(xorstr("MISC"), ImVec2(102, 30)))
 				settings::menu::menutab = 3;
 
 			ImGui::SameLine();
-			if (ImGui::Button("MENU", ImVec2(102, 30)))
+			if (ImGui::Button(xorstr("MENU"), ImVec2(102, 30)))
 				settings::menu::menutab = 4;
 
 
 			if (settings::menu::menutab == 1) // aimbot sector
 			{
-				ImGui::Text("Automatic Target Acquisition System");
+				ImGui::Text(xorstr("Automatic Target Acquisition System"));
 
-				ImGui::Checkbox("Active", &settings::aimbot::on);
+				ImGui::Checkbox(xorstr("Active"), &settings::aimbot::on);
 				ImGui::SameLine();
-				ImGui::Combo("HitBox", &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
-				ImGui::Checkbox("Silent", &settings::aimbot::silent);
+				ImGui::Combo(xorstr("HitBox"),    &settings::aimbot::selectedhitbox, settings::aimbot::hitboxes, IM_ARRAYSIZE(settings::aimbot::hitboxes));
+				ImGui::Checkbox(xorstr("Silent"), &settings::aimbot::silent);
 				ImGui::SameLine();
-				ImGui::InputInt("FOV", &settings::aimbot::fov);
+				ImGui::InputInt(xorstr("FOV"),    &settings::aimbot::fov);
+				
 			}
 			else if (settings::menu::menutab == 2) // esp sector
 			{
 
 				ImGui::SetWindowSize(ImVec2(555, 500));
 
-				ImGui::Text("Extra Sensory Perception");
+				ImGui::Text(xorstr("Extra Sensory Perception"));
 
-				ImGui::Text("Glow ESP");
-				ImGui::Checkbox("Active###Glow", &settings::inGameWallHack::on);
+				ImGui::Text(xorstr("Glow ESP"));
+				ImGui::Checkbox(xorstr("Active###Glow"),			&settings::inGameWallHack::on);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Enemy color", (float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Enemy color"),			(float*)&settings::inGameWallHack::EnemyGlowColor, ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
 
-				ImGui::ColorEdit4("Friendly color", (float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Friendly color"),			(float*)&settings::inGameWallHack::FriedndlyGlowColor, ImGuiColorEditFlags_NoInputs);
 
-				ImGui::Combo("###GlowEspDrawMode", &settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
+				ImGui::Combo(xorstr("###GlowEspDrawMode"),			&settings::inGameWallHack::selected_glow_mode, settings::inGameWallHack::glowmode, IM_ARRAYSIZE(settings::inGameWallHack::glowmode));
 
-				ImGui::Text("Snap Lines");
-				ImGui::Checkbox("Active###Draw lines", &settings::SnapLinesESP::on);
+				ImGui::Text(xorstr("Snap Lines"));
+				ImGui::Checkbox(xorstr("Active###Draw lines"),		&settings::SnapLinesESP::on);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Color###lineColor", (float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Color###lineColor"),		(float*)&settings::SnapLinesESP::Color, ImGuiColorEditFlags_NoInputs);
 
-				ImGui::InputInt("###lineThickness", &settings::SnapLinesESP::thicnes);
-				ImGui::Combo("###LinePoint", &settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
-				ImGui::Combo("###LineEspDrawMode", &settings::SnapLinesESP::selected_colormode, settings::SnapLinesESP::colormode, IM_ARRAYSIZE(settings::SnapLinesESP::colormode));
+				ImGui::InputInt(xorstr("###lineThickness"),			&settings::SnapLinesESP::thicnes);
+				ImGui::Combo(xorstr("###LinePoint"),				&settings::SnapLinesESP::selectedBoneId, settings::SnapLinesESP::Bones, IM_ARRAYSIZE(settings::SnapLinesESP::Bones));
+				ImGui::Combo(xorstr("###LineEspDrawMode"),			&settings::SnapLinesESP::selected_colormode, settings::SnapLinesESP::colormode, IM_ARRAYSIZE(settings::SnapLinesESP::colormode));
 
-				ImGui::Text("Boxes");
-				ImGui::Checkbox("Active###Draw boxes", &settings::BoxEsp::on);
+				ImGui::Text(xorstr("Boxes"));
+				ImGui::Checkbox(xorstr("Active###Draw boxes"),		&settings::BoxEsp::on);
 				ImGui::SameLine();
-				ImGui::Checkbox("HP value", &settings::BoxEsp::drawHpValue);
+				ImGui::Checkbox(xorstr("HP value"),					&settings::BoxEsp::drawHpValue);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Color###boxcolor", (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
-				ImGui::InputInt("###boxThickness", &settings::BoxEsp::thicnes);
-				ImGui::Combo("###BoxEspDrawMode", &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
+				ImGui::ColorEdit4(xorstr("Color###boxcolor"),	    (float*)&settings::BoxEsp::Color, ImGuiColorEditFlags_NoInputs);
+				ImGui::InputInt(xorstr("###boxThickness"),			&settings::BoxEsp::thicnes);
+				ImGui::Combo(xorstr("###BoxEspDrawMode"),		    &settings::BoxEsp::selected_colormode, settings::BoxEsp::colormode, IM_ARRAYSIZE(settings::BoxEsp::colormode));
 
-				ImGui::Text("Skeleton");
-				ImGui::Checkbox("Active###Draw skeletones", &settings::SkeletonESP::on);
+				ImGui::Text(xorstr("Skeleton"));
+				ImGui::Checkbox(xorstr("Active###Draw skeletones"), &settings::SkeletonESP::on);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Color###SkeletColor", (float*)&settings::SkeletonESP::Color, ImGuiColorEditFlags_NoInputs);
-				ImGui::InputInt("###SkeletThickness", &settings::SkeletonESP::thicnes);
+				ImGui::ColorEdit4(xorstr("Color###SkeletColor"),    (float*)&settings::SkeletonESP::Color, ImGuiColorEditFlags_NoInputs);
+				ImGui::InputInt(xorstr("###SkeletThickness"),	    &settings::SkeletonESP::thicnes);
 			}
 			else if (settings::menu::menutab == 3) //misc sector
 			{
-				ImGui::Text("Misc configuration");
-				ImGui::Checkbox("Bunny hop", &settings::bhop);
-				ImGui::Checkbox("Desktop wallpaper", &settings::misc::wallpaper);
+				ImGui::Text(xorstr("Misc configuration"));
+				ImGui::Checkbox(xorstr("Bunny hop"),		 &settings::bhop);
+				ImGui::Checkbox(xorstr("Desktop wallpaper"), &settings::misc::wallpaper);
 
 				if (client->dwLocalPlayer)
-					ImGui::SliderInt("FOV", &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
+					ImGui::SliderInt(xorstr("FOV"), &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
 			}
 			else if (settings::menu::menutab == 4) // menu settings
 			{
 				ImGui::SetWindowSize(ImVec2(555, 352));
 				ImVec4* theme = ImGui::GetStyle().Colors;
-				ImGui::Text("Menu configuration");
-				ImGui::ColorEdit4("Border", (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
+
+				ImGui::Text(xorstr("Menu configuration"));
+				ImGui::ColorEdit4(xorstr("Border"),		   (float*)&theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Background", (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
-				ImGui::ColorEdit4("Button", (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Background"),    (float*)&theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Button"),        (float*)&theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Button active", (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
-				ImGui::ColorEdit4("Text", (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Button active"), (float*)&theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Text"),          (float*)&theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Frame", (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
-				ImGui::ColorEdit4("Frame active", (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Frame"),         (float*)&theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Frame active"),  (float*)&theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Frame hovered", (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
-				ImGui::ColorEdit4("Text selected", (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-				ImGui::ColorEdit4("Check mark", (float*)&theme[ImGuiCol_CheckMark], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Frame hovered"), (float*)&theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Text selected"), (float*)&theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Check mark"),    (float*)&theme[ImGuiCol_CheckMark], ImGuiColorEditFlags_NoInputs);
 				ImGui::SameLine();
-				ImGui::ColorEdit4("Overlay", (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
+				ImGui::ColorEdit4(xorstr("Overlay"),	   (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
 			}
 			else if (settings::menu::menutab == 5) // trigger
 			{
-				ImGui::Text("Trigger bot.");
-				ImGui::Checkbox("Active", &settings::trigger_bot::on);
+				ImGui::Text(xorstr("Trigger bot."));
+				ImGui::Checkbox(xorstr("Active"), &settings::trigger_bot::on);
 				ImGui::SameLine();
-				ImGui::Checkbox("Rage", &settings::trigger_bot::rage);
-				ImGui::SliderInt("Delay", &settings::trigger_bot::delay, 0, 1000);
+				ImGui::Checkbox(xorstr("Rage"),	  &settings::trigger_bot::rage);
+				ImGui::SliderInt(xorstr("Delay"), &settings::trigger_bot::delay, 0, 1000);
 			}
 			else
 			{
-				ImGui::Text("Welcome!");
+				ImGui::Text(xorstr("Welcome!"));
 			}
 
 			ImGui::End();
 		}
 		if (settings::menu::start_menu)
 		{
-			ImGui::Begin("Start menu", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+			ImGui::Begin("start", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 			ImGui::SetWindowPos(ImVec2(0, height - 374));
 			ImGui::SetWindowSize(ImVec2(300, 342));
 
-			if (ImGui::Button("PLAYER LIST", ImVec2(100, 25)))
+			if (ImGui::Button(xorstr("PLAYER LIST"), ImVec2(100, 25)))
 			{
 				settings::menu::player_list = !settings::menu::player_list;
 			}
 
-			if (ImGui::Button("SETTINGS", ImVec2(100, 25)))
+			if (ImGui::Button(xorstr("SETTINGS"), ImVec2(100, 25)))
 				settings::menu::settings_menu = !settings::menu::settings_menu;
 
-			if (ImGui::Button("ABOUT", ImVec2(100, 25)))
+			if (ImGui::Button(xorstr("ABOUT"), ImVec2(100, 25)))
 				settings::menu::about_menu = !settings::menu::about_menu;
 
 
@@ -381,37 +382,40 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		}
 		if (settings::menu::about_menu)
 		{
-			ImGui::Begin("About", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::Begin(xorstr("About"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 			ImGui::SetWindowSize(ImVec2(180, 300));
 
 			ImGui::Image(icons[2], ImVec2(16, 16));
 			ImGui::SameLine();
 
 
-			ImGui::Text("ABOUT");
+			ImGui::Text(xorstr("ABOUT"));
 
 			ImGui::SetCursorPos(ImVec2(180 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::about_menu = false;
-
-			if (ImGui::Button("VK GROUP"))
-				ShellExecute(0, 0, "https://vk.com/avhook", 0, 0, SW_SHOW);
-			if (ImGui::Button("CREATOR"))
-				ShellExecute(0, 0, "https://vk.com/nullifiedvlad", 0, 0, SW_SHOW);
+			ImGui::Image((void*)logos[0], ImVec2(100, 100));
+			ImGui::SameLine();
+			ImGui::Text(xorstr("COMPILATION DATE: %s\COMPILATION TIME: %S"), xorstr(__DATE__), xorstr(__TIME__));
+			
+			if (ImGui::Button(xorstr("VK GROUP")))
+				ShellExecute(0, 0, xorstr("https://vk.com/avhook"), 0, 0, SW_SHOW);
+			if (ImGui::Button(xorstr("CREATOR")))
+				ShellExecute(0, 0, xorstr("https://vk.com/nullifiedvlad"), 0, 0, SW_SHOW);
 
 			ImGui::SetCursorPos(ImVec2(20, 280));
-			ImGui::Text("(C) Little Software Studio");
+			ImGui::Text(xorstr("(C) Little Software Studio"));
 			ImGui::End();
 		}
 		if (settings::menu::player_list)
 		{
-			ImGui::Begin("Player list", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::Begin(xorstr("player_list"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 			ImGui::SetWindowSize(ImVec2(800, 500));
 
 			ImGui::Image(icons[0], ImVec2(16, 16));
 			ImGui::SameLine();
 
-			ImGui::Text("PLAYER LIST");
+			ImGui::Text(xorstr("PLAYER LIST"));
 			ImGui::SetCursorPos(ImVec2(800 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::player_list = false;
@@ -429,7 +433,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 					ImGui::Image(icons[4], ImVec2(16, 16));
 
 				ImGui::SameLine();
-				ImGui::Text("ID-%d   TEAM-ID:   %d   HEALTH:  ", i, ent->m_iTeamNum);
+				ImGui::Text(xorstr("ID-%d   TEAM-ID:   %d   HEALTH:  "), i, ent->m_iTeamNum);
 				ImGui::SameLine();
 				ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
 
@@ -438,10 +442,10 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 			ImGui::End();
 		}
 		drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
-		drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), "MAKE IT SIMPLE");
+		drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), xorstr("MAKE IT SIMPLE"));
 	}
-	drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), "AVhook by LSS");
-
+	drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), xorstr("AVhook by LSS"));
+	
 	ImGui::EndFrame();
 	colorfix.RestoreRenderState();
 	ImGui::Render();
@@ -480,15 +484,15 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 	{
 		Memory mem;
 		//end_scene_addr = (DWORD)d3dDevice[42];
-		client = (ClientBase*)GetModuleHandle("client.dll");
+		client   = (ClientBase*)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		settings::attach = true;
 
-		PlaySound("avhook\\sounds\\activated.wav", NULL, SND_ASYNC);
+		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
 		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
 
 		oEndScene = (EndScene)mem.trampHook32((char*)end_scene_addr, (char*)hkEndScene, 7);
-
+		
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -497,7 +501,7 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 
 
 		settings::attach = false;
-		PlaySound("avhook\\sounds\\deactivated.wav", NULL, SND_ASYNC);
+		PlaySound(xorstr("avhook\\sounds\\deactivated.wav"), NULL, SND_ASYNC);
 
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX9_Shutdown();
@@ -537,6 +541,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 			esp.HandleGlow(settings::inGameWallHack::EnemyGlowColor, settings::inGameWallHack::FriedndlyGlowColor);
 			Sleep(1);
 		}
+		Sleep(500);
 	}
 	ExitThread(0);
 }
@@ -592,9 +597,9 @@ DWORD WINAPI AimBot(HMODULE hModule)
 					localPlayer->AimAt(entity, bone); 
 					continue;
 				}
-				ImVec3* localAngles = localPlayer->GetViewAngles();
+				ImVec3* localAngles  = localPlayer->GetViewAngles();
 				ImVec3  targetAngles = localPlayer->GetAimTargetAngles(entity, bone);
-				ImVec2 fov_target = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
+				ImVec2  fov_target   = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
 
 				if (fov_target.x <= settings::aimbot::fov and fov_target.y <= settings::aimbot::fov and fov_target.x >= -settings::aimbot::fov and fov_target.y >= -settings::aimbot::fov)
 				{
