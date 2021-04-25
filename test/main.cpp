@@ -228,12 +228,12 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 		if (settings::menu::settings_menu)
 		{
-			ImGui::Begin("Settings", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+			ImGui::Begin("Settings", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar );
 			ImGui::SetWindowSize(ImVec2(555, 252));
 
 			ImGui::Image(icons[1], ImVec2(16, 16));
 			ImGui::SameLine();
-
+			
 			ImGui::Text(xorstr("AVhook"));
 
 			ImGui::SetCursorPos(ImVec2(555 - 25, 5));
@@ -383,28 +383,21 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		if (settings::menu::about_menu)
 		{
 			ImGui::Begin(xorstr("About"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-			ImGui::SetWindowSize(ImVec2(180, 300));
-
+			ImGui::SetWindowSize(ImVec2(500, 150));
 			ImGui::Image(icons[2], ImVec2(16, 16));
 			ImGui::SameLine();
-
-
 			ImGui::Text(xorstr("ABOUT"));
 
-			ImGui::SetCursorPos(ImVec2(180 - 25, 5));
+			ImGui::SetCursorPos(ImVec2(500 - 25, 5));
 			if (ImGui::Button(" ", ImVec2(20, 20)))
 				settings::menu::about_menu = false;
+
 			ImGui::Image((void*)logos[0], ImVec2(100, 100));
 			ImGui::SameLine();
-			ImGui::Text(xorstr("COMPILATION DATE: %s\COMPILATION TIME: %S"), xorstr(__DATE__), xorstr(__TIME__));
-			
-			if (ImGui::Button(xorstr("VK GROUP")))
-				ShellExecute(0, 0, xorstr("https://vk.com/avhook"), 0, 0, SW_SHOW);
-			if (ImGui::Button(xorstr("CREATOR")))
-				ShellExecute(0, 0, xorstr("https://vk.com/nullifiedvlad"), 0, 0, SW_SHOW);
-
-			ImGui::SetCursorPos(ImVec2(20, 280));
-			ImGui::Text(xorstr("(C) Little Software Studio"));
+			ImGui::Text(xorstr("COMPILATION DATE: %s\nCOMPILATION TIME: %s"), xorstr(__DATE__), xorstr(__TIME__));
+			ImGui::SetCursorPos(ImVec2(115, 70));
+			if (ImGui::Button(xorstr("SITE/SUPPORT"), ImVec2(100, 25)))
+				ShellExecute(0, 0, xorstr("https://avhook.ru/"), 0, 0, SW_SHOW);
 			ImGui::End();
 		}
 		if (settings::menu::player_list)
@@ -441,8 +434,6 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 			ImGui::End();
 		}
-		drawlist->AddImage((void*)logos[0], ImVec2((width / 2) - 50, 20), ImVec2(100 + (width / 2) - 50, 120));
-		drawlist->AddText(ImVec2((width / 2) - 50, 125), ImColor(255, 94, 94), xorstr("MAKE IT SIMPLE"));
 	}
 	drawlist->AddText(ImVec2(1, 1), ImColor(255, 94, 94), xorstr("AVhook by LSS"));
 	
