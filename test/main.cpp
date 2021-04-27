@@ -552,6 +552,9 @@ DWORD WINAPI Trigger(HMODULE hModule)
 DWORD WINAPI AimBot(HMODULE hModule)
 {
 	int bone = 8;
+	CBaseEntity* ent;
+	IClientEntityList* entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
+
 	while (settings::attach)
 	{
 		__try
@@ -576,16 +579,14 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				break;
 			}
 
-			CBaseEntity* entity = localPlayer->GetClosestTarget(settings::aimbot::fov, bone);
-
-			if (entity and localPlayer->m_iTeamNum != entity->m_iTeamNum)
+			ent = localPlayer->GetClosestTarget(settings::aimbot::fov, bone);
+			// 17000.f - збс
+			localPlayer->AimAt(ent, bone);
+			if (settings::aimbot::autoshoot and entitylist->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
 			{
-				localPlayer->AimAt(entity, bone);
-				if (settings::aimbot::autoshoot and localPlayer->m_iCrosshairId)
-				{
-					client->dwForceAttack = 6;
-					Sleep(10);
-				}
+				client->dwForceAttack = 6;
+				Sleep(10);
+			
 			}
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)

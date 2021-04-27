@@ -1,6 +1,6 @@
 #include "CLocalPlayer.h"
 
-void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool prediction)
+void CLocalPlayer::AimAt(CBaseEntity*& entity, int& bone, float speed, bool prediction)
 {
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
@@ -30,7 +30,7 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool predi
 		angles->y = yaw;
 	}
 }
-CBaseEntity* CLocalPlayer::GetClosestTarget(int fov, int bone)
+CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
 {
 	CBaseEntity* entitylist[32];
 
@@ -48,7 +48,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int fov, int bone)
 			if (!entity)
 				continue;
 			ImVec3* localAngles = this->GetViewAngles();
-			ImVec3  targetAngles = this->GetAimTargetAngles(entity, 8);
+			ImVec3  targetAngles = this->GetAimTargetAngles(entity, bone);
 			ImVec2  fov_target = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
 
 			if (entity->m_iHealth > 0 and !entity->m_bDormant and this->m_iTeamNum != entity->m_iTeamNum and fov_target.x <= fov and fov_target.y <= fov and fov_target.x >= -fov and fov_target.y >= -fov)
@@ -76,7 +76,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int fov, int bone)
 	return entitylist[0];
 }
 
-ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int bone)
+ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int& bone)
 {
 	DWORD engineModule = (DWORD)GetModuleHandle(xorstr("engine.dll"));
 	ImVec3 calculated;

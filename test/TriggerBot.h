@@ -14,5 +14,6 @@ private:
 	bool* rage;
 	bool* predict;
 	int* predict_time;
+	int bone = 8;
 };
 

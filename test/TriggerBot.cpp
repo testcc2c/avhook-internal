@@ -6,9 +6,11 @@ TriggerBot::TriggerBot(int* delay, bool* rage)
 	this->rage = rage;
 	this->predict = predict;
 	this->predict_time = predict_time;
+
 }
 void TriggerBot::Handle()
 {
+	
 	__try
 	{
 		CLocalPlayer* localplayer = this->clientbase->dwLocalPlayer;
@@ -20,7 +22,7 @@ void TriggerBot::Handle()
 
 		Sleep(*delay);
 		if (*this->rage)
-			localplayer->AimAt(entity, 8);
+			localplayer->AimAt(entity, this->bone);
 
 		this->clientbase->dwForceAttack = 6;
 		Sleep(20);

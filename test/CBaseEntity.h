@@ -6,6 +6,9 @@
 #include "TraceLine.h"
 #include "types.h"
 #include "xorstr.h"
+
+#define EMPTY_POINTER 0xCCCCCCCC
+
 class CBaseEntity
 {
 public:
