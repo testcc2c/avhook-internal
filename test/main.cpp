@@ -270,6 +270,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 				ImGui::Checkbox(xorstr("Silent"), &settings::aimbot::silent);
 				ImGui::SameLine();
 				ImGui::InputInt(xorstr("FOV"),    &settings::aimbot::fov);
+				ImGui::Checkbox(xorstr("Auto shoot"), &settings::aimbot::autoshoot);
 				
 			}
 			else if (settings::menu::menutab == 2) // esp sector
@@ -478,7 +479,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 		client   = (ClientBase*)GetModuleHandle("client.dll");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		settings::attach = true;
-
 		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
 		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
 
@@ -526,13 +526,10 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 
 	while (settings::attach)
 	{
-
 		if (settings::inGameWallHack::on)
-		{
 			esp.HandleGlow(settings::inGameWallHack::EnemyGlowColor, settings::inGameWallHack::FriedndlyGlowColor);
-			Sleep(1);
-		}
-		Sleep(500);
+		else
+			Sleep(500);
 	}
 	ExitThread(0);
 }
@@ -579,22 +576,15 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				break;
 			}
 
-			CBaseEntity* entity = localPlayer->GetClosestTarget();
+			CBaseEntity* entity = localPlayer->GetClosestTarget(settings::aimbot::fov, bone);
 
 			if (entity and localPlayer->m_iTeamNum != entity->m_iTeamNum)
 			{
-				if (settings::aimbot::fov == 0)
+				localPlayer->AimAt(entity, bone);
+				if (settings::aimbot::autoshoot and localPlayer->m_iCrosshairId)
 				{
-					localPlayer->AimAt(entity, bone); 
-					continue;
-				}
-				ImVec3* localAngles  = localPlayer->GetViewAngles();
-				ImVec3  targetAngles = localPlayer->GetAimTargetAngles(entity, bone);
-				ImVec2  fov_target   = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
-
-				if (fov_target.x <= settings::aimbot::fov and fov_target.y <= settings::aimbot::fov and fov_target.x >= -settings::aimbot::fov and fov_target.y >= -settings::aimbot::fov)
-				{
-					localPlayer->AimAt(entity, bone);
+					client->dwForceAttack = 6;
+					Sleep(10);
 				}
 			}
 		}

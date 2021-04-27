@@ -30,7 +30,7 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int bone, float speed, bool predi
 		angles->y = yaw;
 	}
 }
-CBaseEntity* CLocalPlayer::GetClosestTarget()
+CBaseEntity* CLocalPlayer::GetClosestTarget(int fov, int bone)
 {
 	CBaseEntity* entitylist[32];
 
@@ -40,12 +40,18 @@ CBaseEntity* CLocalPlayer::GetClosestTarget()
 
 	for (byte i = 1; i < 33; i++)
 	{
+
 		__try
 		{
 			CBaseEntity* entity = (CBaseEntity*)VClientEntityList->GetClientEntity(i);
+
 			if (!entity)
 				continue;
-			if (entity->m_iHealth > 0 and !entity->m_bDormant and this->m_iTeamNum != entity->m_iTeamNum)
+			ImVec3* localAngles = this->GetViewAngles();
+			ImVec3  targetAngles = this->GetAimTargetAngles(entity, 8);
+			ImVec2  fov_target = ImVec2(localAngles->x - targetAngles.x, localAngles->y - targetAngles.y);
+
+			if (entity->m_iHealth > 0 and !entity->m_bDormant and this->m_iTeamNum != entity->m_iTeamNum and fov_target.x <= fov and fov_target.y <= fov and fov_target.x >= -fov and fov_target.y >= -fov)
 				entitylist[counter++] = entity;
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)

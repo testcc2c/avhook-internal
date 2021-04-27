@@ -26,6 +26,7 @@ namespace settings
 		static int fov;
 		static const char* hitboxes[] = { "Head", "Body", "Legs" };
 		static int selectedhitbox;
+		static bool autoshoot;
 	}
 
 	namespace inGameWallHack
