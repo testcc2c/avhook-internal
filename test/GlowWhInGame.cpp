@@ -28,13 +28,6 @@ void InGameGlowEsp::HandleGlow(ImColor &enemyColor, ImColor &friendlyColor)
 						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = enemyColor.Value.w;
 
 					}
-					else
-					{
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x4)) = friendlyColor.Value.x;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x8)) = friendlyColor.Value.y;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0xC)) = friendlyColor.Value.z;
-						*(float*)(glowObject + ((Entity->m_iGlowIndex * 0x38) + 0x10)) = friendlyColor.Value.w;
-					}
 				}
 				else
 				{
