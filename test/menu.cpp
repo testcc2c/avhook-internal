@@ -7,15 +7,18 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings)
 	this->window     = FindWindowA(NULL, this->window_name);
 	this->entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
 	this->client     = (ClientBase*)GetModuleHandle("client.dll");
+	this->window_size = this->GetWindowSize();
 
 	ImGui::CreateContext();
+	ImGui_ImplWin32_Init(this->window);
+	ImGui_ImplDX9_Init(pDevice);
 
 	this->io = ImGui::GetIO();
 	this->io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	this->io.Fonts->AddFontFromFileTTF(xorstr("C:\\Windows\\Fonts\\Impact.ttf"), 17.0f, 0);
+	this->drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
 
 	this->theme = ImGui::GetStyle().Colors;
-
 
 	this->theme[ImGuiCol_WindowBg]		  = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
 	this->theme[ImGuiCol_Button]		  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
@@ -44,9 +47,6 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings)
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON), &icons[CounterTerroristIcon]);
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON), &icons[TerroristIcon]);
 
-	ImGui_ImplWin32_Init(this->window);
-	ImGui_ImplDX9_Init(this->pDevice);
-
 	this->render = true;
 }
 
@@ -58,7 +58,7 @@ ImVec2 Menu::GetWindowSize()
 	return ImVec2(rect.right - rect.left, rect.bottom - rect.top);
 }
 
-std::string GetTime()
+std::string Menu::GetTime()
 {
 	time_t now = time(NULL);
 	tm  tstruct;
@@ -73,6 +73,8 @@ void Menu::Detach()
 
 	this->render = false;
 }
+
+// Отрисовывает меню "пуск", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawStartMenu()
 {
 	ImGui::Begin(xorstr("start"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
@@ -80,19 +82,18 @@ void Menu::DrawStartMenu()
 	ImGui::SetWindowSize(ImVec2(300, 342));
 
 	if (ImGui::Button(xorstr("PLAYER LIST"), ImVec2(100, 25)))
-	{
-		this->player_list = !this->player_list;
-	}
+		this->tabs[PlayerListTab] = !this->tabs[PlayerListTab];
 
 	if (ImGui::Button(xorstr("SETTINGS"), ImVec2(100, 25)))
-		this->settings_menu = !this->settings_menu;
+		this->tabs[SettingsMenuTab] = !this->tabs[SettingsMenuTab];
 
 	if (ImGui::Button(xorstr("ABOUT"), ImVec2(100, 25)))
-		this->about_menu = !this->about_menu;
+		this->tabs[AboutMenuTab] = !this->tabs[AboutMenuTab];
 
 
 	ImGui::End();
 }
+// Отрисовывает меню "ABOUT", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawAboutMenu()
 {
 	ImGui::Begin(xorstr("About"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
@@ -103,7 +104,7 @@ void Menu::DrawAboutMenu()
 
 	ImGui::SetCursorPos(ImVec2(500 - 25, 5));
 	if (ImGui::Button(" ", ImVec2(20, 20)))
-		this->about_menu = false;
+		this->tabs[AboutMenuTab] = false;
 
 	ImGui::Image((void*)logos[0], ImVec2(100, 100));
 	ImGui::SameLine();
@@ -113,6 +114,7 @@ void Menu::DrawAboutMenu()
 		ShellExecute(0, 0, xorstr("https://avhook.ru/"), 0, 0, SW_SHOW);
 	ImGui::End();
 }
+// Отрисовывает список игроков, вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawPlayerList()
 {
 	ImGui::Begin(xorstr("player_list"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
@@ -124,7 +126,7 @@ void Menu::DrawPlayerList()
 	ImGui::Text(xorstr("PLAYER LIST"));
 	ImGui::SetCursorPos(ImVec2(800 - 25, 5));
 	if (ImGui::Button(" ", ImVec2(20, 20)))
-		this->player_list = false;
+		this->tabs[PlayerListTab] = false;
 
 	for (byte i = 1; i < 33; i++)
 	{
@@ -147,19 +149,20 @@ void Menu::DrawPlayerList()
 
 	ImGui::End();
 }
+// Отрисовывает меню "SETTINGs", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawSettingsMenu()
 {
 	ImGui::Begin("Settings", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 	ImGui::SetWindowSize(ImVec2(555, 252));
 
-	ImGui::Image(icons[1], ImVec2(16, 16));
+	ImGui::Image(this->icons[1], ImVec2(16, 16));
 	ImGui::SameLine();
 
 	ImGui::Text(xorstr("AVhook"));
 
 	ImGui::SetCursorPos(ImVec2(555 - 25, 5));
 	if (ImGui::Button(" ", ImVec2(20, 20)))
-		this->settings_menu = false;
+		this->tabs[SettingsMenuTab] = false;
 
 	if (ImGui::Button(xorstr("AIMBOT"), ImVec2(102, 30)))
 		this->menutab = 1;
@@ -183,60 +186,67 @@ void Menu::DrawSettingsMenu()
 
 	if (this->menutab == 1) // aimbot sector
 	{
+		AimBotSettings* aimbot_settings = (AimBotSettings*)this->settings[AimbotSettingID];
+
 		ImGui::Text(xorstr("Automatic Target Acquisition System"));
 
-		ImGui::Checkbox(xorstr("Active"), &this->aimbot_settings->active);
+		ImGui::Checkbox(xorstr("Active"),	  &aimbot_settings->active);
 		ImGui::SameLine();
-		ImGui::Combo(xorstr("HitBox"), &this->aimbot_settings->selected_hitbox, this->aimbot_settings->hitboxes, IM_ARRAYSIZE(this->aimbot_settings->hitboxes));
-		ImGui::Checkbox(xorstr("Silent"), &this->aimbot_settings->silent);
+		ImGui::Combo(xorstr("HitBox"),		  &aimbot_settings->selected_hitbox, aimbot_settings->hitboxes, IM_ARRAYSIZE(aimbot_settings->hitboxes));
+		ImGui::Checkbox(xorstr("Silent"),	  &aimbot_settings->silent);
 		ImGui::SameLine();
-		ImGui::InputInt(xorstr("FOV"), &this->aimbot_settings->fov);
-		ImGui::Checkbox(xorstr("Auto shoot"), &this->aimbot_settings->auto_shoot);
+		ImGui::InputInt(xorstr("FOV"),		  &aimbot_settings->fov);
+		ImGui::Checkbox(xorstr("Auto shoot"), &aimbot_settings->auto_shoot);
 
 	}
 	else if (this->menutab == 2) // esp sector
 	{
+		GlowWHSettings* glow_esp_settings = (GlowWHSettings*)this->settings[GlowSettingID];
+		SnapLinesESP*   snap_esp_settings = (SnapLinesESP*)this->settings[SnapLinesSettingsID];
+		BoxESP*         box_esp_settings  = (BoxESP*)this->settings[BoxESPSettingsID];
 
 		ImGui::SetWindowSize(ImVec2(555, 500));
 
 		ImGui::Text(xorstr("Extra Sensory Perception"));
 
 		ImGui::Text(xorstr("Glow ESP"));
-		ImGui::Checkbox(xorstr("Active###Glow"), &this->glow_esp_settings->active);
+		ImGui::Checkbox(xorstr("Active###Glow"),       &glow_esp_settings->active);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Color###GlowColor"), (float*)&this->glow_esp_settings->color, ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Color###GlowColor"), (float*)&glow_esp_settings->color, ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
-		ImGui::Combo(xorstr("###GlowEspDrawMode"), &this->glow_esp_settings->draw_mode, this->glow_esp_settings->draw_options, IM_ARRAYSIZE(this->glow_esp_settings->draw_options));
+		ImGui::Combo(xorstr("###GlowEspDrawMode"),     &glow_esp_settings->draw_mode, glow_esp_settings->draw_options, IM_ARRAYSIZE(glow_esp_settings->draw_options));
 
 		ImGui::Text(xorstr("Snap Lines"));
-		ImGui::Checkbox(xorstr("Active###Draw lines"), &this->snap_esp_settings->active);
+		ImGui::Checkbox(xorstr("Active###Draw lines"), &snap_esp_settings->active);
 		ImGui::SameLine();
 		ImGui::ColorEdit4(xorstr("Color###lineColor"), (float*)&snap_esp_settings->color, ImGuiColorEditFlags_NoInputs);
 
-		ImGui::InputInt(xorstr("###lineThickness"), &this->snap_esp_settings->thickness);
-		ImGui::Combo(xorstr("###LinePoint"), &this->snap_esp_settings->selected_bone, this->snap_esp_settings->bones, IM_ARRAYSIZE(this->snap_esp_settings->bones));
-		ImGui::Combo(xorstr("###LineEspDrawMode"), &this->snap_esp_settings->draw_mode, this->snap_esp_settings->draw_options, IM_ARRAYSIZE(this->snap_esp_settings->draw_options));
+		ImGui::InputInt(xorstr("###lineThickness"),    &snap_esp_settings->thickness);
+		ImGui::Combo(xorstr("###LinePoint"),	       &snap_esp_settings->selected_bone, snap_esp_settings->bones,        IM_ARRAYSIZE(snap_esp_settings->bones));
+		ImGui::Combo(xorstr("###LineEspDrawMode"),	   &snap_esp_settings->draw_mode,     snap_esp_settings->draw_options, IM_ARRAYSIZE(snap_esp_settings->draw_options));
 
 		ImGui::Text(xorstr("Boxes"));
-		ImGui::Checkbox(xorstr("Active###Draw boxes"), &this->box_esp_settings->active);
+		ImGui::Checkbox(xorstr("Active###Draw boxes"), &box_esp_settings->active);
 		ImGui::SameLine();
-		ImGui::Checkbox(xorstr("HP value"), &this->box_esp_settings->draw_hp_value);
+		ImGui::Checkbox(xorstr("HP value"),			   &box_esp_settings->draw_hp_value);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Color###boxcolor"), (float*)&this->box_esp_settings->color, ImGuiColorEditFlags_NoInputs);
-		ImGui::InputInt(xorstr("###boxThickness"), &this->box_esp_settings->thickness);;
-		ImGui::Combo(xorstr("###BoxEspDrawMode"), &this->box_esp_settings->draw_mode, this->box_esp_settings->draw_options, IM_ARRAYSIZE(this->box_esp_settings->draw_options));
+		ImGui::ColorEdit4(xorstr("Color###boxcolor"),  (float*)&box_esp_settings->color, ImGuiColorEditFlags_NoInputs);
+		ImGui::InputInt(xorstr("###boxThickness"),     &box_esp_settings->thickness);
+		ImGui::Combo(xorstr("###BoxEspDrawMode"),      &box_esp_settings->draw_mode, box_esp_settings->draw_options, IM_ARRAYSIZE(box_esp_settings->draw_options));
 
-		ImGui::Text(xorstr("Skeleton"));
+		/*ImGui::Text(xorstr("Skeleton"));
 		ImGui::Checkbox(xorstr("Active###Draw skeletones"), &settings::SkeletonESP::on);
 		ImGui::SameLine();
 		ImGui::ColorEdit4(xorstr("Color###SkeletColor"), (float*)&settings::SkeletonESP::Color, ImGuiColorEditFlags_NoInputs);
-		ImGui::InputInt(xorstr("###SkeletThickness"), &settings::SkeletonESP::thicnes);
+		ImGui::InputInt(xorstr("###SkeletThickness"), &settings::SkeletonESP::thicnes);*/
 	}
 	else if (this->menutab == 3) //misc sector
 	{
+		MiscSettings* misc_settings = (MiscSettings*)this->settings[MiscSettingsID];
+
 		ImGui::Text(xorstr("Misc configuration"));
-		ImGui::Checkbox(xorstr("Bunny hop"), &settings::bhop);
-		ImGui::Checkbox(xorstr("Desktop wallpaper"), &settings::misc::wallpaper);
+		ImGui::Checkbox(xorstr("Bunny hop"),		 &misc_settings->bhop);
+		ImGui::Checkbox(xorstr("Desktop wallpaper"), &misc_settings->wallpaper);
 
 		if (client->dwLocalPlayer)
 			ImGui::SliderInt(xorstr("FOV"), &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
@@ -244,33 +254,34 @@ void Menu::DrawSettingsMenu()
 	else if (this->menutab == 4) // menu settings
 	{
 		ImGui::SetWindowSize(ImVec2(555, 352));
-		ImVec4* theme = ImGui::GetStyle().Colors;
 
 		ImGui::Text(xorstr("Menu configuration"));
-		ImGui::ColorEdit4(xorstr("Border"), (float*)&this->theme[ImGuiCol_Border], ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Border"),        (float*)&this->theme[ImGuiCol_Border],         ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Background"), (float*)&this->theme[ImGuiCol_WindowBg], ImGuiColorEditFlags_NoInputs);
-		ImGui::ColorEdit4(xorstr("Button"), (float*)&this->theme[ImGuiCol_Button], ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Background"),    (float*)&this->theme[ImGuiCol_WindowBg],       ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Button"),        (float*)&this->theme[ImGuiCol_Button],         ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Button active"), (float*)&this->theme[ImGuiCol_ButtonActive], ImGuiColorEditFlags_NoInputs);
-		ImGui::ColorEdit4(xorstr("Text"), (float*)&this->theme[ImGuiCol_Text], ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Button active"), (float*)&this->theme[ImGuiCol_ButtonActive],   ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Text"),          (float*)&this->theme[ImGuiCol_Text],           ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Frame"), (float*)&this->theme[ImGuiCol_FrameBg], ImGuiColorEditFlags_NoInputs);
-		ImGui::ColorEdit4(xorstr("Frame active"), (float*)&this->theme[ImGuiCol_FrameBgActive], ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Frame"),         (float*)&this->theme[ImGuiCol_FrameBg],        ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Frame active"),  (float*)&this->theme[ImGuiCol_FrameBgActive],  ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
 		ImGui::ColorEdit4(xorstr("Frame hovered"), (float*)&this->theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
 		ImGui::ColorEdit4(xorstr("Text selected"), (float*)&this->theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-		ImGui::ColorEdit4(xorstr("Check mark"), (float*)&this->theme[ImGuiCol_CheckMark], ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Check mark"),    (float*)&this->theme[ImGuiCol_CheckMark],      ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
-		ImGui::ColorEdit4(xorstr("Overlay"), (float*)(&settings::misc::backgrooundcolor), ImGuiColorEditFlags_NoInputs);
+		//ImGui::ColorEdit4(xorstr("Overlay"),       (float*)(&this->misc_settings->), ImGuiColorEditFlags_NoInputs);
 	}
 	else if (this->menutab == 5) // trigger
 	{
+		TriggerBotSetting* trigger_bot_settings = (TriggerBotSetting*)this->settings[TriggerBotSettingsID];
+
 		ImGui::Text(xorstr("Trigger bot."));
-		ImGui::Checkbox(xorstr("Active"), &settings::trigger_bot::on);
+		ImGui::Checkbox(xorstr("Active"), &trigger_bot_settings->active);
 		ImGui::SameLine();
-		ImGui::Checkbox(xorstr("Rage"), &settings::trigger_bot::rage);
-		ImGui::SliderInt(xorstr("Delay"), &settings::trigger_bot::delay, 0, 1000);
+		ImGui::Checkbox(xorstr("Rage"),   &trigger_bot_settings->rage);
+		ImGui::SliderInt(xorstr("Delay"), &trigger_bot_settings->delay, 0, 1000);
 	}
 	else
 	{
@@ -279,32 +290,48 @@ void Menu::DrawSettingsMenu()
 
 	ImGui::End();
 }
+// Отрисовывает меню "таск бар", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawTaskBar()
 {
 	ImGui::Begin(xorstr("taskbar"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 
 	ImGui::SetWindowPos(ImVec2(0, this->window_size.y - 33));
-	ImGui::SetWindowSize(ImVec2(this->window_size.x, 2));
+	ImGui::SetWindowSize(ImVec2(this->window_size.x, 20));
 
 	ImGui::SetCursorPos(ImVec2(3, 5));
 	if (ImGui::Button(xorstr("START")))
-		this->start_menu = !this->start_menu;
+		this->tabs[StartMenuTab] = !this->tabs[StartMenuTab];
 
 	ImGui::SetCursorPos(ImVec2(this->window_size.x - 57, 7));
 	ImGui::Text(GetTime().c_str());
 
 	ImGui::End();
 }
+// Запускает отрисовку всего меню
 void Menu::Render()
 {
-	this->DrawTaskBar();
+	ImGui_ImplDX9_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
-	if (this->settings_menu)
-		this->DrawSettingsMenu();
-	if (this->start_menu)
-		this->DrawStartMenu();
-	if (this->about_menu)
-		this->DrawAboutMenu();
-	if (this->player_list)
-		this->DrawPlayerList();
+	if (GetAsyncKeyState(VK_INSERT) & 1)
+		this->active = !this->active;
+
+	if (this->active)
+	{
+		this->DrawTaskBar();
+		if (this->tabs[SettingsMenuTab])
+			this->DrawSettingsMenu();
+		if (this->tabs[StartMenuTab])
+			this->DrawStartMenu();
+		if (this->tabs[AboutMenuTab])
+			this->DrawAboutMenu();
+		if (this->tabs[PlayerListTab])
+			this->DrawPlayerList();
+
+	}
+
+	ImGui::EndFrame();
+	ImGui::Render();
+	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }

@@ -29,39 +29,50 @@ enum Icons : int
 	TerroristIcon		  = 4
 
 };
-
+enum MenuTabs : int
+{
+	StartMenuTab = 0,
+	AboutMenuTab = 1,
+	SettingsMenuTab = 2,
+	PlayerListTab = 3
+};
+enum SettingsIds : int
+{
+	AimbotSettingID = 0,
+	GlowSettingID = 1,
+	SnapLinesSettingsID = 2,
+	BoxESPSettingsID = 3,
+	MiscSettingsID = 4,
+	TriggerBotSettingsID = 5,
+};
 class Menu
 {
 public:
 	Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings);
 	void Render();
 	void Detach();
+	void isOpen();
 private:
-	bool  render			= true;
-	short menutab			= 0;
-	bool  start_menu		= false;
-	bool  about_menu		= false;
-	bool  settings_menu		= false;
-	bool  player_list		= false;
-
+	bool              render      = true;
+	short             menutab     = 0;
+	bool		      tabs[4]     = { false, false, false, false };
+	bool			  active      = false;
 	const LPCSTR	  window_name = xorstr("Counter-Strike: Global Offensive");
 	ImVec4*			  theme;
+	
 	ESPDrawer*		  drawlist;
 	ImGuiIO			  io;
 	HMODULE			  hmodule;
 	LPDIRECT3DDEVICE9 pDevice;
 	HWND			  window;
-	ImVec4*			  theme;
 	ImVec2			  window_size;
 	IClientEntityList*entitylist;
 	ClientBase*	      client;
 
-	AimBotSettings*   aimbot_settings;
-	GlowWHSettings*	  glow_esp_settings;
-	SnapLinesESP*	  snap_esp_settings;
-	BoxESP*			  box_esp_settings;
-	PDIRECT3DTEXTURE9 logos[3];
-	PDIRECT3DTEXTURE9 icons[5];
+	Settings* settings[6] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
+							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting() };
+
+	PDIRECT3DTEXTURE9 logos[3], icons[5];
 
 	ImVec2	GetWindowSize();
 	std::string GetTime();
@@ -71,4 +82,5 @@ private:
 	void DrawPlayerList();
 	void DrawSettingsMenu();
 	void DrawTaskBar();
+
 };
