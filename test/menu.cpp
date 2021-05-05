@@ -42,10 +42,10 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings)
 	this->theme[ImGuiCol_TabActive]		  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(PLAYER_LIST_ICON), &icons[PlayerListIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(SETTINGS_ICON), &icons[SettingsIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(ABOUT_ICON), &icons[AboutIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON), &icons[CounterTerroristIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON), &icons[TerroristIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(SETTINGS_ICON),    &icons[SettingsIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP5),      &icons[AboutIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON),		    &icons[CounterTerroristIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON),			&icons[TerroristIcon]);
 
 	this->render = true;
 }
@@ -57,7 +57,7 @@ ImVec2 Menu::GetWindowSize()
 
 	return ImVec2(rect.right - rect.left, rect.bottom - rect.top);
 }
-
+// возврат времени в формате "час:минута:секунда"
 std::string Menu::GetTime()
 {
 	time_t now = time(NULL);
@@ -65,15 +65,24 @@ std::string Menu::GetTime()
 	char buf[80]; localtime_s(&tstruct, &now); strftime(buf, sizeof(buf), "%X", &tstruct);
 	return std::string(buf);
 }
+
 void Menu::Detach()
 {
+	this->active = false;
+	this->render = false;
+
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX9_Shutdown();
 	ImGui::DestroyContext();
-
-	this->render = false;
 }
 
+bool Menu::isOpen()
+{
+	if (this)
+		return this->active;
+	else
+		return false;
+}
 // Отрисовывает меню "пуск", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawStartMenu()
 {
@@ -106,7 +115,10 @@ void Menu::DrawAboutMenu()
 	if (ImGui::Button(" ", ImVec2(20, 20)))
 		this->tabs[AboutMenuTab] = false;
 
-	ImGui::Image((void*)logos[0], ImVec2(100, 100));
+	PDIRECT3DTEXTURE9 logo;
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(AV_LOGO), &logo);
+
+	ImGui::Image((void*)logo, ImVec2(100, 100));
 	ImGui::SameLine();
 	ImGui::Text(xorstr("COMPILATION DATE: %s\nCOMPILATION TIME: %s"), xorstr(__DATE__), xorstr(__TIME__));
 	ImGui::SetCursorPos(ImVec2(115, 70));
@@ -144,7 +156,6 @@ void Menu::DrawPlayerList()
 		ImGui::Text(xorstr("ID-%d   TEAM-ID:   %d   HEALTH:  "), i, ent->m_iTeamNum);
 		ImGui::SameLine();
 		ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
-
 	}
 
 	ImGui::End();
@@ -310,6 +321,9 @@ void Menu::DrawTaskBar()
 // Запускает отрисовку всего меню
 void Menu::Render()
 {
+	if (!this->render)
+		return;
+
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();

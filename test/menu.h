@@ -51,7 +51,7 @@ public:
 	Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings);
 	void Render();
 	void Detach();
-	void isOpen();
+	bool isOpen();
 private:
 	bool              render      = true;
 	short             menutab     = 0;

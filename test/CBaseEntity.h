@@ -33,12 +33,7 @@ public:
 	ImVec3 GetBonePosition(int bone);
 	// Calc distance to entity
 	float CalcDistaceToEntity(CBaseEntity* entity);
-	/*
-	Get color based on entity health
-	Green - high health
-	Yellow - midle health
-	Red - low health
-	*/
+	//Get color based on entity health
 	ImColor GetColorBasedOnHealth();
 	// Get entity camera position
 	ImVec3 GetCameraPosition();

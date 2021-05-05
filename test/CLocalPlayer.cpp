@@ -35,6 +35,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
 	CBaseEntity* entitylist[32];
 
 	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
+
 	IClientEntityList* VClientEntityList = (IClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
 	int counter = 0;
 

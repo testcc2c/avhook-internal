@@ -45,16 +45,13 @@ EndScene		  oEndScene;
 WNDPROC			  oWndProc;
 HMODULE			  hmodule;
 
-Menu*		  menu			= nullptr;
-MenuSettings* menu_settings = nullptr;
+Menu* menu = nullptr;
 
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 
-	if (!settings::attach)
-		return oEndScene(pDevice);
-	else if (!menu)
-		 menu = new Menu(pDevice, hmodule, new MenuSettings());
+	if (!menu)
+		menu = new Menu(pDevice, hmodule, new MenuSettings());
 	menu->Render();                                 
 
 	return oEndScene(pDevice);
@@ -62,12 +59,15 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 
 
-LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-
-	ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+{
+	if (menu->isOpen())
+	{
+		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+		return TRUE;
+	}
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
-
 
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
@@ -83,7 +83,7 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 	if (window)
 	{
 		Memory mem;
-		//end_scene_addr = (DWORD)d3dDevice[42];
+		//DWORD end_scene_addr_sig = mem.FindPattern("client.dll", "\x6A\x00\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x8B\x7D\x00\x8B\xDF\x8D\x47\x00\xF7\xDB\x1B\xDB\x23\xD8\x89\x5D\x00\x33\xF6\x89\x75\x00\x39\x73\x00\x75", "x?x????x????xx?xxxx?xxxxxxxx?xxxx?xx?x");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		settings::attach = true;
 		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
@@ -97,13 +97,9 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 			Sleep(500);
 		}
 
-
-		settings::attach = false;
 		PlaySound(xorstr("avhook\\sounds\\deactivated.wav"), NULL, SND_ASYNC);
 
-		ImGui_ImplWin32_Shutdown();
-		ImGui_ImplDX9_Shutdown();
-		ImGui::DestroyContext();
+		menu->Detach();
 
 		SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
@@ -215,9 +211,9 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 		hmodule = hModule;
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint,   hModule, 0, nullptr);
 		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,		   hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	   hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,       hModule, 0, nullptr);
+		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH,   hModule, 0, nullptr);
+		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	       hModule, 0, nullptr);
+		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,         hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		break;

@@ -5,10 +5,20 @@
 #define NOP 0x90
 #define JUMP 0x9E
 
- // \x8d\x47\x00\xf7\xdb\x1b\xdb\x23\xd8\x89\x5d\x00\x33\xf6\x89\x75\x00\x39\x73\x00\x75 xx ? xxxxxxxx ? xxxx ? xx ? x
+
 
 class Memory
 {
+private:
+	MODULEINFO GetModuleInfo(const char* szModule)
+	{
+		MODULEINFO modinfo{ 0 };
+		HMODULE hModule = GetModuleHandle(szModule);
+		if (hModule == 0)
+			return modinfo;
+		GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
+		return modinfo;
+	}
 public:
 	void patch(BYTE* dst, BYTE* src, unsigned int size)
 	{
@@ -46,19 +56,9 @@ public:
 		*(char*)((intptr_t)gateway + len) = 0xE9;
 
 		*(intptr_t*)((intptr_t)gateway + len + 1) = gatewayRelativeAddr;
-		detour32(src, dst, len);
+		this->detour32(src, dst, len);
 
 		return (char*)gateway;
-	}
-
-	MODULEINFO GetModuleInfo(const char* szModule)
-	{
-		MODULEINFO modinfo { 0 };
-		HMODULE hModule = GetModuleHandle(szModule);
-		if (hModule == 0)
-			return modinfo;
-		GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
-		return modinfo;
 	}
 
 	// for finding a signature/pattern in memory of another process
