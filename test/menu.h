@@ -19,7 +19,7 @@
 #include <string>
 #include <time.h>
 #include "resource.h"
-
+#include <shlobj_core.h>
 enum Icons : int
 {
 	PlayerListIcon        = 0,
@@ -44,6 +44,7 @@ enum SettingsIds : int
 	BoxESPSettingsID = 3,
 	MiscSettingsID = 4,
 	TriggerBotSettingsID = 5,
+	MenuSettingsID = 6
 };
 class Menu
 {
@@ -53,8 +54,9 @@ public:
 	void Detach();
 	bool isOpen();
 	bool isAttached();
-	Settings* settings[6] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
-							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting() };
+	Settings* settings[7] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
+							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting(),
+							  new MenuSettings()};
 private:
 	bool              render      = true;
 	short             menutab     = 0;
@@ -72,6 +74,7 @@ private:
 	IClientEntityList*entitylist;
 	ClientBase*	      client;
 
+	PDIRECT3DTEXTURE9 wallpaper_texture;
 
 	PDIRECT3DTEXTURE9 logos[3], icons[5];
 
@@ -84,4 +87,5 @@ private:
 	void DrawSettingsMenu();
 	void DrawTaskBar();
 	void DrawESP();
+	std::string GetDesktopWallpaper();
 };

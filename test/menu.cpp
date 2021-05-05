@@ -47,6 +47,8 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON),		    &icons[CounterTerroristIcon]);
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON),			&icons[TerroristIcon]);
 
+	D3DXCreateTextureFromFileA(pDevice, this->GetDesktopWallpaper().c_str(), &this->wallpaper_texture);
+
 	this->render = true;
 }
 
@@ -304,6 +306,8 @@ void Menu::DrawSettingsMenu()
 		ImGui::Text(xorstr("Welcome!"));
 	}
 
+
+
 	ImGui::End();
 }
 // Отрисовывает меню "таск бар", вызвается в ТОЛЬКО методе "Render".
@@ -335,9 +339,15 @@ void Menu::Render()
 
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 		this->active = !this->active;
+
 	this->DrawESP();
 	if (this->active)
 	{
+		if (!dynamic_cast<MiscSettings*>(settings[MiscSettingsID])->wallpaper)
+			this->drawlist->AddRectFilled(ImVec2(0, 0), this->window_size, dynamic_cast<MenuSettings*>(settings[MenuSettingsID])->background);
+		else
+			drawlist->AddImage(this->wallpaper_texture, ImVec2(0, 0), this->window_size);
+
 		this->DrawTaskBar();
 		if (this->tabs[SettingsMenuTab])
 			this->DrawSettingsMenu();
@@ -408,4 +418,14 @@ void Menu::DrawESP()
 				drawlist->AddLine(start, screen, entity->GetColorBasedOnHealth(), snap_lines_settings->thickness);
 		}
 	}
+}
+
+std::string Menu::GetDesktopWallpaper()
+{
+
+	TCHAR path[256];
+	SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, NULL, path);
+
+	std::string path_to_wp = std::string(path);
+	return path_to_wp + "\\Microsoft\\Windows\\Themes\\TranscodedWallpaper";
 }
