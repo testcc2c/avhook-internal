@@ -7,13 +7,10 @@ class TriggerBot : public Hack
 {
 
 public:
-	TriggerBot(int* delay, bool* rage);
+	TriggerBot(TriggerBotSetting* settings);
 	void Handle();
+	TriggerBotSetting* settings;
 private:
-	int* delay;
-	bool* rage;
-	bool* predict;
-	int* predict_time;
 	int bone = 8;
 };
 

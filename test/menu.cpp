@@ -1,6 +1,6 @@
 #include "menu.h"
 
-Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings)
+Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 {
 	this->pDevice    = pDevice;
 	this->hmodule    = hmod;
@@ -83,6 +83,12 @@ bool Menu::isOpen()
 	else
 		return false;
 }
+
+bool Menu::isAttached()
+{
+	return this->render;
+}
+
 // Отрисовывает меню "пуск", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawStartMenu()
 {
@@ -224,7 +230,6 @@ void Menu::DrawSettingsMenu()
 		ImGui::Checkbox(xorstr("Active###Glow"),       &glow_esp_settings->active);
 		ImGui::SameLine();
 		ImGui::ColorEdit4(xorstr("Color###GlowColor"), (float*)&glow_esp_settings->color, ImGuiColorEditFlags_NoInputs);
-		ImGui::SameLine();
 		ImGui::Combo(xorstr("###GlowEspDrawMode"),     &glow_esp_settings->draw_mode, glow_esp_settings->draw_options, IM_ARRAYSIZE(glow_esp_settings->draw_options));
 
 		ImGui::Text(xorstr("Snap Lines"));
@@ -330,7 +335,7 @@ void Menu::Render()
 
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 		this->active = !this->active;
-
+	this->DrawESP();
 	if (this->active)
 	{
 		this->DrawTaskBar();
@@ -348,4 +353,59 @@ void Menu::Render()
 	ImGui::EndFrame();
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Menu::DrawESP()
+{
+	BoxESP* box_settings = (BoxESP*)this->settings[BoxESPSettingsID];
+	SnapLinesESP* snap_lines_settings = (SnapLinesESP*)this->settings[SnapLinesSettingsID];
+
+	for (byte i = 1; i < 33; i++)
+	{
+		CBaseEntity* entity = (CBaseEntity*)this->entitylist->GetClientEntity(i);
+		CLocalPlayer* localPlayer = client->dwLocalPlayer;
+		
+		if (!entity or !localPlayer or client->WorldToScreen(entity->m_vecOrigin).z < 0.01f or entity->m_iHealth <= 0 or entity->m_iTeamNum == localPlayer->m_iTeamNum or entity->m_bDormant)
+			continue;
+
+		if (box_settings->active)
+		{
+			ImVec3 origin = client->WorldToScreen(entity->m_vecOrigin);
+			ImVec3 playerhead = entity->GetBonePosition(8);
+
+			playerhead.z += 7.9f;
+			playerhead = client->WorldToScreen(playerhead);
+
+			if (playerhead.z > 0.01f)
+			{
+				if (!box_settings->draw_mode)
+					drawlist->DrawBoxEsp(entity, box_settings->thickness,
+						box_settings->color, box_settings->draw_hp_value);
+				else
+					drawlist->DrawBoxEsp(entity, box_settings->thickness, entity->GetColorBasedOnHealth(), box_settings->draw_hp_value);
+
+			}
+		}
+		if (snap_lines_settings->active)
+		{
+			ImVec3 pos;
+
+			if (snap_lines_settings->selected_bone == 0)
+				pos = entity->GetBonePosition(BONE_HEAD);
+
+			else if (snap_lines_settings->selected_bone == 1)
+				pos = entity->GetBonePosition(BONE_BODY);
+
+			else if (snap_lines_settings->selected_bone == 2)
+				pos = entity->m_vecOrigin;
+
+			ImVec3 screen = client->WorldToScreen(pos);
+			ImVec2 start = ImVec2(this->window_size.x / 2, this->window_size.y);
+			
+			if (!snap_lines_settings->draw_mode)
+				drawlist->AddLine(start, screen, snap_lines_settings->color, snap_lines_settings->thickness);
+			else
+				drawlist->AddLine(start, screen, entity->GetColorBasedOnHealth(), snap_lines_settings->thickness);
+		}
+	}
 }

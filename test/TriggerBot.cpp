@@ -1,11 +1,8 @@
 #include "TriggerBot.h"
 
-TriggerBot::TriggerBot(int* delay, bool* rage)
+TriggerBot::TriggerBot(TriggerBotSetting* settings)
 {
-	this->delay = delay;
-	this->rage = rage;
-	this->predict = predict;
-	this->predict_time = predict_time;
+	this->settings = settings;
 
 }
 void TriggerBot::Handle()
@@ -20,8 +17,8 @@ void TriggerBot::Handle()
 		if ((localplayer->m_iTeamNum == entity->m_iTeamNum or !entity->m_iHealth) or !localplayer->m_iCrosshairId)
 			return;
 
-		Sleep(*delay);
-		if (*this->rage)
+		Sleep(this->settings->delay);
+		if (this->settings->rage)
 			localplayer->AimAt(entity, this->bone);
 
 		this->clientbase->dwForceAttack = 6;

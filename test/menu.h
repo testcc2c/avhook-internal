@@ -48,10 +48,13 @@ enum SettingsIds : int
 class Menu
 {
 public:
-	Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod, MenuSettings* settings);
+	Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod);
 	void Render();
 	void Detach();
 	bool isOpen();
+	bool isAttached();
+	Settings* settings[6] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
+							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting() };
 private:
 	bool              render      = true;
 	short             menutab     = 0;
@@ -69,8 +72,6 @@ private:
 	IClientEntityList*entitylist;
 	ClientBase*	      client;
 
-	Settings* settings[6] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
-							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting() };
 
 	PDIRECT3DTEXTURE9 logos[3], icons[5];
 
@@ -82,5 +83,5 @@ private:
 	void DrawPlayerList();
 	void DrawSettingsMenu();
 	void DrawTaskBar();
-
+	void DrawESP();
 };

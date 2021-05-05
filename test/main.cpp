@@ -10,7 +10,6 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx9.h"
 
-#include "settings.h"
 #include "DX9ColorFix.h"
 
 #include "bhop.h"
@@ -51,7 +50,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 
 	if (!menu)
-		menu = new Menu(pDevice, hmodule, new MenuSettings());
+		menu = new Menu(pDevice, hmodule);
 	menu->Render();                                 
 
 	return oEndScene(pDevice);
@@ -85,7 +84,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 		Memory mem;
 		//DWORD end_scene_addr_sig = mem.FindPattern("client.dll", "\x6A\x00\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x8B\x7D\x00\x8B\xDF\x8D\x47\x00\xF7\xDB\x1B\xDB\x23\xD8\x89\x5D\x00\x33\xF6\x89\x75\x00\x39\x73\x00\x75", "x?x????x????xx?xxxx?xxxxxxxx?xxxx?xx?x");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
-		settings::attach = true;
 		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
 		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
 
@@ -113,9 +111,12 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 DWORD WINAPI Bhop(HMODULE hModule)
 {
 	BunnyHop bhop;
-	while (settings::attach)
+	while (!menu)
+		Sleep(100);
+	MiscSettings* settings = (MiscSettings*)menu->settings[MiscSettingsID];
+	while (menu->isAttached())
 	{
-		if (!settings::bhop)
+		if (!settings->bhop)
 			Sleep(500);
 		else if (GetAsyncKeyState(VK_SPACE))
 			bhop.HandleBhop();
@@ -125,12 +126,14 @@ DWORD WINAPI Bhop(HMODULE hModule)
 
 DWORD WINAPI InGameGlowWH(HMODULE hModule)
 {
-	InGameGlowEsp esp = InGameGlowEsp(&settings::inGameWallHack::selected_glow_mode);
+	while (!menu)
+		Sleep(100);
 
-	while (settings::attach)
+	InGameGlowEsp esp = InGameGlowEsp((GlowWHSettings*)menu->settings[GlowSettingID]);
+	while (menu->isAttached())
 	{
-		if (settings::inGameWallHack::on)
-			esp.HandleGlow(settings::inGameWallHack::EnemyGlowColor, settings::inGameWallHack::FriedndlyGlowColor);
+		if (esp.settings->active)
+			esp.HandleGlow();
 		else
 			Sleep(500);
 	}
@@ -139,12 +142,14 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 
 DWORD WINAPI Trigger(HMODULE hModule)
 {
-	using namespace settings::trigger_bot;
-	TriggerBot triggerbot(&delay, &rage);
+	while (!menu)
+		Sleep(100);
 
-	while (settings::attach)
+	TriggerBot triggerbot((TriggerBotSetting*)menu->settings[TriggerBotSettingsID]);
+
+	while (menu->isAttached())
 	{
-		if (on and GetAsyncKeyState(VK_XBUTTON1))
+		if (triggerbot.settings->active and GetAsyncKeyState(VK_XBUTTON1))
 			triggerbot.Handle();
 		else
 			Sleep(100);
@@ -154,23 +159,25 @@ DWORD WINAPI Trigger(HMODULE hModule)
 
 DWORD WINAPI AimBot(HMODULE hModule)
 {
-	int bone = 8;
-	CBaseEntity* ent;
-	IClientEntityList* entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
-	ClientBase* client = (ClientBase*)GetModuleHandle(xorstr("client.dll"));
+	while (!menu)
+		Sleep(100);
 
-	while (settings::attach)
+	int				   bone = 8;
+	IClientEntityList* entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
+	ClientBase*		   client	  = (ClientBase*)GetModuleHandle(xorstr("client.dll"));
+	AimBotSettings*	   settings = (AimBotSettings*)menu->settings[AimbotSettingID];
+	while (menu->isAttached())
 	{
 		__try
 		{
 
-			if (!settings::aimbot::on)
+			if (!settings->active)
 			{
 				Sleep(500);
 				continue;
 			}
 			CLocalPlayer* localPlayer = *(CLocalPlayer**)((DWORD)client + signatures::dwLocalPlayer);
-			switch (settings::aimbot::selectedhitbox)
+			switch (settings->selected_hitbox)
 			{
 			case 0:
 				bone = BONE_HEAD;
@@ -183,10 +190,11 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				break;
 			}
 
-			ent = localPlayer->GetClosestTarget(settings::aimbot::fov, bone);
+			CBaseEntity* ent = localPlayer->GetClosestTarget(settings->fov, bone);
 			// 17000.f - збс
-			localPlayer->AimAt(ent, bone);
-			if (settings::aimbot::autoshoot and entitylist->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
+
+			localPlayer->AimAt(ent, bone, 30000, true);
+			if (settings->auto_shoot and entitylist->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
 			{
 				client->dwForceAttack = 6;
 				Sleep(10);
@@ -210,10 +218,10 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 		hmodule = hModule;
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint,   hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,		   hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH,   hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	       hModule, 0, nullptr);
-		//CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,         hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,		   hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	   hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,       hModule, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		break;

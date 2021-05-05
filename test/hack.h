@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "ClientBase.h"
-
+#include "MenuSettings.h"
 class Hack
 {
 public:

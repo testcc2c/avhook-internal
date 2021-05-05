@@ -3,13 +3,11 @@
 #include "offsets.h"
 #include "imgui/imgui.h"
 #include "CBaseEntity.h"
-
 class InGameGlowEsp : public Hack
 {
 public:
-	InGameGlowEsp(int* mode);
+	InGameGlowEsp(GlowWHSettings* settings);
 
-	void HandleGlow(ImColor &enemyColor, ImColor &friendlyColor);
-private:
-	int* mode;
+	void HandleGlow();
+	GlowWHSettings* settings;
 };
