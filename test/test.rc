@@ -62,6 +62,8 @@ IDB_BITMAP5             BITMAP                  "images\\settings.bmp"
 
 IDB_BITMAP6             BITMAP                  "images\\t-icon.bmp"
 
+IDB_BITMAP7             BITMAP                  "images\\radar_icon.bmp"
+
 #endif    // Русский (Россия) resources
 /////////////////////////////////////////////////////////////////////////////
 

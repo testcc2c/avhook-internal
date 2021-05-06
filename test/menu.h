@@ -26,8 +26,8 @@ enum Icons : int
 	SettingsIcon		  = 1,
 	AboutIcon			  = 2,
 	CounterTerroristIcon  = 3,
-	TerroristIcon		  = 4
-
+	TerroristIcon		  = 4,
+	RadarIcon			  = 5
 };
 enum MenuTabs : int
 {
@@ -61,7 +61,7 @@ private:
 	bool              render      = true;
 	short             menutab     = 0;
 	bool		      tabs[4]     = { false, false, false, false };
-	bool			  active      = false;
+	bool			  active	  = false;
 	const LPCSTR	  window_name = xorstr("Counter-Strike: Global Offensive");
 	ImVec4*			  theme;
 	
@@ -76,7 +76,7 @@ private:
 
 	PDIRECT3DTEXTURE9 wallpaper_texture;
 
-	PDIRECT3DTEXTURE9 icons[5];
+	PDIRECT3DTEXTURE9 icons[6];
 
 	ImVec2	GetWindowSize();
 	std::string GetTime();
@@ -87,5 +87,7 @@ private:
 	void DrawSettingsMenu();
 	void DrawTaskBar();
 	void DrawESP();
+	void DrawRadar();
+
 	std::string GetDesktopWallpaper();
 };

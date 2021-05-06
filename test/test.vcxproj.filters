@@ -267,5 +267,8 @@
     <Image Include="images\t-icon.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="images\radar_icon.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

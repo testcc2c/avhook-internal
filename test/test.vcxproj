@@ -221,6 +221,7 @@
     <Image Include="images\av_logo.bmp" />
     <Image Include="images\ct-icon.bmp" />
     <Image Include="images\player_list.bmp" />
+    <Image Include="images\radar_icon.bmp" />
     <Image Include="images\settings.bmp" />
     <Image Include="images\t-icon.bmp" />
   </ItemGroup>

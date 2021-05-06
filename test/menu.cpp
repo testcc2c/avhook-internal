@@ -46,7 +46,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP1), &icons[AboutIcon]);
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP3), &icons[CounterTerroristIcon]);
 	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP6), &icons[TerroristIcon]);
-
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP7), &icons[RadarIcon]);
 	D3DXCreateTextureFromFileA(pDevice, this->GetDesktopWallpaper().c_str(), &this->wallpaper_texture);
 
 	this->render = true;
@@ -138,15 +138,18 @@ void Menu::DrawAboutMenu()
 void Menu::DrawPlayerList()
 {
 	ImGui::Begin(xorstr("player_list"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-	ImGui::SetWindowSize(ImVec2(800, 500));
+	ImGui::SetWindowSize(ImVec2(800, 340));
 
 	ImGui::Image(icons[0], ImVec2(16, 16));
 	ImGui::SameLine();
 
 	ImGui::Text(xorstr("PLAYER LIST"));
 	ImGui::SetCursorPos(ImVec2(800 - 25, 5));
+
 	if (ImGui::Button(" ", ImVec2(20, 20)))
 		this->tabs[PlayerListTab] = false;
+
+	ImGui::BeginChild("Child###xd", ImVec2(785, 300), true, ImGuiWindowFlags_NoScrollbar);
 
 	for (byte i = 1; i < 33; i++)
 	{
@@ -165,7 +168,7 @@ void Menu::DrawPlayerList()
 		ImGui::SameLine();
 		ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
 	}
-
+	ImGui::EndChild();
 	ImGui::End();
 }
 // Отрисовывает меню "SETTINGs", вызвается в ТОЛЬКО методе "Render".
@@ -266,6 +269,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::Checkbox(xorstr("Bunny hop"),		 &misc_settings->bhop);
 		ImGui::Checkbox(xorstr("Desktop wallpaper"), &misc_settings->wallpaper);
 		ImGui::Checkbox(xorstr("Show local time"),   &misc_settings->show_time);
+		ImGui::Checkbox(xorstr("Show radar"),   &misc_settings->radar);
 		if (client->dwLocalPlayer)
 			ImGui::SliderInt(xorstr("FOV"), &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
 	}
@@ -343,11 +347,18 @@ void Menu::Render()
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 		this->active = !this->active;
 
+	MiscSettings* misc_settings = dynamic_cast<MiscSettings*>(this->settings[MiscSettingsID]);
+
+
 	this->DrawESP();
+
+	if (misc_settings->radar)
+		this->DrawRadar();
+
 	if (this->active)
 	{
-		if (!dynamic_cast<MiscSettings*>(settings[MiscSettingsID])->wallpaper)
-			this->drawlist->AddRectFilled(ImVec2(0, 0), this->window_size, dynamic_cast<MenuSettings*>(settings[MenuSettingsID])->background);
+		if (!misc_settings->wallpaper)
+			this->drawlist->AddRectFilled(ImVec2(0, 0), this->window_size, dynamic_cast<MenuSettings*>(this->settings[MenuSettingsID])->background);
 		else
 			drawlist->AddImage(this->wallpaper_texture, ImVec2(0, 0), this->window_size);
 
@@ -431,4 +442,47 @@ std::string Menu::GetDesktopWallpaper()
 
 	std::string path_to_wp = std::string(path);
 	return path_to_wp + "\\Microsoft\\Windows\\Themes\\TranscodedWallpaper";
+}
+void Menu::DrawRadar()
+{
+	ImGui::Begin(xorstr("radar"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+	ImGui::SetWindowSize(ImVec2(250, 220));
+
+	if (this->active)
+	{
+		ImGui::SetWindowSize(ImVec2(250, 240));
+
+		ImGui::Image(this->icons[RadarIcon], ImVec2(16, 16));
+		ImGui::SameLine();
+		ImGui::Text(xorstr("RADAR"));
+	}
+	else
+		ImGui::SetWindowSize(ImVec2(250, 220));
+
+	if (dynamic_cast<AimBotSettings*>(settings[AimbotSettingID])->active)
+		ImGui::TextColored(ImColor(255, 0, 0), xorstr("AIM"));
+	else
+		ImGui::TextColored(ImColor(255, 255, 255), xorstr("AIM"));
+
+	if (dynamic_cast<TriggerBotSetting*>(settings[TriggerBotSettingsID])->active)
+		ImGui::TextColored(ImColor(255, 0, 0), xorstr("TRG"));
+	else
+		ImGui::TextColored(ImColor(255, 255, 255), xorstr("TRG"));
+
+	if (dynamic_cast<MiscSettings*>(settings[MiscSettingsID])->bhop)
+		ImGui::TextColored(ImColor(255, 0, 0), xorstr("BHP"));
+	else
+		ImGui::TextColored(ImColor(255, 255, 255), xorstr("BHP"));
+	if ()
+
+	if (this->active)
+		ImGui::SetCursorPos(ImVec2(40, 30));
+	else
+		ImGui::SetCursorPos(ImVec2(40, 10));
+
+	ImGui::BeginChild("Child!",ImVec2(200, 200), true, ImGuiWindowFlags_NoScrollbar);
+	
+	ImGui::EndChild();
+
+	ImGui::End();
 }
