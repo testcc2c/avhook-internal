@@ -9,6 +9,6 @@ public:
 
 protected:
 	ClientBase* clientbase;
-	DWORD enginebase;
+	DWORD       enginebase;
 
 };

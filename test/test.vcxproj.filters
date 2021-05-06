@@ -67,9 +67,6 @@
     <Filter Include="Render\DirectX\DirectX9Device">
       <UniqueIdentifier>{6da338b9-df3b-4eac-b737-cab856b66d6d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render\cheat settings">
-      <UniqueIdentifier>{da7c840d-0811-4301-bb46-80fb0de442c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render\Menu">
       <UniqueIdentifier>{edbe270d-dd55-4429-b65f-9f30b1fe4dff}</UniqueIdentifier>
     </Filter>
@@ -101,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Render\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="settings.h">
-      <Filter>Render\cheat settings</Filter>
     </ClInclude>
     <ClInclude Include="bhop.h">
       <Filter>Hacking features\Bunny Hop</Filter>
@@ -255,7 +249,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="images\t-icon.bmp">
+    <Image Include="images\about.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\av_logo.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
     <Image Include="images\ct-icon.bmp">
@@ -267,10 +264,7 @@
     <Image Include="images\settings.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
-    <Image Include="images\about.bmp">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
-    <Image Include="images\av_logo.bmp">
+    <Image Include="images\t-icon.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>

@@ -212,19 +212,15 @@ DWORD WINAPI AimBot(HMODULE hModule)
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
-	switch (dwReason)
-	{
+	hmodule = hModule;
 
-	case DLL_PROCESS_ATTACH:
-		hmodule = hModule;
+	if (dwReason == DLL_PROCESS_ATTACH)
+	{
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)EntryPoint,   hModule, 0, nullptr);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,		   hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,         hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	   hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,       hModule, 0, nullptr);
-		break;
-	case DLL_PROCESS_DETACH:
-		break;
 	}
 	return TRUE;
 }

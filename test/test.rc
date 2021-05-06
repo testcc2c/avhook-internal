@@ -50,17 +50,17 @@ END
 // Bitmap
 //
 
-IDB_BITMAP1             BITMAP                  "images\\t-icon.bmp"
+IDB_BITMAP1             BITMAP                  "images\\about.bmp"
 
-IDB_BITMAP2             BITMAP                  "images\\ct-icon.bmp"
+IDB_BITMAP2             BITMAP                  "images\\av_logo.bmp"
 
-IDB_BITMAP3             BITMAP                  "images\\player_list.bmp"
+IDB_BITMAP3             BITMAP                  "images\\ct-icon.bmp"
 
-IDB_BITMAP4             BITMAP                  "images\\settings.bmp"
+IDB_BITMAP4             BITMAP                  "images\\player_list.bmp"
 
-IDB_BITMAP5             BITMAP                  "images\\about.bmp"
+IDB_BITMAP5             BITMAP                  "images\\settings.bmp"
 
-IDB_BITMAP6             BITMAP                  "images\\av_logo.bmp"
+IDB_BITMAP6             BITMAP                  "images\\t-icon.bmp"
 
 #endif    // Русский (Россия) resources
 /////////////////////////////////////////////////////////////////////////////

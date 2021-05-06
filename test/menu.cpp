@@ -38,14 +38,14 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	this->theme[ImGuiCol_ScrollbarGrab]	  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	this->theme[ImGuiCol_SliderGrab]	  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	this->theme[ImGuiCol_SliderGrabActive]= ImVec4(1.f, 0.372f, 0.372f, 1.f);
-	this->theme[ImGuiCol_TabHovered]	  = ImVec4(1.f, 0.57f, 0.57f, 1.f);
+	this->theme[ImGuiCol_TabHovered]	  = ImVec4(1.f, 0.57f,  0.57f,  1.f);
 	this->theme[ImGuiCol_TabActive]		  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(PLAYER_LIST_ICON), &icons[PlayerListIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(SETTINGS_ICON),    &icons[SettingsIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP5),      &icons[AboutIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(CT_ICON),		    &icons[CounterTerroristIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(T_ICON),			&icons[TerroristIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP4), &icons[PlayerListIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP5), &icons[SettingsIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP1), &icons[AboutIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP3), &icons[CounterTerroristIcon]);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP6), &icons[TerroristIcon]);
 
 	D3DXCreateTextureFromFileA(pDevice, this->GetDesktopWallpaper().c_str(), &this->wallpaper_texture);
 
@@ -124,7 +124,7 @@ void Menu::DrawAboutMenu()
 		this->tabs[AboutMenuTab] = false;
 
 	PDIRECT3DTEXTURE9 logo;
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(AV_LOGO), &logo);
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP2), &logo);
 
 	ImGui::Image((void*)logo, ImVec2(100, 100));
 	ImGui::SameLine();
@@ -265,7 +265,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::Text(xorstr("Misc configuration"));
 		ImGui::Checkbox(xorstr("Bunny hop"),		 &misc_settings->bhop);
 		ImGui::Checkbox(xorstr("Desktop wallpaper"), &misc_settings->wallpaper);
-
+		ImGui::Checkbox(xorstr("Show local time"),   &misc_settings->show_time);
 		if (client->dwLocalPlayer)
 			ImGui::SliderInt(xorstr("FOV"), &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
 	}
@@ -322,8 +322,11 @@ void Menu::DrawTaskBar()
 	if (ImGui::Button(xorstr("START")))
 		this->tabs[StartMenuTab] = !this->tabs[StartMenuTab];
 
-	ImGui::SetCursorPos(ImVec2(this->window_size.x - 57, 7));
-	ImGui::Text(GetTime().c_str());
+	if (dynamic_cast<MiscSettings*>(this->settings[MiscSettingsID])->show_time)
+	{
+		ImGui::SetCursorPos(ImVec2(this->window_size.x - 57, 7));
+		ImGui::Text(GetTime().c_str());
+	}
 
 	ImGui::End();
 }
@@ -423,7 +426,7 @@ void Menu::DrawESP()
 std::string Menu::GetDesktopWallpaper()
 {
 
-	TCHAR path[256];
+	TCHAR path[260];
 	SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, NULL, path);
 
 	std::string path_to_wp = std::string(path);

@@ -180,7 +180,6 @@
     <ClInclude Include="offsets.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SDK.h" />
-    <ClInclude Include="settings.h" />
     <ClInclude Include="TraceLine.h" />
     <ClInclude Include="TriggerBot.h" />
     <ClInclude Include="types.h" />

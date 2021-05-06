@@ -27,6 +27,7 @@ public:
 	bool  about_menu	= false;
 	bool  settings_menu = false;
 	bool  player_list   = false;
+	
 	ImColor background = ImColor(0, 0, 0, 90);
 
 	void Restore() override;
@@ -64,6 +65,7 @@ class MiscSettings : public Settings
 public:
 	bool bhop;
 	bool wallpaper;
+	bool show_time;
 	void Restore() override {};
 };
 class TriggerBotSetting : public Settings

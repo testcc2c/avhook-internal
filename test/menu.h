@@ -76,7 +76,7 @@ private:
 
 	PDIRECT3DTEXTURE9 wallpaper_texture;
 
-	PDIRECT3DTEXTURE9 logos[3], icons[5];
+	PDIRECT3DTEXTURE9 icons[5];
 
 	ImVec2	GetWindowSize();
 	std::string GetTime();
