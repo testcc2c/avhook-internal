@@ -473,7 +473,6 @@ void Menu::DrawRadar()
 		ImGui::TextColored(ImColor(255, 0, 0), xorstr("BHP"));
 	else
 		ImGui::TextColored(ImColor(255, 255, 255), xorstr("BHP"));
-	if ()
 
 	if (this->active)
 		ImGui::SetCursorPos(ImVec2(40, 30));
