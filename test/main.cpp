@@ -174,9 +174,18 @@ DWORD WINAPI AimBot(HMODULE hModule)
 			if (!settings->active)
 			{
 				Sleep(500);
+				settings->is_working = false;
+				continue;
+			}
+			else if (settings->on_key and !GetAsyncKeyState(VK_LBUTTON))
+			{
+				Sleep(10);
+				settings->is_working = false;
 				continue;
 			}
 			CLocalPlayer* localPlayer = *(CLocalPlayer**)((DWORD)client + signatures::dwLocalPlayer);
+			settings->is_working = true;
+
 			switch (settings->selected_hitbox)
 			{
 			case 0:

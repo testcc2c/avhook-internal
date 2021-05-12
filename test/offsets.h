@@ -14,7 +14,8 @@
 #define FL_ONGROUND 257
 #define FL_ONGROUND_DUCK 263
 
-namespace netvars {
+namespace netvars 
+{
 	const DWORD cs_gamerules_data = 0x0;
 	const DWORD m_ArmorValue = 0xB37C;
 	const DWORD m_Collision = 0x320;
@@ -138,7 +139,7 @@ namespace signatures {
 	const DWORD dwGlobalVars = 0x589CE8;
 	const DWORD dwGlowObjectManager = 0x52ED6A8;
 	const DWORD dwInput = 0x51F67E0;
-	const DWORD dwInterfaceLinkList = 0x947774;
+	const DWORD dwInterfaceLinkList = 0x947844;
 	const DWORD dwLocalPlayer = 0xD8D2CC;
 	const DWORD dwMouseEnable = 0xD92E70;
 	const DWORD dwMouseEnablePtr = 0xD92E40;
@@ -152,9 +153,9 @@ namespace signatures {
 	const DWORD dwWeaponTableIndex = 0x325C;
 	const DWORD dwYawPtr = 0xD92AD0;
 	const DWORD dwZoomSensitivityRatioPtr = 0xD97D70;
-	const DWORD dwbSendPackets = 0xD76CA;
+	const DWORD dwbSendPackets = 0xD76DA;
 	const DWORD dwppDirect3DDevice9 = 0xA7050;
-	const DWORD find_hud_element = 0x2FF1F5A0;
+	const DWORD find_hud_element = 0x2D8EF5A0;
 	const DWORD force_update_spectator_glow = 0x3AF9FA;
 	const DWORD interface_engine_cvar = 0x3E9EC;
 	const DWORD is_c4_owner = 0x3BC630;
@@ -166,6 +167,5 @@ namespace signatures {
 	const DWORD model_ambient_min = 0x58D05C;
 	const DWORD set_abs_angles = 0x1E07A0;
 	const DWORD set_abs_origin = 0x1E05E0;
-} // namespace signatures
-
- // namespace signatures
+}
+// namespace signature

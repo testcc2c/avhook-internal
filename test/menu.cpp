@@ -8,6 +8,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	this->entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
 	this->client     = (ClientBase*)GetModuleHandle("client.dll");
 	this->window_size = this->GetWindowSize();
+	this->colorfix = new DX9ColorFix(this->pDevice);
 
 	ImGui::CreateContext();
 	ImGui_ImplWin32_Init(this->window);
@@ -76,6 +77,8 @@ void Menu::Detach()
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX9_Shutdown();
 	ImGui::DestroyContext();
+	delete this->colorfix;
+
 }
 
 bool Menu::isOpen()
@@ -219,6 +222,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::SameLine();
 		ImGui::InputInt(xorstr("FOV"),		  &aimbot_settings->fov);
 		ImGui::Checkbox(xorstr("Auto shoot"), &aimbot_settings->auto_shoot);
+		ImGui::Checkbox(xorstr("Activate on mouse1"), &aimbot_settings->on_key);
 
 	}
 	else if (this->menutab == 2) // esp sector
@@ -291,13 +295,16 @@ void Menu::DrawSettingsMenu()
 		ImGui::SameLine();
 		ImGui::ColorEdit4(xorstr("Frame hovered"), (float*)&this->theme[ImGuiCol_FrameBgHovered], ImGuiColorEditFlags_NoInputs);
 		ImGui::ColorEdit4(xorstr("Text selected"), (float*)&this->theme[ImGuiCol_TextSelectedBg], ImGuiColorEditFlags_NoInputs);
-		ImGui::ColorEdit4(xorstr("Check mark"),    (float*)&this->theme[ImGuiCol_CheckMark],      ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();
+		ImGui::ColorEdit4(xorstr("Check mark"),    (float*)&this->theme[ImGuiCol_CheckMark],      ImGuiColorEditFlags_NoInputs);
+		ImGui::ColorEdit4(xorstr("Radar feature active"),   (float*)&dynamic_cast<RadarSettings*>(this->settings[RadarSettingsID])->active_radar_color,   ImGuiColorEditFlags_NoInputs);
+		ImGui::SameLine();
+		ImGui::ColorEdit4(xorstr("Radar feature inactive"), (float*)&dynamic_cast<RadarSettings*>(this->settings[RadarSettingsID])->inactive_radar_color, ImGuiColorEditFlags_NoInputs);
 		//ImGui::ColorEdit4(xorstr("Overlay"),       (float*)(&this->misc_settings->), ImGuiColorEditFlags_NoInputs);
 	}
 	else if (this->menutab == 5) // trigger
 	{
-		TriggerBotSetting* trigger_bot_settings = (TriggerBotSetting*)this->settings[TriggerBotSettingsID];
+		TriggerBotSetting* trigger_bot_settings = dynamic_cast<TriggerBotSetting*>(this->settings[TriggerBotSettingsID]);
 
 		ImGui::Text(xorstr("Trigger bot."));
 		ImGui::Checkbox(xorstr("Active"), &trigger_bot_settings->active);
@@ -340,6 +347,8 @@ void Menu::Render()
 	if (!this->render)
 		return;
 
+	this->colorfix->RemoveColorFilter();
+
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -375,8 +384,10 @@ void Menu::Render()
 	}
 
 	ImGui::EndFrame();
+	this->colorfix->RestoreRenderState();
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+	this->colorfix->RestoreColorFilter();
 }
 
 void Menu::DrawESP()
@@ -443,10 +454,12 @@ std::string Menu::GetDesktopWallpaper()
 	std::string path_to_wp = std::string(path);
 	return path_to_wp + "\\Microsoft\\Windows\\Themes\\TranscodedWallpaper";
 }
+
 void Menu::DrawRadar()
 {
 	ImGui::Begin(xorstr("radar"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 	ImGui::SetWindowSize(ImVec2(250, 220));
+	RadarSettings* rad_settings = dynamic_cast<RadarSettings*>(this->settings[RadarSettingsID]);
 
 	if (this->active)
 	{
@@ -459,20 +472,20 @@ void Menu::DrawRadar()
 	else
 		ImGui::SetWindowSize(ImVec2(250, 220));
 
-	if (dynamic_cast<AimBotSettings*>(settings[AimbotSettingID])->active)
-		ImGui::TextColored(ImColor(255, 0, 0), xorstr("AIM"));
+	if (dynamic_cast<AimBotSettings*>(settings[AimbotSettingID])->is_working)
+		ImGui::TextColored(rad_settings->active_radar_color, xorstr("AIM"));
 	else
-		ImGui::TextColored(ImColor(255, 255, 255), xorstr("AIM"));
+		ImGui::TextColored(rad_settings->inactive_radar_color, xorstr("AIM"));
 
 	if (dynamic_cast<TriggerBotSetting*>(settings[TriggerBotSettingsID])->active)
-		ImGui::TextColored(ImColor(255, 0, 0), xorstr("TRG"));
+		ImGui::TextColored(rad_settings->active_radar_color, xorstr("TRG"));
 	else
-		ImGui::TextColored(ImColor(255, 255, 255), xorstr("TRG"));
+		ImGui::TextColored(rad_settings->inactive_radar_color, xorstr("TRG"));
 
 	if (dynamic_cast<MiscSettings*>(settings[MiscSettingsID])->bhop)
-		ImGui::TextColored(ImColor(255, 0, 0), xorstr("BHP"));
+		ImGui::TextColored(rad_settings->active_radar_color, xorstr("BHP"));
 	else
-		ImGui::TextColored(ImColor(255, 255, 255), xorstr("BHP"));
+		ImGui::TextColored(rad_settings->inactive_radar_color, xorstr("BHP"));
 
 	if (this->active)
 		ImGui::SetCursorPos(ImVec2(40, 30));

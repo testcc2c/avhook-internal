@@ -27,6 +27,9 @@ public:
 	bool  about_menu	= false;
 	bool  settings_menu = false;
 	bool  player_list   = false;
+	bool  radar			= false;
+	ImColor active_radar_color = false;
+
 	ImColor background = ImColor(0, 0, 0, 90);
 
 	void Restore() override;
@@ -35,8 +38,10 @@ class AimBotSettings : public Settings
 {
 public:
 	bool			   active	       = false;
+	bool			   on_key		   = false;
 	bool			   auto_shoot	   = false;
 	bool			   silent		   = false;
+	bool			   is_working	   = false;
 	int				   fov			   = 10; 
 	int selected_hitbox				   = 8;
 	const char* hitboxes[3]			   = { "Head", "Body", "Legs" };
@@ -73,6 +78,13 @@ class TriggerBotSetting : public Settings
 public:
 	bool active;
 	bool rage;
-	int delay;
+	int  delay;
 	void Restore() override {};
+};
+class RadarSettings : public Settings
+{
+public:
+	ImColor	active_radar_color = ImColor(255, 0, 0);
+	ImColor inactive_radar_color = ImColor(255, 255, 255);
+	void    Restore() override {};
 };

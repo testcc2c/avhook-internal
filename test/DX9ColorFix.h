@@ -9,7 +9,6 @@ class DX9ColorFix
 {
 public:
 	DX9ColorFix(LPDIRECT3DDEVICE9 pDevice);
-
     void RemoveColorFilter();
     void RestoreColorFilter();
     void RestoreRenderState();

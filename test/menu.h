@@ -38,13 +38,14 @@ enum MenuTabs : int
 };
 enum SettingsIds : int
 {
-	AimbotSettingID = 0,
-	GlowSettingID = 1,
-	SnapLinesSettingsID = 2,
-	BoxESPSettingsID = 3,
-	MiscSettingsID = 4,
-	TriggerBotSettingsID = 5,
-	MenuSettingsID = 6
+	AimbotSettingID,
+	GlowSettingID,
+	SnapLinesSettingsID,
+	BoxESPSettingsID,
+	MiscSettingsID,
+	TriggerBotSettingsID,
+	MenuSettingsID,
+	RadarSettingsID
 };
 class Menu
 {
@@ -54,28 +55,32 @@ public:
 	void Detach();
 	bool isOpen();
 	bool isAttached();
-	Settings* settings[7] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
+	Settings* settings[8] = { new AimBotSettings(), new GlowWHSettings(), new SnapLinesESP(),
 							  new BoxESP(),         new MiscSettings(),   new TriggerBotSetting(),
-							  new MenuSettings()};
+							  new MenuSettings(),   new RadarSettings()};
+
 private:
-	bool              render      = true;
-	short             menutab     = 0;
-	bool		      tabs[4]     = { false, false, false, false };
-	bool			  active	  = false;
-	const LPCSTR	  window_name = xorstr("Counter-Strike: Global Offensive");
-	ImVec4*			  theme;
-	
-	ESPDrawer*		  drawlist;
-	ImGuiIO			  io;
-	HMODULE			  hmodule;
-	LPDIRECT3DDEVICE9 pDevice;
-	HWND			  window;
-	ImVec2			  window_size;
-	IClientEntityList*entitylist;
-	ClientBase*	      client;
+	bool               render      = true;
+	short              menutab     = 0;
+	bool		       tabs[4]     = { false, false, false, false };
+	bool			   active	  = false;
 
-	PDIRECT3DTEXTURE9 wallpaper_texture;
+	const LPCSTR	   window_name = xorstr("Counter-Strike: Global Offensive");
 
+	ImVec4*			   theme;
+	ESPDrawer*		   drawlist;
+	ImGuiIO			   io;
+	HMODULE			   hmodule;
+	LPDIRECT3DDEVICE9  pDevice;
+	HWND			   window;
+	ImVec2			   window_size;
+	IClientEntityList* entitylist;
+	ClientBase*	       client;
+	DX9ColorFix*	   colorfix;
+	PDIRECT3DTEXTURE9  wallpaper_texture;
+
+	ImColor		       active_radar_color = ImColor(255, 0, 0);
+	ImColor		       inactive_radar_color = ImColor(255, 255, 255);
 	PDIRECT3DTEXTURE9 icons[6];
 
 	ImVec2	GetWindowSize();
