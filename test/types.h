@@ -3,12 +3,13 @@
 
 typedef void* (__cdecl* tCreateInterface)(const char* name, int* returncode);
 
-static void* GetInterface(const char* dllname, const char* interfacename)
+template <typename T>
+T* GetInterface(const char* dllname, const char* interfacename)
 {
-	tCreateInterface CreateInterFace = (tCreateInterface)GetProcAddress(GetModuleHandle(dllname), xorstr("CreateInterface"));
+	tCreateInterface CreateInterFace = reinterpret_cast<tCreateInterface>(GetProcAddress(GetModuleHandle(dllname), xorstr("CreateInterface")));
 
 	int returnCode = 0;
 
-	return CreateInterFace(interfacename, &returnCode);
+	return reinterpret_cast<T*>(CreateInterFace(interfacename, &returnCode));
 
 }

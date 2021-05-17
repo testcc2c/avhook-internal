@@ -5,7 +5,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	this->pDevice    = pDevice;
 	this->hmodule    = hmod;
 	this->window     = FindWindowA(NULL, this->window_name);
-	this->entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
+	this->entitylist = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
 	this->client     = (ClientBase*)GetModuleHandle("client.dll");
 	this->window_size = this->GetWindowSize();
 	this->colorfix = new DX9ColorFix(this->pDevice);
@@ -21,7 +21,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 
 	this->theme = ImGui::GetStyle().Colors;
 
-	this->theme[ImGuiCol_WindowBg]		  = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
+	this->theme[ImGuiCol_WindowBg]		  = ImColor(24, 31, 35, 255);
 	this->theme[ImGuiCol_Button]		  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	this->theme[ImGuiCol_Tab]			  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	this->theme[ImGuiCol_SeparatorActive] = ImVec4(1.f, 0.372f, 0.372f, 1.f);
@@ -34,7 +34,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	this->theme[ImGuiCol_FrameBg]		  = ImVec4(0.31f, 0.31f, 0.31f, 1.f);
 	this->theme[ImGuiCol_FrameBgActive]	  = ImVec4(1.f, 0.57f, 0.57f, 1.f);
 	this->theme[ImGuiCol_FrameBgHovered]  = ImVec4(0.41f, 0.41f, 0.41f, 1.f);
-	this->theme[ImGuiCol_PopupBg]		  = ImVec4(0.137f, 0.152f, 0.164f, 1.f);
+	this->theme[ImGuiCol_PopupBg]		  = ImColor(24, 31, 35, 255);
 	this->theme[ImGuiCol_ScrollbarBg]	  = ImVec4(1.f, 0.372f, 0.372f, 0.f);
 	this->theme[ImGuiCol_ScrollbarGrab]	  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 	this->theme[ImGuiCol_SliderGrab]	  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
@@ -316,9 +316,6 @@ void Menu::DrawSettingsMenu()
 	{
 		ImGui::Text(xorstr("Welcome!"));
 	}
-
-
-
 	ImGui::End();
 }
 // Отрисовывает меню "таск бар", вызвается в ТОЛЬКО методе "Render".

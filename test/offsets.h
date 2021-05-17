@@ -14,8 +14,7 @@
 #define FL_ONGROUND 257
 #define FL_ONGROUND_DUCK 263
 
-namespace netvars 
-{
+namespace netvars {
 	const DWORD cs_gamerules_data = 0x0;
 	const DWORD m_ArmorValue = 0xB37C;
 	const DWORD m_Collision = 0x320;
@@ -125,47 +124,46 @@ namespace signatures {
 	const DWORD dwClientState_PlayerInfo = 0x52C0;
 	const DWORD dwClientState_State = 0x108;
 	const DWORD dwClientState_ViewAngles = 0x4D90;
-	const DWORD dwEntityList = 0x4DA521C;
-	const DWORD dwForceAttack = 0x31D6750;
-	const DWORD dwForceAttack2 = 0x31D675C;
-	const DWORD dwForceBackward = 0x31D678C;
-	const DWORD dwForceForward = 0x31D6768;
-	const DWORD dwForceJump = 0x524EFFC;
-	const DWORD dwForceLeft = 0x31D6780;
-	const DWORD dwForceRight = 0x31D67A4;
+	const DWORD dwEntityList = 0x4DA720C;
+	const DWORD dwForceAttack = 0x31D7734;
+	const DWORD dwForceAttack2 = 0x31D7740;
+	const DWORD dwForceBackward = 0x31D777C;
+	const DWORD dwForceForward = 0x31D7788;
+	const DWORD dwForceJump = 0x5250FFC;
+	const DWORD dwForceLeft = 0x31D77A0;
+	const DWORD dwForceRight = 0x31D7794;
 	const DWORD dwGameDir = 0x628800;
-	const DWORD dwGameRulesProxy = 0x52C22EC;
-	const DWORD dwGetAllClasses = 0xDB4FF4;
+	const DWORD dwGameRulesProxy = 0x52C42EC;
+	const DWORD dwGetAllClasses = 0xDB601C;
 	const DWORD dwGlobalVars = 0x589CE8;
-	const DWORD dwGlowObjectManager = 0x52ED6A8;
-	const DWORD dwInput = 0x51F67E0;
-	const DWORD dwInterfaceLinkList = 0x947844;
-	const DWORD dwLocalPlayer = 0xD8D2CC;
-	const DWORD dwMouseEnable = 0xD92E70;
-	const DWORD dwMouseEnablePtr = 0xD92E40;
-	const DWORD dwPlayerResource = 0x31D4AD0;
-	const DWORD dwRadarBase = 0x51D9F94;
-	const DWORD dwSensitivity = 0xD92D0C;
-	const DWORD dwSensitivityPtr = 0xD92CE0;
+	const DWORD dwGlowObjectManager = 0x52EF6B0;
+	const DWORD dwInput = 0x51F87D0;
+	const DWORD dwInterfaceLinkList = 0x947BF4;
+	const DWORD dwLocalPlayer = 0xD8E2CC;
+	const DWORD dwMouseEnable = 0xD93E70;
+	const DWORD dwMouseEnablePtr = 0xD93E40;
+	const DWORD dwPlayerResource = 0x31D5AC0;
+	const DWORD dwRadarBase = 0x51DBF84;
+	const DWORD dwSensitivity = 0xD93D0C;
+	const DWORD dwSensitivityPtr = 0xD93CE0;
 	const DWORD dwSetClanTag = 0x8A1B0;
-	const DWORD dwViewMatrix = 0x4D96B34;
-	const DWORD dwWeaponTable = 0x51F72A0;
+	const DWORD dwViewMatrix = 0x4D98B24;
+	const DWORD dwWeaponTable = 0x51F9290;
 	const DWORD dwWeaponTableIndex = 0x325C;
-	const DWORD dwYawPtr = 0xD92AD0;
-	const DWORD dwZoomSensitivityRatioPtr = 0xD97D70;
-	const DWORD dwbSendPackets = 0xD76DA;
+	const DWORD dwYawPtr = 0xD93AD0;
+	const DWORD dwZoomSensitivityRatioPtr = 0xD98D70;
+	const DWORD dwbSendPackets = 0xD779A;
 	const DWORD dwppDirect3DDevice9 = 0xA7050;
-	const DWORD find_hud_element = 0x2D8EF5A0;
-	const DWORD force_update_spectator_glow = 0x3AF9FA;
+	const DWORD find_hud_element = 0x27F9FA00;
+	const DWORD force_update_spectator_glow = 0x3AFDFA;
 	const DWORD interface_engine_cvar = 0x3E9EC;
-	const DWORD is_c4_owner = 0x3BC630;
+	const DWORD is_c4_owner = 0x3BCA40;
 	const DWORD m_bDormant = 0xED;
 	const DWORD m_flSpawnTime = 0xA370;
 	const DWORD m_pStudioHdr = 0x294C;
-	const DWORD m_pitchClassPtr = 0x51DA230;
-	const DWORD m_yawClassPtr = 0xD92AD0;
+	const DWORD m_pitchClassPtr = 0x51DC220;
+	const DWORD m_yawClassPtr = 0xD93AD0;
 	const DWORD model_ambient_min = 0x58D05C;
-	const DWORD set_abs_angles = 0x1E07A0;
-	const DWORD set_abs_origin = 0x1E05E0;
-}
-// namespace signature
+	const DWORD set_abs_angles = 0x1E0B80;
+	const DWORD set_abs_origin = 0x1E09C0;
+} // namespace signatures

@@ -63,7 +63,7 @@ private:
 	bool               render      = true;
 	short              menutab     = 0;
 	bool		       tabs[4]     = { false, false, false, false };
-	bool			   active	  = false;
+	bool			   active	   = false;
 
 	const LPCSTR	   window_name = xorstr("Counter-Strike: Global Offensive");
 
@@ -79,20 +79,20 @@ private:
 	DX9ColorFix*	   colorfix;
 	PDIRECT3DTEXTURE9  wallpaper_texture;
 
-	ImColor		       active_radar_color = ImColor(255, 0, 0);
+	ImColor		       active_radar_color   = ImColor(255, 0, 0);
 	ImColor		       inactive_radar_color = ImColor(255, 255, 255);
 	PDIRECT3DTEXTURE9 icons[6];
 
-	ImVec2	GetWindowSize();
-	std::string GetTime();
+	ImVec2	     GetWindowSize();
+	std::string  GetTime();
 
-	void DrawStartMenu();
-	void DrawAboutMenu();
-	void DrawPlayerList();
-	void DrawSettingsMenu();
-	void DrawTaskBar();
-	void DrawESP();
-	void DrawRadar();
+	void	     DrawStartMenu();
+	void		 DrawAboutMenu();
+	void		 DrawPlayerList();
+	void		 DrawSettingsMenu();
+	void	     DrawTaskBar();
+	void		 DrawESP();
+	void		 DrawRadar();
 
 	std::string GetDesktopWallpaper();
 };

@@ -34,6 +34,7 @@
 #include "xorstr.h"
 #include "menu.h"
 
+#define ANTI_DEBUG_PROTECTION 0;
 
 typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -79,29 +80,33 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 	// dx9.GetD3D9Device(d3dDevice, sizeof(d3dDevice), window)
 	HWND window = FindWindowA(NULL, WINDOW_NAME);
 
+
 	if (window)
 	{
 		Memory mem;
 		//DWORD end_scene_addr_sig = mem.FindPattern("client.dll", "\x6A\x00\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x8B\x7D\x00\x8B\xDF\x8D\x47\x00\xF7\xDB\x1B\xDB\x23\xD8\x89\x5D\x00\x33\xF6\x89\x75\x00\x39\x73\x00\x75", "x?x????x????xx?xxxx?xxxxxxxx?xxxx?xx?x");
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
 		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
-		memcpy(end_scene_bytes, (char*)end_scene_addr, 7);
+		memcpy(end_scene_bytes, reinterpret_cast<char*>(end_scene_addr), 7);
 
-		oEndScene = (EndScene)mem.trampHook32((char*)end_scene_addr, (char*)hkEndScene, 7);
+		oEndScene = (EndScene)mem.trampHook32(reinterpret_cast<char*>(end_scene_addr), reinterpret_cast<char*>(hkEndScene), 7);
 		
 
 		while (!GetAsyncKeyState(VK_END))
 		{
+#if ANTI_DEBUG_PROTECTION
+			if (IsDebuggerPresent())
+				TerminateProcess(GetCurrentProcess(), 0);
 			Sleep(500);
+#endif // ANTI_DEBUG_PROTECTION
 		}
 
 		PlaySound(xorstr("avhook\\sounds\\deactivated.wav"), NULL, SND_ASYNC);
 
 		menu->Detach();
+		SetWindowLongPtr(window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(oWndProc));
 
-		SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
-
-		mem.patch((BYTE*)(end_scene_addr), end_scene_bytes, 7);
+		mem.patch(reinterpret_cast<BYTE*>(end_scene_addr), end_scene_bytes, 7);
 		Sleep(5000);
 
 	}
@@ -163,7 +168,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 		Sleep(100);
 
 	int				   bone = 8;
-	IClientEntityList* entitylist = (IClientEntityList*)GetInterface(xorstr("client.dll"), xorstr("VClientEntityList003"));
+	IClientEntityList* entitylist = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
 	ClientBase*		   client	  = (ClientBase*)GetModuleHandle(xorstr("client.dll"));
 	AimBotSettings*	   settings = (AimBotSettings*)menu->settings[AimbotSettingID];
 	while (menu->isAttached())

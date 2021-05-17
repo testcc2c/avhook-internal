@@ -43,7 +43,7 @@ bool CBaseEntity::isVisible()
 {
 	CBaseEntity* localplayer = *(CBaseEntity**)((DWORD)GetModuleHandle(xorstr("client.dll")) + signatures::dwLocalPlayer);
 
-	IEngineTrace* EngineTrace = (IEngineTrace*)GetInterface(xorstr("engine.dll"), xorstr("EngineTraceClient004"));
+	IEngineTrace* EngineTrace = GetInterface<IEngineTrace>(xorstr("engine.dll"), xorstr("EngineTraceClient004"));
 	CGameTrace	  trace;
 	Ray_t		  ray;
 	CTraceFilter  tracefilter;
