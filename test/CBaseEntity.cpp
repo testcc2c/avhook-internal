@@ -60,3 +60,35 @@ bool CBaseEntity::isVisible()
 		return false;
 
 }
+CBaseEntity* CBaseEntity::GetClosestEntity()
+{
+	CBaseEntity* entitylist[32] = {0};
+
+	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
+
+	IClientEntityList* VClientEntityList = GetInterface<IClientEntityList>("client.dll", "VClientEntityList003");
+	byte counter = 0;
+
+	for (byte i = 2; i < 33; i++)
+	{
+		CBaseEntity* entity = reinterpret_cast<CBaseEntity*>(VClientEntityList->GetClientEntity(i));
+
+		if (reinterpret_cast<DWORD>(entity) != this->invalid_entity and entity)
+			entitylist[counter++] = entity;
+	}
+
+	for (byte i = 0; i < counter; i++)
+	{
+		for (byte j = 0; j < counter - 1; j++)
+		{
+			if (this->CalcDistaceToEntity(entitylist[j]) > this->CalcDistaceToEntity(entitylist[j + 1]))
+			{
+				CBaseEntity* temp = entitylist[j];
+				entitylist[j]     = entitylist[j + 1];
+				entitylist[j + 1] = temp;
+			}
+		}
+
+	}
+	return entitylist[0];
+}

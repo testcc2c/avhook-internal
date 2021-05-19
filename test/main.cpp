@@ -44,8 +44,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 EndScene		  oEndScene;
 WNDPROC			  oWndProc;
 HMODULE			  hmodule;
-
-Menu* menu = nullptr;
+Menu*             menu = nullptr;
 
 long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -91,6 +90,11 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 
 		oEndScene = (EndScene)mem.trampHook32(reinterpret_cast<char*>(end_scene_addr), reinterpret_cast<char*>(hkEndScene), 7);
 		
+		AllocConsole();
+		FILE* f;
+		freopen_s(&f, "CONOUT$", "w", stdout);
+
+		auto player = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"))->dwLocalPlayer;
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -99,7 +103,14 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 				TerminateProcess(GetCurrentProcess(), 0);
 			Sleep(500);
 #endif // ANTI_DEBUG_PROTECTION
+			CBaseEntity* ent = player->GetClosestEntity();
+			std::cout << (ent->m_vecOrigin.x - player->m_vecOrigin.x) / 45.f<< "\n";
+			Sleep(500);
+			system("cls");
 		}
+
+		fclose(f);
+		FreeConsole();
 
 		PlaySound(xorstr("avhook\\sounds\\deactivated.wav"), NULL, SND_ASYNC);
 
@@ -118,7 +129,8 @@ DWORD WINAPI Bhop(HMODULE hModule)
 	BunnyHop bhop;
 	while (!menu)
 		Sleep(100);
-	MiscSettings* settings = (MiscSettings*)menu->settings[MiscSettingsID];
+	MiscSettings* settings = dynamic_cast<MiscSettings*>(menu->settings[MiscSettingsID]);
+
 	while (menu->isAttached())
 	{
 		if (!settings->bhop)
@@ -134,7 +146,7 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 	while (!menu)
 		Sleep(100);
 
-	InGameGlowEsp esp = InGameGlowEsp((GlowWHSettings*)menu->settings[GlowSettingID]);
+	InGameGlowEsp esp = InGameGlowEsp(dynamic_cast<GlowWHSettings*>(menu->settings[GlowSettingID]));
 	while (menu->isAttached())
 	{
 		if (esp.settings->active)
@@ -150,7 +162,7 @@ DWORD WINAPI Trigger(HMODULE hModule)
 	while (!menu)
 		Sleep(100);
 
-	TriggerBot triggerbot((TriggerBotSetting*)menu->settings[TriggerBotSettingsID]);
+	TriggerBot triggerbot(dynamic_cast<TriggerBotSetting*>(menu->settings[TriggerBotSettingsID]));
 
 	while (menu->isAttached())
 	{
@@ -169,8 +181,9 @@ DWORD WINAPI AimBot(HMODULE hModule)
 
 	int				   bone = 8;
 	IClientEntityList* entitylist = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
-	ClientBase*		   client	  = (ClientBase*)GetModuleHandle(xorstr("client.dll"));
-	AimBotSettings*	   settings = (AimBotSettings*)menu->settings[AimbotSettingID];
+	ClientBase*		   client	  = reinterpret_cast<ClientBase*>(GetModuleHandle(xorstr("client.dll")));
+	AimBotSettings*	   settings   = dynamic_cast<AimBotSettings*>(menu->settings[AimbotSettingID]);
+
 	while (menu->isAttached())
 	{
 		__try
@@ -212,7 +225,6 @@ DWORD WINAPI AimBot(HMODULE hModule)
 			{
 				client->dwForceAttack = 6;
 				Sleep(10);
-			
 			}
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)

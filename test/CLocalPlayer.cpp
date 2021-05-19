@@ -24,6 +24,7 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int& bone, float speed, bool pred
 	float pitch = -asinf( (targetpos.z - myPos.z) / distance) * (180 / 3.1415926f);
 	float yaw = atan2f(targetpos.y - myPos.y, targetpos.x - myPos.x) * (180 / 3.1415926f);
 
+
 	if ((-89.f <= pitch) && (pitch <= 89.f) && (-180.f <= yaw) && (yaw <= 180.f))
 	{
 		angles->x = pitch;
@@ -44,7 +45,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
 
 		__try
 		{
-			CBaseEntity* entity = (CBaseEntity*)VClientEntityList->GetClientEntity(i);
+			CBaseEntity* entity = reinterpret_cast<CBaseEntity*>(VClientEntityList->GetClientEntity(i));
 
 			if (!entity)
 				continue;
@@ -96,6 +97,6 @@ ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int& bone)
 
 ImVec3* CLocalPlayer::GetViewAngles()
 {
-	DWORD engineModule = (DWORD)GetModuleHandle(xorstr("engine.dll"));
+	DWORD engineModule = reinterpret_cast<DWORD>(GetModuleHandle(xorstr("engine.dll")));
 	return (ImVec3*)(*(DWORD*)(engineModule + signatures::dwClientState) + signatures::dwClientState_ViewAngles);
 }

@@ -2,10 +2,6 @@
 #include <Windows.h>
 #include <Psapi.h>
 
-#define NOP 0x90
-#define JUMP 0x9E
-
-
 
 class Memory
 {
@@ -36,7 +32,7 @@ public:
 
 		intptr_t  relativeAddress = (intptr_t)(dst - (intptr_t)src) - 5;
 
-		*src = (char)'\xE9';
+		*src = '\xE9';
 		*(intptr_t*)((intptr_t)src + 1) = relativeAddress;
 
 		VirtualProtect(src, len, curProtection, &curProtection);

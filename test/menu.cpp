@@ -490,7 +490,24 @@ void Menu::DrawRadar()
 		ImGui::SetCursorPos(ImVec2(40, 10));
 
 	ImGui::BeginChild("Child!",ImVec2(200, 200), true, ImGuiWindowFlags_NoScrollbar);
-	
+	for (byte i = 2; i < 33; i++)
+	{
+		auto entity = reinterpret_cast<CBaseEntity*>(this->entitylist->GetClientEntity(i));
+
+		if (!entity)
+			continue;
+
+		int x_radar_cord = 100.f + (entity->m_vecOrigin.x - this->client->dwLocalPlayer->m_vecOrigin.x) / 22;
+		int y_radar_cord = 100.f - (entity->m_vecOrigin.y - this->client->dwLocalPlayer->m_vecOrigin.y) / 22;
+
+		ImGui::SetCursorPos(ImVec2(x_radar_cord - 8, y_radar_cord + 8));
+		if (entity->m_iHealth > 0)
+			ImGui::Image(this->icons[TerroristIcon], ImVec2(16, 16));
+		
+	}
+	ImGui::SetCursorPos(ImVec2(100 - 8, 100 + 8));
+	ImGui::Image(this->icons[CounterTerroristIcon], ImVec2(16, 16));
+
 	ImGui::EndChild();
 
 	ImGui::End();

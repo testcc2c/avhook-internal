@@ -6,8 +6,7 @@
 #include "TraceLine.h"
 #include "types.h"
 #include "xorstr.h"
-
-#define EMPTY_POINTER 0xCCCCCCCC
+#include "IClientEntityList.h"
 
 class CBaseEntity
 {
@@ -33,10 +32,14 @@ public:
 	ImVec3 GetBonePosition(int bone);
 	// Calc distance to entity
 	float CalcDistaceToEntity(CBaseEntity* entity);
+	CBaseEntity* GetClosestEntity();
 	//Get color based on entity health
 	ImColor GetColorBasedOnHealth();
 	// Get entity camera position
 	ImVec3 GetCameraPosition();
 	// Is enitity is visible?
 	bool isVisible();
+	
+private:
+	const DWORD invalid_entity = 0xCCCCCCCC;
 };
