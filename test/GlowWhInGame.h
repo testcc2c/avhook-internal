@@ -1,8 +1,8 @@
 #pragma once
 #include "hack.h"
-#include "offsets.h"
-#include "imgui/imgui.h"
-#include "CBaseEntity.h"
+#include "SDK.h"
+
+
 class InGameGlowEsp : public Hack
 {
 public:
@@ -10,4 +10,5 @@ public:
 
 	void HandleGlow();
 	GlowWHSettings* settings;
+	IClientEntityList* entity_list;
 };

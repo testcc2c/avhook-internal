@@ -10,5 +10,5 @@ public:
 protected:
 	ClientBase* clientbase;
 	DWORD       enginebase;
-
+	IClientEntityList* entity_list;
 };

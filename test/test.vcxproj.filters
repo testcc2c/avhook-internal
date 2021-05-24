@@ -114,9 +114,6 @@
     <ClInclude Include="Vec3.h">
       <Filter>Memory editing\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="viewmatrix.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="CBaseEntity.h">
       <Filter>Memory editing\SDK\CBaseEntity</Filter>
     </ClInclude>

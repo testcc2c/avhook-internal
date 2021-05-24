@@ -20,6 +20,7 @@
 #include <time.h>
 #include "resource.h"
 #include <shlobj_core.h>
+
 enum Icons : int
 {
 	PlayerListIcon        = 0,

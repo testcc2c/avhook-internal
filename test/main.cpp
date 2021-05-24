@@ -90,11 +90,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 
 		oEndScene = (EndScene)mem.trampHook32(reinterpret_cast<char*>(end_scene_addr), reinterpret_cast<char*>(hkEndScene), 7);
 		
-		AllocConsole();
-		FILE* f;
-		freopen_s(&f, "CONOUT$", "w", stdout);
-
-		auto player = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"))->dwLocalPlayer;
 
 		while (!GetAsyncKeyState(VK_END))
 		{
@@ -103,14 +98,8 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 				TerminateProcess(GetCurrentProcess(), 0);
 			Sleep(500);
 #endif // ANTI_DEBUG_PROTECTION
-			CBaseEntity* ent = player->GetClosestEntity();
-			std::cout << (ent->m_vecOrigin.x - player->m_vecOrigin.x) / 45.f<< "\n";
 			Sleep(500);
-			system("cls");
 		}
-
-		fclose(f);
-		FreeConsole();
 
 		PlaySound(xorstr("avhook\\sounds\\deactivated.wav"), NULL, SND_ASYNC);
 

@@ -3,7 +3,7 @@
 
 void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, bool drawHp)
 {
-    ClientBase* client = (ClientBase*)GetModuleHandle("client.dll");
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
 
     ImVec3 up = client->WorldToScreen(entity->m_vecOrigin);
     ImVec3 headpos = entity->GetBonePosition(BONE_HEAD); 
@@ -39,7 +39,7 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, b
 
 void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
 {
-    ClientBase* client = (ClientBase*)GetModuleHandle("client.dll");
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
     
     char bon_id_char[20];
     for (int bone_id = 0; bone_id < 80; bone_id++)
@@ -53,7 +53,7 @@ void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
 
 void ESPDrawer::DrawSkeleton(CBaseEntity* entity, ImColor &color, int &thicknes)
 {
-    ClientBase* client = (ClientBase*)GetModuleHandle("client.dll");
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
     ImVec3 bones[]{
     client->WorldToScreen(entity->GetBonePosition(8)),
     client->WorldToScreen(entity->GetBonePosition(7)),
@@ -68,18 +68,20 @@ void ESPDrawer::DrawSkeleton(CBaseEntity* entity, ImColor &color, int &thicknes)
     client->WorldToScreen(entity->GetBonePosition(67)) 
     };
 
-    this->AddLine(bones[0], bones[1], color, thicknes);
-    this->AddLine(bones[1], bones[2], color, thicknes);
-    this->AddLine(bones[1], bones[5], color, thicknes);
-    this->AddLine(bones[2], bones[3], color, thicknes);
-    this->AddLine(bones[5], bones[8], color, thicknes);
-    this->AddLine(bones[8], client->WorldToScreen(entity->GetBonePosition(41)), color, thicknes);
-    this->AddLine(bones[1], bones[4], color, thicknes);
-    this->AddLine(bones[4], bones[6], color, thicknes);
-    this->AddLine(bones[4], bones[7], color, thicknes);
-    this->AddLine(bones[6], bones[9], color, thicknes);
-    this->AddLine(bones[7], bones[10], color, thicknes);
-    this->AddLine(bones[9], client->WorldToScreen(entity->GetBonePosition(75)), color, thicknes);
+    this->AddLine(bones[0], bones[1],  color, thicknes);
+    this->AddLine(bones[1], bones[2],  color, thicknes);
+    this->AddLine(bones[1], bones[5],  color, thicknes);
+    this->AddLine(bones[2], bones[3],  color, thicknes);
+    this->AddLine(bones[5], bones[8],  color, thicknes);
+
+    this->AddLine(bones[1],  bones[4],  color, thicknes);
+    this->AddLine(bones[4],  bones[6],  color, thicknes);
+    this->AddLine(bones[4],  bones[7],  color, thicknes);
+    this->AddLine(bones[6],  bones[9],  color, thicknes);
+    this->AddLine(bones[7],  bones[10], color, thicknes);
+
+    this->AddLine(bones[9],  client->WorldToScreen(entity->GetBonePosition(75)), color, thicknes);
     this->AddLine(bones[10], client->WorldToScreen(entity->GetBonePosition(68)), color, thicknes);
-    this->AddLine(bones[3], client->WorldToScreen(entity->GetBonePosition(13)), color, thicknes);
+    this->AddLine(bones[3],  client->WorldToScreen(entity->GetBonePosition(13)), color, thicknes);
+    this->AddLine(bones[8],  client->WorldToScreen(entity->GetBonePosition(41)), color, thicknes);
 }

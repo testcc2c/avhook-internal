@@ -186,7 +186,6 @@
     <ClInclude Include="types.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="VectorAligned.h" />
-    <ClInclude Include="viewmatrix.h" />
     <ClInclude Include="xorstr.h" />
   </ItemGroup>
   <ItemGroup>

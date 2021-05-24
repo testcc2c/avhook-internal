@@ -37,8 +37,6 @@ public:
 	ImColor GetColorBasedOnHealth();
 	// Get entity camera position
 	ImVec3 GetCameraPosition();
-	// Is enitity is visible?
-	bool isVisible();
 	
 private:
 	const DWORD invalid_entity = 0xCCCCCCCC;

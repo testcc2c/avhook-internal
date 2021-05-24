@@ -39,27 +39,6 @@ ImVec3 CBaseEntity::GetCameraPosition()
 	return this->m_vecOrigin + this->m_vecViewOffset;
 }
 
-bool CBaseEntity::isVisible()
-{
-	CBaseEntity* localplayer = *(CBaseEntity**)((DWORD)GetModuleHandle(xorstr("client.dll")) + signatures::dwLocalPlayer);
-
-	IEngineTrace* EngineTrace = GetInterface<IEngineTrace>(xorstr("engine.dll"), xorstr("EngineTraceClient004"));
-	CGameTrace	  trace;
-	Ray_t		  ray;
-	CTraceFilter  tracefilter;
-
-	tracefilter.pSkip = (void*)localplayer;
-
-	ray.Init(localplayer->GetCameraPosition(), this->GetCameraPosition());
-
-	EngineTrace->TraceRay(ray, MASK_SHOT | CONTENTS_GRATE, &tracefilter, &trace);
-
-	if (this == trace.hit_entity)
-		return true;
-	else
-		return false;
-
-}
 CBaseEntity* CBaseEntity::GetClosestEntity()
 {
 	CBaseEntity* entitylist[32] = {0};
@@ -88,7 +67,6 @@ CBaseEntity* CBaseEntity::GetClosestEntity()
 				entitylist[j + 1] = temp;
 			}
 		}
-
 	}
 	return entitylist[0];
 }
