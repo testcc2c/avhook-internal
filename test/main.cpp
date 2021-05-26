@@ -84,7 +84,7 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 	{
 		Memory mem;
 		//DWORD end_scene_addr_sig = mem.FindPattern("client.dll", "\x6A\x00\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x8B\x7D\x00\x8B\xDF\x8D\x47\x00\xF7\xDB\x1B\xDB\x23\xD8\x89\x5D\x00\x33\xF6\x89\x75\x00\x39\x73\x00\x75", "x?x????x????xx?xxxx?xxxxxxxx?xxxx?xx?x");
-		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+		oWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(window, GWL_WNDPROC, reinterpret_cast<LONG_PTR>(WndProc)));
 		PlaySound(xorstr("avhook\\sounds\\activated.wav"), NULL, SND_ASYNC);
 		memcpy(end_scene_bytes, reinterpret_cast<char*>(end_scene_addr), 7);
 
@@ -96,7 +96,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 #if ANTI_DEBUG_PROTECTION
 			if (IsDebuggerPresent())
 				TerminateProcess(GetCurrentProcess(), 0);
-			Sleep(500);
 #endif // ANTI_DEBUG_PROTECTION
 			Sleep(500);
 		}
@@ -190,7 +189,7 @@ DWORD WINAPI AimBot(HMODULE hModule)
 				settings->is_working = false;
 				continue;
 			}
-			CLocalPlayer* localPlayer = *(CLocalPlayer**)((DWORD)client + signatures::dwLocalPlayer);
+			CLocalPlayer* localPlayer = client->dwLocalPlayer;
 			settings->is_working = true;
 
 			switch (settings->selected_hitbox)
@@ -207,7 +206,6 @@ DWORD WINAPI AimBot(HMODULE hModule)
 			}
 
 			CBaseEntity* ent = localPlayer->GetClosestTarget(settings->fov, bone);
-			// 17000.f - збс
 
 			localPlayer->AimAt(ent, bone, 30000, true);
 			if (settings->auto_shoot and entitylist->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
