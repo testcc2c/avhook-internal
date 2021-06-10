@@ -123,7 +123,7 @@ public:
 
 #define MASK_NPCWORLDSTATIC	    ( CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_MONSTERCLIP | CONTENTS_GRATE )
 #define STANDARD_TRACE_MASK     ( MASK_NPCWORLDSTATIC | CONTENTS_MOVEABLE | CONTENTS_MONSTER | CONTENTS_DEBRIS | CONTENTS_HITBOX )
-#define   MASK_SHOT                     (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_HITBOX)
+#define MASK_SHOT               (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_HITBOX)
 
 #define   DISPSURF_FLAG_SURFACE           (1<<0)
 #define   DISPSURF_FLAG_WALKABLE          (1<<1)
@@ -171,7 +171,7 @@ public:
 public:
 
     float               fractionleftsolid;  // time we left a solid, only valid if we started in solid
-    surface_t          surface;            // surface hit (impact surface)
+    surface_t           surface;            // surface hit (impact surface)
     int                 hitgroup;           // 0 == generic, non-zero is specific body part
     short               physicsbone;        // physics bone hit by trace in studio
     unsigned short      worldSurfaceIndex;  // Index of the msurface2_t, if applicable

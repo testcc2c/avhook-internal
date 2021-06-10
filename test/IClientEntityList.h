@@ -1,4 +1,5 @@
 #pragma once
+#include "CBaseEntity.h"
 
 class IClientEntityList
 {
@@ -10,7 +11,7 @@ public:
 
 	// NOTE: This function is only a convenience wrapper.
 	// It returns GetClientNetworkable( entnum )->GetIClientEntity().
-	virtual void* GetClientEntity(int entnum) = 0;
+	virtual CBaseEntity* GetClientEntity(int entnum)  = 0;
 	virtual void* GetClientEntityFromHandle(int hEnt) = 0;
 
 	// Returns number of entities currently in use

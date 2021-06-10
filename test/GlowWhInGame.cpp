@@ -6,7 +6,7 @@ InGameGlowEsp::InGameGlowEsp(GlowWHSettings* settings) : Hack()
 	this->settings = settings;
 }
 
-void InGameGlowEsp::HandleGlow()
+void InGameGlowEsp::Work()
 {
 	__try
 	{
@@ -14,10 +14,10 @@ void InGameGlowEsp::HandleGlow()
 
 		for (byte i = 0; i < 32; i++)
 		{
-			CBaseEntity* entity = reinterpret_cast<CBaseEntity*>(this->entity_list->GetClientEntity(i));
+			CBaseEntity* entity = this->entity_list->GetClientEntity(i);
 			__try
 			{
-				if (entity->m_iTeamNum != this->clientbase->dwLocalPlayer->m_iTeamNum)
+				if (entity->m_iTeamNum != this->clientbase->dwLocalPlayer->m_iTeamNum and !entity->m_bDormant)
 				{
 					if (!settings->draw_mode)
 					{

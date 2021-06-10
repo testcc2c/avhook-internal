@@ -1,6 +1,6 @@
 #include "bhop.h"
 
-void BunnyHop::HandleBhop()
+void BunnyHop::Work()
 {
 	__try
 	{

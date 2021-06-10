@@ -33,6 +33,7 @@
 #include "resource.h"
 #include "xorstr.h"
 #include "menu.h"
+#include "AimBot.h"
 
 #define ANTI_DEBUG_PROTECTION 0;
 
@@ -124,7 +125,7 @@ DWORD WINAPI Bhop(HMODULE hModule)
 		if (!settings->bhop)
 			Sleep(500);
 		else if (GetAsyncKeyState(VK_SPACE))
-			bhop.HandleBhop();
+			bhop.Work();
 	}
 	ExitThread(0);
 }
@@ -134,14 +135,15 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 	while (!menu)
 		Sleep(100);
 
-	InGameGlowEsp esp = InGameGlowEsp(dynamic_cast<GlowWHSettings*>(menu->settings[GlowSettingID]));
+	InGameGlowEsp* esp = new InGameGlowEsp(dynamic_cast<GlowWHSettings*>(menu->settings[GlowSettingID]));
 	while (menu->isAttached())
 	{
-		if (esp.settings->active)
-			esp.HandleGlow();
+		if (esp->settings->active)
+			esp->Work();
 		else
 			Sleep(500);
 	}
+	delete esp;
 	ExitThread(0);
 }
 
@@ -155,71 +157,25 @@ DWORD WINAPI Trigger(HMODULE hModule)
 	while (menu->isAttached())
 	{
 		if (triggerbot.settings->active and GetAsyncKeyState(VK_XBUTTON1))
-			triggerbot.Handle();
+			triggerbot.Work();
 		else
 			Sleep(100);
 	}
 	ExitThread(0);
 }
 
-DWORD WINAPI AimBot(HMODULE hModule)
+DWORD WINAPI AimBotThread(HMODULE hModule)
 {
 	while (!menu)
 		Sleep(100);
-
-	int				   bone = 8;
-	IClientEntityList* entitylist = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
-	ClientBase*		   client	  = reinterpret_cast<ClientBase*>(GetModuleHandle(xorstr("client.dll")));
-	AimBotSettings*	   settings   = dynamic_cast<AimBotSettings*>(menu->settings[AimbotSettingID]);
+	
+	AimBot aimbot = AimBot(dynamic_cast<AimBotSettings*>(menu->settings[AimbotSettingID]));
 
 	while (menu->isAttached())
 	{
-		__try
-		{
-
-			if (!settings->active)
-			{
-				Sleep(500);
-				settings->is_working = false;
-				continue;
-			}
-			else if (settings->on_key and !GetAsyncKeyState(VK_LBUTTON))
-			{
-				Sleep(10);
-				settings->is_working = false;
-				continue;
-			}
-			CLocalPlayer* localPlayer = client->dwLocalPlayer;
-			settings->is_working = true;
-
-			switch (settings->selected_hitbox)
-			{
-			case 0:
-				bone = BONE_HEAD;
-				break;
-			case 1:
-				bone = BONE_BODY;
-				break;
-			case 2:
-				bone = BONE_LEGS;
-				break;
-			}
-
-			CBaseEntity* ent = localPlayer->GetClosestTarget(settings->fov, bone);
-
-			localPlayer->AimAt(ent, bone, 30000, true);
-			if (settings->auto_shoot and entitylist->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
-			{
-				client->dwForceAttack = 6;
-				Sleep(10);
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-
-		}
-
+		aimbot.Work();
 	}
+
 	ExitThread(0);
 }
 
@@ -233,7 +189,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Bhop,         hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InGameGlowWH, hModule, 0, nullptr);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Trigger,	   hModule, 0, nullptr);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBot,       hModule, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AimBotThread, hModule, 0, nullptr);
 	}
 	return TRUE;
 }

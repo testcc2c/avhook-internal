@@ -8,9 +8,9 @@ class TriggerBot : public Hack
 
 public:
 	TriggerBot(TriggerBotSetting* settings);
-	void Handle();
+	void Work() override;
 	TriggerBotSetting* settings;
 private:
-	int bone = 8;
+	byte bone = 8;
 };
 

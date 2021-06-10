@@ -73,6 +73,9 @@
     <Filter Include="Memory editing\C_Memory">
       <UniqueIdentifier>{01097549-1e0f-46a1-8713-7141c76413c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hacking features\AimBot">
+      <UniqueIdentifier>{1824d512-1bb3-4148-b392-ccdec3a9bfae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -174,6 +177,9 @@
     <ClInclude Include="MenuSettings.h">
       <Filter>Render\Menu\Settings</Filter>
     </ClInclude>
+    <ClInclude Include="AimBot.h">
+      <Filter>Hacking features\AimBot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="MenuSettings.cpp">
       <Filter>Render\Menu\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="AimBot.cpp">
+      <Filter>Hacking features\AimBot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

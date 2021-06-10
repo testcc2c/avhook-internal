@@ -7,7 +7,7 @@
 class BunnyHop : public Hack
 {
 public:
-	void HandleBhop();
+	void Work() override;
 private:
 
 };

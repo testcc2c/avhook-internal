@@ -51,7 +51,7 @@ enum SettingsIds : int
 class Menu
 {
 public:
-	Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod);
+	Menu(LPDIRECT3DDEVICE9& pDevice, HMODULE& hmod);
 	void Render();
 	void Detach();
 	bool isOpen();

@@ -6,7 +6,13 @@
 #include "TraceLine.h"
 #include "types.h"
 #include "xorstr.h"
-#include "IClientEntityList.h"
+
+enum CBaseEntiyBones
+{
+	HEAD = 8,
+	BODY = 6,
+	LEGS = 0,
+};
 
 class CBaseEntity
 {
@@ -37,7 +43,4 @@ public:
 	ImColor GetColorBasedOnHealth();
 	// Get entity camera position
 	ImVec3 GetCameraPosition();
-	
-private:
-	const DWORD invalid_entity = 0xCCCCCCCC;
 };

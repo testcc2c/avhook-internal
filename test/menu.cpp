@@ -1,14 +1,14 @@
 #include "menu.h"
 
-Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
+Menu::Menu(LPDIRECT3DDEVICE9& pDevice, HMODULE& hmod)
 {
-	this->pDevice    = pDevice;
-	this->hmodule    = hmod;
-	this->window     = FindWindowA(NULL, this->window_name);
-	this->entitylist = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
-	this->client     = (ClientBase*)GetModuleHandle("client.dll");
+	this->pDevice     = pDevice;
+	this->hmodule     = hmod;
+	this->window      = FindWindowA(NULL, this->window_name);
+	this->entitylist  = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
+	this->client      = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
 	this->window_size = this->GetWindowSize();
-	this->colorfix = new DX9ColorFix(this->pDevice);
+	this->colorfix    = new DX9ColorFix(this->pDevice);
 
 	ImGui::CreateContext();
 	ImGui_ImplWin32_Init(this->window);
@@ -17,7 +17,7 @@ Menu::Menu(LPDIRECT3DDEVICE9 pDevice, HMODULE hmod)
 	this->io = ImGui::GetIO();
 	this->io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	this->io.Fonts->AddFontFromFileTTF(xorstr("C:\\Windows\\Fonts\\Impact.ttf"), 17.0f, 0);
-	this->drawlist = (ESPDrawer*)ImGui::GetBackgroundDrawList();
+	this->drawlist = reinterpret_cast<ESPDrawer*>(ImGui::GetBackgroundDrawList());
 
 	this->theme = ImGui::GetStyle().Colors;
 

@@ -5,13 +5,13 @@ TriggerBot::TriggerBot(TriggerBotSetting* settings)
 	this->settings = settings;
 
 }
-void TriggerBot::Handle()
+void TriggerBot::Work()
 {
 	
 	__try
 	{
 		CLocalPlayer* localplayer = this->clientbase->dwLocalPlayer;
-		CBaseEntity* entity = *(CBaseEntity**)((DWORD)(this->clientbase) + signatures::dwEntityList + ((localplayer->m_iCrosshairId - 1) * 0x10));
+		CBaseEntity*  entity = this->entity_list->GetClientEntity(localplayer->m_iCrosshairId);
 
 
 		if ((localplayer->m_iTeamNum == entity->m_iTeamNum or !entity->m_iHealth) or !localplayer->m_iCrosshairId)

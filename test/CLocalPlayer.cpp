@@ -1,6 +1,6 @@
 #include "CLocalPlayer.h"
 
-void CLocalPlayer::AimAt(CBaseEntity*& entity, int& bone, float speed, bool prediction)
+void CLocalPlayer::AimAt(CBaseEntity*& entity, byte& bone, float speed, bool prediction)
 {
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
@@ -31,14 +31,13 @@ void CLocalPlayer::AimAt(CBaseEntity*& entity, int& bone, float speed, bool pred
 		angles->y = yaw;
 	}
 }
-CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
+CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, byte& bone)
 {
 	CBaseEntity* entitylist[32];
 
-	DWORD clientBase = (DWORD)GetModuleHandle("client.dll");
 
 	IClientEntityList* VClientEntityList = GetInterface<IClientEntityList>("client.dll", "VClientEntityList003");
-	int counter = 0;
+	byte counter = 0;
 
 	for (byte i = 1; i < 33; i++)
 	{
@@ -62,15 +61,16 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
 		}
 	}
 
-	for (short int i = 0; i < counter; i++)
+	for (byte i = 0; i < counter; i++)
 	{
-		for (short int j = 0; j < counter - 1; j++)
+		for (byte j = 0; j < counter - 1; j++)
 		{
 			if (this->CalcDistaceToEntity(entitylist[j]) > this->CalcDistaceToEntity(entitylist[j + 1]))
 			{
 				CBaseEntity* temp = entitylist[j];
 				entitylist[j] = entitylist[j + 1];
 				entitylist[j + 1] = temp;
+			
 			}
 		}
 
@@ -78,9 +78,8 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, int& bone)
 	return entitylist[0];
 }
 
-ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, int& bone)
+ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, byte& bone)
 {
-	DWORD engineModule = (DWORD)GetModuleHandle(xorstr("engine.dll"));
 	ImVec3 calculated;
 
 	ImVec3 targetpos = entity->GetBonePosition(bone);
