@@ -12,7 +12,7 @@ public:
 	// Get closest valid target
 	CBaseEntity* GetClosestTarget(int& fov, byte& bone);
 	// Return angles to target
-	ImVec3 GetAimTargetAngles(CBaseEntity*& entity, byte& bone);
+	ImVec3 GetAimTargetAngles(CBaseEntity*& entity, byte bone);
 private:
 
 };

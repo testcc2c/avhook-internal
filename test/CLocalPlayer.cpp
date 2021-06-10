@@ -78,7 +78,7 @@ CBaseEntity* CLocalPlayer::GetClosestTarget(int& fov, byte& bone)
 	return entitylist[0];
 }
 
-ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, byte& bone)
+ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, byte bone)
 {
 	ImVec3 calculated;
 
