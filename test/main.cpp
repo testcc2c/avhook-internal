@@ -135,15 +135,14 @@ DWORD WINAPI InGameGlowWH(HMODULE hModule)
 	while (!menu)
 		Sleep(100);
 
-	InGameGlowEsp* esp = new InGameGlowEsp(dynamic_cast<GlowWHSettings*>(menu->settings[GlowSettingID]));
+	InGameGlowEsp esp = InGameGlowEsp(dynamic_cast<GlowWHSettings*>(menu->settings[GlowSettingID]));
 	while (menu->isAttached())
 	{
-		if (esp->settings->active)
-			esp->Work();
+		if (esp.settings->active)
+			esp.Work();
 		else
 			Sleep(500);
 	}
-	delete esp;
 	ExitThread(0);
 }
 

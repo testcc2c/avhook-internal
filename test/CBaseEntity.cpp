@@ -29,7 +29,6 @@ ImColor CBaseEntity::GetColorBasedOnHealth()
 
 	else if (this->m_iHealth >= 60)
 		return ImColor(0, 255, 0);
-
 	else
 		return ImColor(221, 0, 255);
 }
