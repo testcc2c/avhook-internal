@@ -173,6 +173,7 @@
     <ClInclude Include="hack.h" />
     <ClInclude Include="IBaseClientDLL.h" />
     <ClInclude Include="IClientEntityList.h" />
+    <ClInclude Include="IInput.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />

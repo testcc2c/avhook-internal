@@ -23,10 +23,7 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, b
     bottomRight.x = bottom.x + height / 4;
     bottomLeft.y = bottomRight.y = bottom.y;
 
-    this->AddLine(topleft, topright, color, thickness);
-    this->AddLine(bottomLeft, bottomRight, color, thickness);
-    this->AddLine(topleft, bottomLeft, color, thickness);
-    this->AddLine(topright, bottomRight, color, thickness);
+    this->AddRect(topleft, bottomRight, color, 0, 0, thickness);
 
     if (drawHp)
     {

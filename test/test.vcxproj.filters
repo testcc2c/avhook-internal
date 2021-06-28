@@ -180,6 +180,9 @@
     <ClInclude Include="AimBot.h">
       <Filter>Hacking features\AimBot</Filter>
     </ClInclude>
+    <ClInclude Include="IInput.h">
+      <Filter>Memory editing\SDK\Source SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
