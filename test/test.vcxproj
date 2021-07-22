@@ -187,7 +187,7 @@
     <ClInclude Include="SDK\IBaseClientDLL.h" />
     <ClInclude Include="SDK\IClientEntityList.h" />
     <ClInclude Include="SDK\IInput.h" />
-    <ClInclude Include="SDK\IVEngineClient013.h" />
+    <ClInclude Include="SDK\IVEngineClient013\IVEngineClient013.h" />
     <ClInclude Include="SDK\SDK.h" />
     <ClInclude Include="SDK\TraceLine.h" />
     <ClInclude Include="SDK\VectorAligned.h" />
@@ -216,10 +216,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu\menu.cpp" />
     <ClCompile Include="Menu\MenuSettings.cpp" />
-    <ClCompile Include="SDK\AbstractInterface.cpp" />
     <ClCompile Include="SDK\CBaseEntity.cpp" />
     <ClCompile Include="SDK\ClientBase.cpp" />
     <ClCompile Include="SDK\CLocalPlayer.cpp" />
+    <ClCompile Include="SDK\IVEngineClient013\IVEngineClient013.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

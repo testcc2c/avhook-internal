@@ -6,7 +6,7 @@
 #include "../Utils/GetInterface.h"
 #include "IBaseClientDLL.h"
 #include "IClientEntityList.h"
-#include "IVEngineClient013.h"
+#include "IVEngineClient013/IVEngineClient013.h"
 #include "../Utils/Vec3.h"
 #include "TraceLine.h"
 #include "VectorAligned.h"

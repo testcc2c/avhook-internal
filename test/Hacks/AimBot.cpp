@@ -8,7 +8,6 @@ byte AimBot::GetBoneIDBySelectedTab()
 {
 	if (this->settings->selected_hitbox == 0)
 		return CBaseEntiyBones::HEAD;
-
 	else if (this->settings->selected_hitbox == 1)
 		return CBaseEntiyBones::BODY;
 	else if (this->settings->selected_hitbox == 2)

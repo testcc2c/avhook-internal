@@ -61,6 +61,9 @@
     <Filter Include="Hacking features\ESP">
       <UniqueIdentifier>{107deb9c-82ac-4926-af46-3d6d28ea5069}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SDK\IVEngineClient013">
+      <UniqueIdentifier>{6d6089b7-6ef8-4cea-90a6-e0000fd88bb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -141,9 +144,6 @@
     <ClInclude Include="SDK\IInput.h">
       <Filter>SDK</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\IVEngineClient013.h">
-      <Filter>SDK</Filter>
-    </ClInclude>
     <ClInclude Include="SDK\SDK.h">
       <Filter>SDK</Filter>
     </ClInclude>
@@ -170,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="Hacks\ESPDrawer.h">
       <Filter>Hacking features\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\IVEngineClient013\IVEngineClient013.h">
+      <Filter>SDK\IVEngineClient013</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -224,9 +227,6 @@
     <ClCompile Include="Hacks\TriggerBot.cpp">
       <Filter>Hacking features\Trigger bot</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\AbstractInterface.cpp">
-      <Filter>SDK</Filter>
-    </ClCompile>
     <ClCompile Include="SDK\CBaseEntity.cpp">
       <Filter>SDK</Filter>
     </ClCompile>
@@ -238,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Hacks\ESPDrawer.cpp">
       <Filter>Hacking features\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\IVEngineClient013\IVEngineClient013.cpp">
+      <Filter>SDK\IVEngineClient013</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
