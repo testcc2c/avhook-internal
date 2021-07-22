@@ -2,13 +2,15 @@
 
 Menu::Menu(LPDIRECT3DDEVICE9& pDevice, HMODULE& hmod)
 {
-	this->pDevice     = pDevice;
-	this->hmodule     = hmod;
-	this->window      = FindWindowA(NULL, this->window_name);
-	this->entitylist  = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
-	this->client      = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
-	this->window_size = this->GetWindowSize();
-	this->colorfix    = new DX9ColorFix(this->pDevice);
+	this->pDevice       = pDevice;
+	this->hmodule       = hmod;
+	this->window        = FindWindowA(NULL, this->window_name);
+	this->entitylist    = GetInterface<IClientEntityList>(xorstr("client.dll"), xorstr("VClientEntityList003"));
+	this->engine_client = GetInterface<IVEngineClient013>(xorstr("engine.dll"), xorstr("VEngineClient014"));
+
+	this->client        = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
+	this->window_size   = this->GetWindowSize();
+	this->colorfix    =  new DX9ColorFix(this->pDevice);
 
 	ImGui::CreateContext();
 	ImGui_ImplWin32_Init(this->window);
@@ -208,7 +210,7 @@ void Menu::DrawPlayerList()
 
 	for (byte i = 1; i < 33; i++)
 	{
-		CBaseEntity* ent = (CBaseEntity*)this->entitylist->GetClientEntity(i);
+		CBaseEntity* ent = this->entitylist->GetClientEntity(i);
 
 		if (!ent)
 			continue;
@@ -219,7 +221,7 @@ void Menu::DrawPlayerList()
 			ImGui::Image(this->icons[4], ImVec2(16, 16));
 
 		ImGui::SameLine();
-		ImGui::Text(xorstr("ID-%d   TEAM-ID:   %d   HEALTH:  "), i, ent->m_iTeamNum);
+		ImGui::Text(xorstr("NAME-%s   TEAM-ID:   %d   ID:  %d"), this->engine_client->GetPlayerInfo(i).szName, ent->m_iTeamNum, ent->m_Index);
 		ImGui::SameLine();
 		ImGui::TextColored(ent->GetColorBasedOnHealth(), "%d", ent->m_iHealth);
 	}

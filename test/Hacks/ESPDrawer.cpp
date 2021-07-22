@@ -3,35 +3,40 @@
 
 void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, bool drawHp)
 {
-    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle((xorstr("client.dll"))));
+    ClientBase*        client        = reinterpret_cast<ClientBase*>(GetModuleHandle((xorstr("client.dll"))));
+    IVEngineClient013* engine_client = GetInterface<IVEngineClient013>(xorstr("engine.dll"), xorstr("VEngineClient014"));
 
-    ImVec3 up = client->WorldToScreen(entity->m_vecOrigin);
+    ImVec3 up      = client->WorldToScreen(entity->m_vecOrigin);
     ImVec3 headpos = entity->GetBonePosition(BONE_HEAD); 
-    headpos.z += 7.9;
-    ImVec3 bottom = client->WorldToScreen(headpos);
+    headpos.z      += 7.9;
+    ImVec3 bottom  = client->WorldToScreen(headpos);
 
-    int height = ABS(up.y - bottom.y);
+    int height = abs(up.y - bottom.y);
 
     ImVec2 topleft, topright;
     ImVec2 bottomLeft, bottomRight;
 
-    topleft.x = up.x - height / 4;
+    topleft.x  = up.x - height / 4;
     topright.x = up.x + height / 4;
-    topleft.y = topright.y = up.y;
+    topleft.y  = topright.y = up.y;
 
-    bottomLeft.x = bottom.x - height / 4;
+    bottomLeft.x  = bottom.x - height / 4;
     bottomRight.x = bottom.x + height / 4;
-    bottomLeft.y = bottomRight.y = bottom.y;
+    bottomLeft.y  = bottomRight.y = bottom.y;
 
     this->AddRect(topleft, bottomRight, color, 0, 0, thickness);
-
     if (drawHp)
     {
-        bottomRight.x += 5;
         char buffer[256];
+        std::string info;
+
         _itoa_s(entity->m_iHealth, buffer, 10);
         this->AddText(bottomRight, entity->GetColorBasedOnHealth(), buffer);
+
     }
+    this->AddText(bottomRight, ImColor(255, 255, 255) , engine_client->GetPlayerInfo(entity->m_Index).szName);
+
+    
 }
 
 void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)

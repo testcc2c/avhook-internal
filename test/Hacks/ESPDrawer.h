@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include "../SDK/CBaseEntity.h"
 #include "../SDK/ClientBase.h"
+#include "../SDK/IVEngineClient013/IVEngineClient013.h"
+
 #include <stdio.h>
 #include <string>
-
-#define ABS(x) ((x < 0) ? (-x): (x))
 
 class ESPDrawer : public ImDrawList
 {

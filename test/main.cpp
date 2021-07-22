@@ -70,7 +70,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 DWORD WINAPI EntryPoint(HMODULE hModule)
 {
 	//void* d3dDevice[119];
-	DWORD end_scene_addr = (DWORD)(GetModuleHandle("d3d9.dll")) + 0x63130;
+	DWORD end_scene_addr = (DWORD)(GetModuleHandle(xorstr("d3d9.dll"))) + 0x63130;
 	BYTE end_scene_bytes[7] = { 0 };
 
 	//DirectX9VTableCreator dx9;
@@ -96,7 +96,6 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 			if (IsDebuggerPresent())
 				TerminateProcess(GetCurrentProcess(), 0);
 #endif // ANTI_DEBUG_PROTECTION
-			auto result = GetInterface<IVEngineClient013>("client.dll", "VEngineClient013");
 			Sleep(500);
 		}
 

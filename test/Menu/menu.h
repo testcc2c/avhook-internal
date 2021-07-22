@@ -79,6 +79,7 @@ private:
 	ClientBase*	       client;
 	DX9ColorFix*	   colorfix;
 	PDIRECT3DTEXTURE9  wallpaper_texture;
+	IVEngineClient013*  engine_client;
 
 	ImColor		       active_radar_color   = ImColor(255, 0, 0);
 	ImColor		       inactive_radar_color = ImColor(255, 255, 255);
