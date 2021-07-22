@@ -3,7 +3,7 @@
 
 void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, bool drawHp)
 {
-    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle((xorstr("client.dll"))));
 
     ImVec3 up = client->WorldToScreen(entity->m_vecOrigin);
     ImVec3 headpos = entity->GetBonePosition(BONE_HEAD); 
@@ -36,7 +36,7 @@ void ESPDrawer::DrawBoxEsp(CBaseEntity* entity, int& thickness, ImColor color, b
 
 void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
 {
-    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle((xorstr("client.dll"))));
     
     char bon_id_char[20];
     for (int bone_id = 0; bone_id < 80; bone_id++)
@@ -50,7 +50,7 @@ void ESPDrawer::DrawBonesNumbers(CBaseEntity* entity)
 
 void ESPDrawer::DrawSkeleton(CBaseEntity* entity, ImColor &color, int &thicknes)
 {
-    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle("client.dll"));
+    ClientBase* client = reinterpret_cast<ClientBase*>(GetModuleHandle(xorstr("client.dll")));
     ImVec3 bones[]{
     client->WorldToScreen(entity->GetBonePosition(8)),
     client->WorldToScreen(entity->GetBonePosition(7)),

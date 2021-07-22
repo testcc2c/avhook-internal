@@ -1,24 +1,24 @@
 #pragma once
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_impl_dx9.h"
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_win32.h"
+#include "../imgui/imgui_impl_dx9.h"
 
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#include "xorstr.h"
-#include "ESPDrawer.h"
+#include "../Utils/xorstr.h"
+#include "../Hacks/ESPDrawer.h"
 
-#include "memory.h"
-#include "DX9ColorFix.h"
+#include "../Utils/memory.h"
+#include "../DirctX/DX9ColorFix.h"
 
-#include "MenuSettings.h"
+#include "../Menu/MenuSettings.h"
 
-#include "SDK.h"
+#include "../SDK/SDK.h"
 
 #include <string>
 #include <time.h>
-#include "resource.h"
+#include "../resource.h"
 #include <shlobj_core.h>
 
 enum Icons : int

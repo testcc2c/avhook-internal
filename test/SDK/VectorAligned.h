@@ -1,5 +1,6 @@
 #pragma once
-#include "Vec3.h"
+#include "../Utils/Vec3.h"
+
 #define DECL_ALIGN(x) __declspec(align(x))
 #define ALIGN16 DECL_ALIGN(16)
 #define ALIGN16_POST DECL_ALIGN(16)

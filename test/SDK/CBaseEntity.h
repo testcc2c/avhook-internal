@@ -1,11 +1,9 @@
 #pragma once
-#include "offsets.h"
-#include "Vec3.h"
+#include "../Utils/offsets.h"
+#include "../Utils/Vec3.h"
 #include <Windows.h>
-#include "imgui/imgui.h"
+#include "../imgui/imgui.h"
 #include "TraceLine.h"
-#include "types.h"
-#include "xorstr.h"
 
 enum CBaseEntiyBones
 {

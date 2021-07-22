@@ -1,5 +1,5 @@
 #pragma once
-#include "offsets.h"
+#include "../Utils/offsets.h"
 #include "Windows.h"
 #include "CBaseEntity.h"
 #include "CLocalPlayer.h"

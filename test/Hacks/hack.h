@@ -1,7 +1,8 @@
 #pragma once
 #include <Windows.h>
-#include "ClientBase.h"
-#include "MenuSettings.h"
+#include "../SDK/SDK.h"
+#include "../Menu/MenuSettings.h"
+#include "../Utils/xorstr.h"
 
 class Hack
 {

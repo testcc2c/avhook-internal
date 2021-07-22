@@ -9,5 +9,6 @@ protected:
 		unsigned int function_address = pVTable[index];
 		return reinterpret_cast<FuncType>(function_address);
 	}
+
 };
 

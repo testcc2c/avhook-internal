@@ -160,21 +160,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractInterface.h" />
-    <ClInclude Include="AimBot.h" />
-    <ClInclude Include="bhop.h" />
-    <ClInclude Include="CBaseEntity.h" />
-    <ClInclude Include="ClientBase.h" />
-    <ClInclude Include="CLocalPlayer.h" />
-    <ClInclude Include="DirectX9VTableCreator.h" />
-    <ClInclude Include="ESPDrawer.h" />
-    <ClInclude Include="DX9ColorFix.h" />
-    <ClInclude Include="EngineBase.h" />
-    <ClInclude Include="GlowWhInGame.h" />
-    <ClInclude Include="hack.h" />
-    <ClInclude Include="IBaseClientDLL.h" />
-    <ClInclude Include="IClientEntityList.h" />
-    <ClInclude Include="IInput.h" />
+    <ClInclude Include="DirctX\DirectX9VTableCreator.h" />
+    <ClInclude Include="DirctX\DX9ColorFix.h" />
+    <ClInclude Include="Hacks\AimBot.h" />
+    <ClInclude Include="Hacks\bhop.h" />
+    <ClInclude Include="Hacks\ESPDrawer.h" />
+    <ClInclude Include="Hacks\GlowWhInGame.h" />
+    <ClInclude Include="Hacks\hack.h" />
+    <ClInclude Include="Hacks\TriggerBot.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -183,32 +176,36 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="IVEngineClient013.h" />
-    <ClInclude Include="memory.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="MenuSettings.h" />
-    <ClInclude Include="offsets.h" />
+    <ClInclude Include="Menu\menu.h" />
+    <ClInclude Include="Menu\MenuSettings.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SDK.h" />
-    <ClInclude Include="TraceLine.h" />
-    <ClInclude Include="TriggerBot.h" />
-    <ClInclude Include="types.h" />
-    <ClInclude Include="Vec3.h" />
-    <ClInclude Include="VectorAligned.h" />
-    <ClInclude Include="xorstr.h" />
+    <ClInclude Include="SDK\AbstractInterface.h" />
+    <ClInclude Include="SDK\CBaseEntity.h" />
+    <ClInclude Include="SDK\ClientBase.h" />
+    <ClInclude Include="SDK\CLocalPlayer.h" />
+    <ClInclude Include="SDK\EngineBase.h" />
+    <ClInclude Include="SDK\IBaseClientDLL.h" />
+    <ClInclude Include="SDK\IClientEntityList.h" />
+    <ClInclude Include="SDK\IInput.h" />
+    <ClInclude Include="SDK\IVEngineClient013.h" />
+    <ClInclude Include="SDK\SDK.h" />
+    <ClInclude Include="SDK\TraceLine.h" />
+    <ClInclude Include="SDK\VectorAligned.h" />
+    <ClInclude Include="Utils\memory.h" />
+    <ClInclude Include="Utils\offsets.h" />
+    <ClInclude Include="Utils\GetInterface.h" />
+    <ClInclude Include="Utils\Vec3.h" />
+    <ClInclude Include="Utils\xorstr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractInterface.cpp" />
-    <ClCompile Include="AimBot.cpp" />
-    <ClCompile Include="bhop.cpp" />
-    <ClCompile Include="CBaseEntity.cpp" />
-    <ClCompile Include="ClientBase.cpp" />
-    <ClCompile Include="CLocalPlayer.cpp" />
-    <ClCompile Include="DirectX9VTableCreator.cpp" />
-    <ClCompile Include="ESPDrawer.cpp" />
-    <ClCompile Include="DX9ColorFix.cpp" />
-    <ClCompile Include="GlowWhInGame.cpp" />
-    <ClCompile Include="hack.cpp" />
+    <ClCompile Include="DirctX\DirectX9VTableCreator.cpp" />
+    <ClCompile Include="DirctX\DX9ColorFix.cpp" />
+    <ClCompile Include="Hacks\AimBot.cpp" />
+    <ClCompile Include="Hacks\bhop.cpp" />
+    <ClCompile Include="Hacks\ESPDrawer.cpp" />
+    <ClCompile Include="Hacks\GlowWhInGame.cpp" />
+    <ClCompile Include="Hacks\hack.cpp" />
+    <ClCompile Include="Hacks\TriggerBot.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -217,9 +214,12 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="menu.cpp" />
-    <ClCompile Include="MenuSettings.cpp" />
-    <ClCompile Include="TriggerBot.cpp" />
+    <ClCompile Include="Menu\menu.cpp" />
+    <ClCompile Include="Menu\MenuSettings.cpp" />
+    <ClCompile Include="SDK\AbstractInterface.cpp" />
+    <ClCompile Include="SDK\CBaseEntity.cpp" />
+    <ClCompile Include="SDK\ClientBase.cpp" />
+    <ClCompile Include="SDK\CLocalPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

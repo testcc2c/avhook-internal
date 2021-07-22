@@ -1,5 +1,5 @@
 #pragma once
-#include "Vec3.h"
+#include "../Utils/Vec3.h"
 #include <Windows.h>
 #include "VectorAligned.h"
 

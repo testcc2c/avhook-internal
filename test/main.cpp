@@ -3,20 +3,20 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#include <D3dx9tex.h>
+#include <d3dx9tex.h>
 
-#include "ESPDrawer.h"
+#include "Hacks/ESPDrawer.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx9.h"
 
-#include "DX9ColorFix.h"
+#include "DirctX/DX9ColorFix.h"
 
-#include "bhop.h"
-#include "GlowWhInGame.h"
-#include "CBaseEntity.h"
-#include "CLocalPlayer.h"
-#include "TriggerBot.h"
+#include "Hacks/bhop.h"
+#include "Hacks/GlowWhInGame.h"
+#include "Hacks/AimBot.h"
+#include "Hacks/TriggerBot.h"
+#include "SDK/SDK.h"
 
 
 #include <iostream>
@@ -27,13 +27,11 @@
 #include <time.h>
 #include <shlobj_core.h>
 
-#include "DirectX9VTableCreator.h"
-#include "memory.h"
-#include "SDK.h"
 #include "resource.h"
-#include "xorstr.h"
-#include "menu.h"
-#include "AimBot.h"
+#include "Utils/memory.h"
+#include "Menu/menu.h"
+#include "Utils/offsets.h"
+#include "Utils/GetInterface.h"
 
 #define ANTI_DEBUG_PROTECTION 0;
 

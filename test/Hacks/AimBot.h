@@ -1,6 +1,5 @@
 #pragma once
 #include "hack.h"
-#include "MenuSettings.h"
 
 class AimBot : public Hack
 {

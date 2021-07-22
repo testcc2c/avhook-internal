@@ -1,6 +1,5 @@
 #pragma once
 #include "hack.h"
-#include "SDK.h"
 
 
 class InGameGlowEsp : public Hack

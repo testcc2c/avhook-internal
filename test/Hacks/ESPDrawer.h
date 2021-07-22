@@ -1,8 +1,8 @@
 #pragma once
-#include "Vec3.h"
+#include "../Utils/Vec3.h"
 #include <stdlib.h>
-#include "CBaseEntity.h"
-#include "ClientBase.h"
+#include "../SDK/CBaseEntity.h"
+#include "../SDK/ClientBase.h"
 #include <stdio.h>
 #include <string>
 

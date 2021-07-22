@@ -36,9 +36,6 @@
     <Filter Include="Render\DirectX\DX9ColorFix">
       <UniqueIdentifier>{fea179df-9cd8-44dc-806b-53e111724890}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render\DirectX\ESPDrawer">
-      <UniqueIdentifier>{95953034-9d42-431e-8d1a-73887f9205d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render\DirectX\DirectX9Device">
       <UniqueIdentifier>{6da338b9-df3b-4eac-b737-cab856b66d6d}</UniqueIdentifier>
     </Filter>
@@ -52,32 +49,17 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Memory editing">
-      <UniqueIdentifier>{83f8c3ef-1e11-4d14-a5a7-26b2bae1952e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\SDK">
-      <UniqueIdentifier>{76923c88-afe3-48ef-9d4b-b7daaf268347}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\SDK\CBaseEntity">
-      <UniqueIdentifier>{942dcf71-8979-4e37-917a-750e732dfde4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\SDK\ClientBase">
-      <UniqueIdentifier>{2b042b2d-c88e-4ac5-a14e-34e0c04824fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\SDK\CLocalPlayer">
-      <UniqueIdentifier>{392b22a4-d945-4181-98c9-622afb4be131}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\SDK\Source SDK">
-      <UniqueIdentifier>{6d3c7d1c-8d8c-493f-a3b0-902f15a814ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Memory editing\C_Memory">
-      <UniqueIdentifier>{01097549-1e0f-46a1-8713-7141c76413c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Hacking features\AimBot">
       <UniqueIdentifier>{1824d512-1bb3-4148-b392-ccdec3a9bfae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Memory editing\SDK\AbstractInterface">
-      <UniqueIdentifier>{b9820803-c979-44c0-bc96-3a1cf5f190be}</UniqueIdentifier>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{046f2f9e-2d34-4c72-9dfa-cc1b62902020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{889e87de-083f-4bfe-b78c-6cfcb012d122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hacking features\ESP">
+      <UniqueIdentifier>{107deb9c-82ac-4926-af46-3d6d28ea5069}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -105,89 +87,89 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Render\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="bhop.h">
-      <Filter>Hacking features\Bunny Hop</Filter>
-    </ClInclude>
-    <ClInclude Include="GlowWhInGame.h">
-      <Filter>Hacking features\Glow WH in Game</Filter>
-    </ClInclude>
-    <ClInclude Include="hack.h">
-      <Filter>Hacking features\Abstract class</Filter>
-    </ClInclude>
-    <ClInclude Include="TriggerBot.h">
-      <Filter>Hacking features\Trigger bot</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="CBaseEntity.h">
-      <Filter>Memory editing\SDK\CBaseEntity</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientBase.h">
-      <Filter>Memory editing\SDK\ClientBase</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBase.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="CLocalPlayer.h">
-      <Filter>Memory editing\SDK\CLocalPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="DX9ColorFix.h">
-      <Filter>Render\DirectX\DX9ColorFix</Filter>
-    </ClInclude>
-    <ClInclude Include="ESPDrawer.h">
-      <Filter>Render\DirectX\ESPDrawer</Filter>
-    </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Memory editing\C_Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="offsets.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX9VTableCreator.h">
-      <Filter>Render\DirectX\DirectX9Device</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="IBaseClientDLL.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
+    <ClInclude Include="DirctX\DX9ColorFix.h">
+      <Filter>Render\DirectX\DX9ColorFix</Filter>
     </ClInclude>
-    <ClInclude Include="IClientEntityList.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
+    <ClInclude Include="DirctX\DirectX9VTableCreator.h">
+      <Filter>Render\DirectX\DirectX9Device</Filter>
     </ClInclude>
-    <ClInclude Include="IVEngineClient013.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK.h">
-      <Filter>Memory editing\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="TraceLine.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorAligned.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="xorstr.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="menu.h">
+    <ClInclude Include="Menu\menu.h">
       <Filter>Render\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="MenuSettings.h">
+    <ClInclude Include="Menu\MenuSettings.h">
       <Filter>Render\Menu\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="AimBot.h">
+    <ClInclude Include="Hacks\AimBot.h">
       <Filter>Hacking features\AimBot</Filter>
     </ClInclude>
-    <ClInclude Include="IInput.h">
-      <Filter>Memory editing\SDK\Source SDK</Filter>
+    <ClInclude Include="Hacks\bhop.h">
+      <Filter>Hacking features\Bunny Hop</Filter>
     </ClInclude>
-    <ClInclude Include="AbstractInterface.h">
-      <Filter>Memory editing\SDK\AbstractInterface</Filter>
+    <ClInclude Include="Hacks\GlowWhInGame.h">
+      <Filter>Hacking features\Glow WH in Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\hack.h">
+      <Filter>Hacking features\Abstract class</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\TriggerBot.h">
+      <Filter>Hacking features\Trigger bot</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\AbstractInterface.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\CBaseEntity.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\ClientBase.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\CLocalPlayer.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\EngineBase.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\IBaseClientDLL.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\IClientEntityList.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\IInput.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\IVEngineClient013.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\SDK.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\TraceLine.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\VectorAligned.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\memory.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\offsets.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\GetInterface.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Vec3.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\xorstr.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESPDrawer.h">
+      <Filter>Hacking features\ESP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,47 +197,47 @@
     <ClCompile Include="main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="bhop.cpp">
-      <Filter>Hacking features\Bunny Hop</Filter>
-    </ClCompile>
-    <ClCompile Include="GlowWhInGame.cpp">
-      <Filter>Hacking features\Glow WH in Game</Filter>
-    </ClCompile>
-    <ClCompile Include="hack.cpp">
-      <Filter>Hacking features\Abstract class</Filter>
-    </ClCompile>
-    <ClCompile Include="TriggerBot.cpp">
-      <Filter>Hacking features\Trigger bot</Filter>
-    </ClCompile>
-    <ClCompile Include="CBaseEntity.cpp">
-      <Filter>Memory editing\SDK\CBaseEntity</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientBase.cpp">
-      <Filter>Memory editing\SDK\ClientBase</Filter>
-    </ClCompile>
-    <ClCompile Include="CLocalPlayer.cpp">
-      <Filter>Memory editing\SDK\CLocalPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="DX9ColorFix.cpp">
+    <ClCompile Include="DirctX\DX9ColorFix.cpp">
       <Filter>Render\DirectX\DX9ColorFix</Filter>
     </ClCompile>
-    <ClCompile Include="ESPDrawer.cpp">
-      <Filter>Render\DirectX\ESPDrawer</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX9VTableCreator.cpp">
+    <ClCompile Include="DirctX\DirectX9VTableCreator.cpp">
       <Filter>Render\DirectX\DirectX9Device</Filter>
     </ClCompile>
-    <ClCompile Include="menu.cpp">
+    <ClCompile Include="Menu\menu.cpp">
       <Filter>Render\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="MenuSettings.cpp">
+    <ClCompile Include="Menu\MenuSettings.cpp">
       <Filter>Render\Menu\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="AimBot.cpp">
+    <ClCompile Include="Hacks\AimBot.cpp">
       <Filter>Hacking features\AimBot</Filter>
     </ClCompile>
-    <ClCompile Include="AbstractInterface.cpp">
-      <Filter>Memory editing\SDK\AbstractInterface</Filter>
+    <ClCompile Include="Hacks\bhop.cpp">
+      <Filter>Hacking features\Bunny Hop</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\GlowWhInGame.cpp">
+      <Filter>Hacking features\Glow WH in Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\hack.cpp">
+      <Filter>Hacking features\Abstract class</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\TriggerBot.cpp">
+      <Filter>Hacking features\Trigger bot</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\AbstractInterface.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\CBaseEntity.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\ClientBase.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\CLocalPlayer.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESPDrawer.cpp">
+      <Filter>Hacking features\ESP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "CBaseEntity.h"
-#include "types.h"
+#include "../Utils/GetInterface.h"
 #include "IClientEntityList.h"
 
 class CLocalPlayer : public CBaseEntity

@@ -1,7 +1,7 @@
 #pragma once
 #include "CBaseEntity.h"
 #include "AbstractInterface.h"
-#include "memory.h"
+#include "../Utils/memory.h"
 
 class IClientEntityList : public AbstractInterface
 {
