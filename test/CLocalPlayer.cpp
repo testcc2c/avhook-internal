@@ -88,8 +88,8 @@ ImVec3 CLocalPlayer::GetAimTargetAngles(CBaseEntity*& entity, byte bone)
 	myPos.z += this->m_vecViewOffset.z;
 
 	float distance = this->CalcDistaceToEntity(entity);
-	calculated.x = -asinf((targetpos.z - myPos.z) / distance) * (180 / 3.1415926f);
-	calculated.y = atan2f(targetpos.y - myPos.y, targetpos.x - myPos.x) * (180 / 3.1415926f);
+	calculated.x   = -asinf((targetpos.z - myPos.z) / distance) * (180 / 3.1415926f);
+	calculated.y   = atan2f(targetpos.y - myPos.y, targetpos.x - myPos.x) * (180 / 3.1415926f);
 
 	return calculated;
 }

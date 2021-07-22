@@ -36,10 +36,17 @@ void AimBot::Work()
 
 	if (!ent)
 		return;
+
 	__try
 	{
-		localPlayer->AimAt(ent, aim_bone, 30000, true);
-		if (this->settings->auto_shoot and this->entity_list->GetClientEntity(localPlayer->m_iCrosshairId) == ent)
+		ImVec3* local_player_fov = localPlayer->GetViewAngles();
+		ImVec3 target_angles     = localPlayer->GetAimTargetAngles(ent, aim_bone);
+		ImVec2  fov_target       = ImVec2(local_player_fov->x - target_angles.x, local_player_fov->y - target_angles.y);
+
+		if (fov_target.x <= this->settings->fov and fov_target.y <= this->settings->fov and fov_target.x >= -this->settings->fov and fov_target.y >= -this->settings->fov)
+			localPlayer->AimAt(ent, aim_bone, 30000, true);
+		
+		if (this->settings->auto_shoot)
 		{
 			this->clientbase->dwForceAttack = 6;
 			Sleep(10);

@@ -98,6 +98,7 @@ DWORD WINAPI EntryPoint(HMODULE hModule)
 			if (IsDebuggerPresent())
 				TerminateProcess(GetCurrentProcess(), 0);
 #endif // ANTI_DEBUG_PROTECTION
+			auto result = GetInterface<IVEngineClient013>("client.dll", "VEngineClient013");
 			Sleep(500);
 		}
 

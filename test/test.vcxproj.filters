@@ -76,6 +76,9 @@
     <Filter Include="Hacking features\AimBot">
       <UniqueIdentifier>{1824d512-1bb3-4148-b392-ccdec3a9bfae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory editing\SDK\AbstractInterface">
+      <UniqueIdentifier>{b9820803-c979-44c0-bc96-3a1cf5f190be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="IInput.h">
       <Filter>Memory editing\SDK\Source SDK</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractInterface.h">
+      <Filter>Memory editing\SDK\AbstractInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui_demo.cpp">
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="AimBot.cpp">
       <Filter>Hacking features\AimBot</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractInterface.cpp">
+      <Filter>Memory editing\SDK\AbstractInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

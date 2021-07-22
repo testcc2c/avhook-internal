@@ -60,9 +60,9 @@ public:
 	// for finding a signature/pattern in memory of another process
 	DWORD FindPattern(const char* module,const char* pattern,const  char* mask)
 	{
-		MODULEINFO mInfo = this->GetModuleInfo(module);
-		DWORD base = (DWORD)mInfo.lpBaseOfDll;
-		DWORD size = (DWORD)mInfo.SizeOfImage;
+		MODULEINFO mInfo	= this->GetModuleInfo(module);
+		DWORD base          = (DWORD)mInfo.lpBaseOfDll;
+		DWORD size			= (DWORD)mInfo.SizeOfImage;
 		DWORD patternLength = (DWORD)strlen(mask);
 
 		for (DWORD i = 0; i < size - patternLength; i++)
@@ -83,8 +83,8 @@ public:
 	template<typename FuncType>
 	__forceinline static FuncType CallVFunction(void* ppClass, int index)
 	{
-		int* pVTable = *(int**)ppClass;
-		int dwAddress = pVTable[index];
-		return reinterpret_cast<FuncType>(dwAddress);
+		int* pVTable         = *reinterpret_cast<int**>(ppClass);
+		int function_address = pVTable[index];
+		return reinterpret_cast<FuncType>(function_address);
 	}
 };
