@@ -409,6 +409,7 @@ void Menu::Render()
 
 	MiscSettings* misc_settings = dynamic_cast<MiscSettings*>(this->settings[MiscSettingsID]);
 
+	this->drawlist = reinterpret_cast<ESPDrawer*>(ImGui::GetBackgroundDrawList());
 
 	this->DrawESP();
 
