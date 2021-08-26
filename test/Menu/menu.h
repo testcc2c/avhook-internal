@@ -20,6 +20,7 @@
 #include <time.h>
 #include "../resource.h"
 #include <shlobj_core.h>
+#include <map>
 
 enum Icons : int
 {
@@ -83,8 +84,7 @@ private:
 
 	ImColor		       active_radar_color   = ImColor(255, 0, 0);
 	ImColor		       inactive_radar_color = ImColor(255, 255, 255);
-	PDIRECT3DTEXTURE9 icons[6];
-
+	std::map<std::string, PDIRECT3DTEXTURE9> icons;
 	ImVec2	     GetWindowSize();
 	std::string  GetTime();
 

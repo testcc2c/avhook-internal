@@ -44,12 +44,20 @@ Menu::Menu(LPDIRECT3DDEVICE9& pDevice, HMODULE& hmod)
 	this->theme[ImGuiCol_TabHovered]	  = ImVec4(1.f, 0.57f,  0.57f,  1.f);
 	this->theme[ImGuiCol_TabActive]		  = ImVec4(1.f, 0.372f, 0.372f, 1.f);
 
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP4), &icons[PlayerListIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP5), &icons[SettingsIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP1), &icons[AboutIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP3), &icons[CounterTerroristIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP6), &icons[TerroristIcon]);
-	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP7), &icons[RadarIcon]);
+	this->icons.emplace(xorstr("PlayerListIcon"),       nullptr);
+	this->icons.emplace(xorstr("SettingsIcon"),         nullptr);
+	this->icons.emplace(xorstr("AboutIcon"),            nullptr);
+	this->icons.emplace(xorstr("SettingsIcon"),         nullptr);
+	this->icons.emplace(xorstr("CounterTerroristIcon"), nullptr);
+	this->icons.emplace(xorstr("TerroristIcon"),        nullptr);
+	this->icons.emplace(xorstr("RadarIcon"),	        nullptr);
+
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP4), &this->icons.at(xorstr("PlayerListIcon")));
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP5), &this->icons.at(xorstr("SettingsIcon")));
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP1), &this->icons.at(xorstr("AboutIcon")));
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP3), &this->icons.at(xorstr("CounterTerroristIcon")));
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP6), &this->icons.at(xorstr("TerroristIcon")));
+	D3DXCreateTextureFromResourceA(pDevice, hmodule, MAKEINTRESOURCE(IDB_BITMAP7), &this->icons.at(xorstr("RadarIcon")));
 	D3DXCreateTextureFromFileA(pDevice, this->GetDesktopWallpaper().c_str(), &this->wallpaper_texture);
 
 	this->render = true;
@@ -172,7 +180,7 @@ void Menu::DrawAboutMenu()
 {
 	ImGui::Begin(xorstr("About"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 	ImGui::SetWindowSize(ImVec2(500, 150));
-	ImGui::Image(this->icons[AboutIcon], ImVec2(16, 16));
+	ImGui::Image(this->icons.at(xorstr("AboutIcon")), ImVec2(16, 16));
 	ImGui::SameLine();
 	ImGui::Text(xorstr("ABOUT"));
 
@@ -206,7 +214,7 @@ void Menu::DrawPlayerList()
 	if (ImGui::Button(" ", ImVec2(20, 20)))
 		this->tabs[PlayerListTab] = false;
 
-	ImGui::BeginChild("Child###xd", ImVec2(785, 300), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild(xorstr("Child###xd"), ImVec2(785, 300), true, ImGuiWindowFlags_NoScrollbar);
 
 	for (byte i = 1; i < 33; i++)
 	{
@@ -216,9 +224,9 @@ void Menu::DrawPlayerList()
 			continue;
 
 		if (ent->m_iTeamNum == 3)
-			ImGui::Image(this->icons[3], ImVec2(16, 16));
+			ImGui::Image(this->icons.at("CounterTerroristIcon"), ImVec2(16, 16));
 		else
-			ImGui::Image(this->icons[4], ImVec2(16, 16));
+			ImGui::Image(this->icons.at("TerroristIcon"), ImVec2(16, 16));
 
 		ImGui::SameLine();
 		ImGui::Text(xorstr("NAME-%s   TEAM-ID:   %d   ID:  %d"), this->engine_client->GetPlayerInfo(i).szName, ent->m_iTeamNum, ent->m_Index);
@@ -231,10 +239,10 @@ void Menu::DrawPlayerList()
 // Отрисовывает меню "SETTINGs", вызвается в ТОЛЬКО методе "Render".
 void Menu::DrawSettingsMenu()
 {
-	ImGui::Begin("Settings", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin(xorstr("Settings"), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
 	ImGui::SetWindowSize(ImVec2(555, 252));
 
-	ImGui::Image(this->icons[1], ImVec2(16, 16));
+	ImGui::Image(this->icons.at(xorstr("SettingsIcon")), ImVec2(16, 16));
 	ImGui::SameLine();
 
 	ImGui::Text(xorstr("AVhook"));
@@ -504,7 +512,7 @@ std::string Menu::GetDesktopWallpaper()
 	SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, NULL, path);
 
 	std::string path_to_wp = std::string(path);
-	return path_to_wp + "\\Microsoft\\Windows\\Themes\\TranscodedWallpaper";
+	return path_to_wp + xorstr("\\Microsoft\\Windows\\Themes\\TranscodedWallpaper");
 }
 
 void Menu::DrawRadar()
@@ -517,7 +525,7 @@ void Menu::DrawRadar()
 	{
 		ImGui::SetWindowSize(ImVec2(250, 240));
 
-		ImGui::Image(this->icons[RadarIcon], ImVec2(16, 16));
+		ImGui::Image(this->icons.at(xorstr("RadarIcon")), ImVec2(16, 16));
 		ImGui::SameLine();
 		ImGui::Text(xorstr("RADAR"));
 	}
@@ -544,9 +552,10 @@ void Menu::DrawRadar()
 	else
 		ImGui::SetCursorPos(ImVec2(40, 10));
 
-	ImGui::BeginChild("Child!",ImVec2(200, 200), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild(xorstr("Child!"),ImVec2(200, 200), true, ImGuiWindowFlags_NoScrollbar);
 	for (byte i = 2; i < 33; i++)
 	{
+
 		auto entity = this->entitylist->GetClientEntity(i);
 
 		if (!entity)
@@ -556,13 +565,21 @@ void Menu::DrawRadar()
 		cords.y += 8;
 		if (cords.y > 186)
 			cords.y = 186;
-		if (entity->m_iHealth > 0)
+
+		if (entity->m_iHealth > 0 and entity->m_iTeamNum != this->client->dwLocalPlayer->m_iHealth)
+		{
 			ImGui::SetCursorPos(cords);
-			ImGui::Image(this->icons[TerroristIcon], ImVec2(16, 16));
+
+			if (entity->m_iTeamNum == 3)
+				ImGui::Image(this->icons.at(xorstr("CounterTerroristIcon")), ImVec2(16, 16));
+			else
+				ImGui::Image(this->icons.at(xorstr("TerroristIcon")), ImVec2(16, 16));
+
+		}
 		
 	}
 	ImGui::SetCursorPos(ImVec2(100 - 8, 100 + 8));
-	ImGui::Image(this->icons[CounterTerroristIcon], ImVec2(16, 16));
+	ImGui::Image(this->icons.at(xorstr("RadarIcon")), ImVec2(16, 16));
 
 	ImGui::EndChild();
 

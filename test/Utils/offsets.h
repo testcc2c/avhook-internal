@@ -136,9 +136,9 @@ namespace signatures {
 	const DWORD dwGameRulesProxy = 0x52C02CC;
 	const DWORD dwGetAllClasses = 0xDB202C;
 	const DWORD dwGlobalVars = 0x588CF0;
-	const DWORD dwGlowObjectManager = 0x52EB678;
+	const DWORD dwGlowObjectManager = 0x52EB658;
 	const DWORD dwInput = 0x51F47B0;
-	const DWORD dwInterfaceLinkList = 0x944E34;
+	const DWORD dwInterfaceLinkList = 0x945344;
 	const DWORD dwLocalPlayer = 0xD8A2DC;
 	const DWORD dwMouseEnable = 0xD8FE28;
 	const DWORD dwMouseEnablePtr = 0xD8FDF8;
@@ -152,9 +152,9 @@ namespace signatures {
 	const DWORD dwWeaponTableIndex = 0x325C;
 	const DWORD dwYawPtr = 0xD8FA88;
 	const DWORD dwZoomSensitivityRatioPtr = 0xD94D28;
-	const DWORD dwbSendPackets = 0xD771A;
+	const DWORD dwbSendPackets = 0xD779A;
 	const DWORD dwppDirect3DDevice9 = 0xA7050;
-	const DWORD find_hud_element = 0x3009F720;
+	const DWORD find_hud_element = 0x2E75F720;
 	const DWORD force_update_spectator_glow = 0x3AF66A;
 	const DWORD interface_engine_cvar = 0x3E9EC;
 	const DWORD is_c4_owner = 0x3BC2C0;

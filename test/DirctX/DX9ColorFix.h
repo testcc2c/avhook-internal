@@ -17,9 +17,8 @@ private:
 
     LPDIRECT3DDEVICE9 pDevice;
     D3DRENDERSTATETYPE back_up[7] = { D3DRS_COLORWRITEENABLE, D3DRS_SRGBWRITEENABLE, D3DRS_ALPHABLENDENABLE, D3DRS_SRCBLEND, D3DRS_DESTBLEND, D3DRS_BLENDOP, D3DRS_FOGENABLE };
-    DWORD old_block[sizeof back_up / sizeof DWORD];
+    DWORD old_block[7];
 
     D3DVIEWPORT9 view_port;
-    const int size = sizeof back_up / sizeof DWORD;
 };
 

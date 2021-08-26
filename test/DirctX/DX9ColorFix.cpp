@@ -10,7 +10,7 @@ void DX9ColorFix::RemoveColorFilter()
 {
     this->pDevice->CreateStateBlock(D3DSBT_ALL, &this->state_block);
 
-    for (int i = 0; i < this->size; i++)
+    for (byte i = 0; i < 7; i++)
     {
         this->pDevice->GetRenderState(this->back_up[i], &this->old_block[i]);
 
@@ -56,9 +56,8 @@ void DX9ColorFix::RestoreColorFilter()
     this->state_block->Apply();
     this->state_block->Release();
 
-    for (int i = 0; i < size; i++)
+    for (byte i = 0; i < 7; i++)
     {
         this->pDevice->SetRenderState(this->back_up[i], this->old_block[i]);
-
     }
 }

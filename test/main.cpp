@@ -57,7 +57,7 @@ long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 
 
 
-LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+LRESULT WINAPI WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (menu->isOpen())
 	{
