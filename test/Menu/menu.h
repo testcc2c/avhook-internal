@@ -84,7 +84,10 @@ private:
 
 	ImColor		       active_radar_color   = ImColor(255, 0, 0);
 	ImColor		       inactive_radar_color = ImColor(255, 255, 255);
+
 	std::map<std::string, PDIRECT3DTEXTURE9> icons;
+	
+	
 	ImVec2	     GetWindowSize();
 	std::string  GetTime();
 
@@ -97,4 +100,14 @@ private:
 	void		 DrawRadar();
 
 	std::string GetDesktopWallpaper();
+
+	enum MENU_TABS_TYPES : byte
+	{
+		AIMBOT = 1,
+		ESP,
+		MISC,
+		MENU_CFG,
+		TRIGGERBOT
+	};
+
 };

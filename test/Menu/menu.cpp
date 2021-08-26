@@ -271,7 +271,7 @@ void Menu::DrawSettingsMenu()
 		this->menutab = 4;
 
 
-	if (this->menutab == 1) // aimbot sector
+	if (this->menutab == MENU_TABS_TYPES::AIMBOT) // aimbot sector
 	{
 		AimBotSettings* aimbot_settings = (AimBotSettings*)this->settings[AimbotSettingID];
 
@@ -287,7 +287,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::Checkbox(xorstr("Activate on mouse1"), &aimbot_settings->on_key);
 
 	}
-	else if (this->menutab == 2) // esp sector
+	else if (this->menutab == MENU_TABS_TYPES::ESP) // esp sector
 	{
 		GlowWHSettings* glow_esp_settings = (GlowWHSettings*)this->settings[GlowSettingID];
 		SnapLinesESP*   snap_esp_settings = (SnapLinesESP*)this->settings[SnapLinesSettingsID];
@@ -339,7 +339,7 @@ void Menu::DrawSettingsMenu()
 		if (client->dwLocalPlayer)
 			ImGui::SliderInt(xorstr("FOV"), &client->dwLocalPlayer->m_iDefaultFOV, 1, 120);
 	}
-	else if (this->menutab == 4) // menu settings
+	else if (this->menutab == MENU_TABS_TYPES::MENU_CFG) // menu settings
 	{
 		ImGui::SetWindowSize(ImVec2(555, 352));
 
@@ -364,7 +364,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::ColorEdit4(xorstr("Radar feature inactive"), (float*)&dynamic_cast<RadarSettings*>(this->settings[RadarSettingsID])->inactive_radar_color, ImGuiColorEditFlags_NoInputs);
 		//ImGui::ColorEdit4(xorstr("Overlay"),       (float*)(&this->misc_settings->), ImGuiColorEditFlags_NoInputs);
 	}
-	else if (this->menutab == 5) // trigger
+	else if (this->menutab == MENU_TABS_TYPES::TRIGGERBOT) // trigger
 	{
 		TriggerBotSetting* trigger_bot_settings = dynamic_cast<TriggerBotSetting*>(this->settings[TriggerBotSettingsID]);
 
@@ -374,10 +374,7 @@ void Menu::DrawSettingsMenu()
 		ImGui::Checkbox(xorstr("Rage"),   &trigger_bot_settings->rage);
 		ImGui::SliderInt(xorstr("Delay"), &trigger_bot_settings->delay, 0, 1000);
 	}
-	else
-	{
-		ImGui::Text(xorstr("Welcome!"));
-	}
+
 	ImGui::End();
 }
 // Отрисовывает меню "таск бар", вызвается в ТОЛЬКО методе "Render".
